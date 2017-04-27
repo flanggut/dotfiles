@@ -77,6 +77,19 @@ if has("gui_running")
     set guioptions-=L           " Hide scroll bars
 endif
 
+" -----C++ Stuff
+" Set Column limit indicator
+augroup collumnLimit
+  autocmd!
+  autocmd BufEnter,WinEnter,FileType cpp
+        \ highlight CollumnLimit ctermbg=DarkGrey guibg=#586e75
+  let collumnLimit = 81 " feel free to customize
+  let pattern =
+        \ '\%<' . (collumnLimit+1) . 'v.\%>' . collumnLimit . 'v'
+  autocmd BufEnter,WinEnter,FileType cpp
+        \ let w:m1=matchadd('CollumnLimit', pattern, -1)
+augroup END
+
 " -------------------------- Package Configs ---------------------
 " YCM
 "let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
