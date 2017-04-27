@@ -59,11 +59,11 @@ set softtabstop=4               " Columns a tab inserts in insert mode
 set shiftwidth=4                " Columns inserted with the reindent operations
 set shiftround                  " Always indent by multiple of shiftwidth
 set expandtab                   " Always use spaces instead of tabs
+
 " Search
 set hlsearch
 set incsearch
 set ignorecase
-"set smartcase
 
 set nocompatible
 set number
@@ -73,8 +73,7 @@ set wildmenu
 
 " GUI
 if has("gui_running")
-    set vb t_vb=                " Disable visual bell
-    set guioptions-=L           " Hide scroll bars
+    set guifont=Meslo\ LG\ S\ for\ Powerline
 endif
 
 " -----C++ Stuff
@@ -92,7 +91,6 @@ augroup END
 
 " -------------------------- Package Configs ---------------------
 " YCM
-"let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>yi :YcmCompleter GoToDefinition<CR>
