@@ -39,7 +39,7 @@ filetype plugin indent on    " required
 let mapleader = " "
 
 " Buffers and Windows
-nnoremap <silent> <Leader>q :bdelete<CR>
+nnoremap <silent> <leader>q :bdelete<CR>
 
 " Invisible characters
 nmap <leader>v :set list!<CR>   " Toggle hidden characters
@@ -78,6 +78,8 @@ if has("gui_running")
 endif
 
 " -----C++ Stuff
+" Set shortcut for make
+nnoremap <leader>b :make!<CR>
 " Set Column limit indicator
 augroup collumnLimit
   autocmd!
