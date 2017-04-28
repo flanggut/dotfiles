@@ -17,6 +17,7 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-ctrlspace/vim-ctrlspace'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'rdnetto/YCM-Generator'
+Plugin 'scrooloose/nerdcommenter'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -107,4 +108,8 @@ if has("gui_running")
     let g:airline_theme='solarized'
     let g:airline#extensions#tabline#enabled = 1
 endif
+
+" NERD Commenter
+noremap <silent> <leader>/ :call NERDComment(0, "toggle")<CR>
+noremap <silent> <leader>c :call NERDComment(0, "toggle")<CR>
 
