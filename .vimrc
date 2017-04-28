@@ -65,6 +65,7 @@ set ignorecase
 
 " Buffers and Windows
 nnoremap <silent> <leader>q :bdelete<CR>
+set diffopt+=vertical           " split vertical in diff scenarios
 
 " ------------- Visual Stuff (make it pretty) --------------
 syntax enable
