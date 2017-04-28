@@ -93,6 +93,13 @@ augroup END
 " -------------------------- Package Configs ---------------------
 " YCM
 let g:ycm_confirm_extra_conf = 0
+let g:ycm_filetype_blacklist={
+            \ 'vim' : 1,
+            \ 'markdown' : 1,
+            \ 'md' : 1,
+            \ 'text' : 1,
+            \ 'git' : 1
+            \}
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>yi :YcmCompleter GoToDefinition<CR>
 
@@ -112,4 +119,5 @@ endif
 " NERD Commenter
 noremap <silent> <leader>/ :call NERDComment(0, "toggle")<CR>
 noremap <silent> <leader>c :call NERDComment(0, "toggle")<CR>
+
 
