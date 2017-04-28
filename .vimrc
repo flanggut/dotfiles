@@ -33,23 +33,20 @@ filetype plugin indent on    " required
 "
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
-"
-" ------------------------------ Main VIMRC ------------------------------
-" Set leader for all custom commands
+
+
+" ---------------------------------------------------------------------------
+" -------------------------------- Main VIMRC -------------------------------
+" ---------------------------------------------------------------------------
+" Set leader for all custom commands (all of them should start with <leader>)
 let mapleader = " "
 
-" Buffers and Windows
-nnoremap <silent> <leader>q :bdelete<CR>
-
-" Invisible characters
-nmap <leader>v :set list!<CR>   " Toggle hidden characters
-set nolist                      " Hide by default
-set listchars=tab:▸\ ,trail:-,extends:>,precedes:<,nbsp:⎵,eol:¬
-
-" Color and default stuff
-syntax enable
-colorscheme solarized
-set bg=dark
+" Basic must haves
+set nocompatible
+set number
+set hidden
+set wildmode=longest,list
+set wildmenu
 
 " Indentation
 set smarttab                    " Better tabs
@@ -66,20 +63,28 @@ set hlsearch
 set incsearch
 set ignorecase
 
-set nocompatible
-set number
-set hidden
-set wildmode=longest,list
-set wildmenu
+" Buffers and Windows
+nnoremap <silent> <leader>q :bdelete<CR>
+
+" ------------- Visual Stuff (make it pretty) --------------
+syntax enable
+set bg=dark
 
 " GUI
 if has("gui_running")
+    colorscheme solarized
     set guifont=Meslo\ LG\ S\ for\ Powerline
 endif
 
-" -----C++ Stuff
+" Invisible characters
+nmap <leader>v :set list!<CR>   " Toggle hidden characters
+set nolist                      " Hide by default
+set listchars=tab:▸\ ,trail:-,extends:>,precedes:<,nbsp:⎵,eol:¬
+
+" --------------- Coding Stuff (mostly C++) ---------------
 " Set shortcut for make
 nnoremap <leader>b :make!<CR>
+
 " Set Column limit indicator
 augroup collumnLimit
   autocmd!
@@ -92,7 +97,8 @@ augroup collumnLimit
         \ let w:m1=matchadd('CollumnLimit', pattern, -1)
 augroup END
 
-" -------------------------- Package Configs ---------------------
+" --------------------------------------------------------------------
+" -------------------------- Package Configs -------------------------
 " YCM
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_filetype_blacklist={
