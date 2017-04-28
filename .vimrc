@@ -117,6 +117,7 @@ let g:ycm_filetype_blacklist = {
       \ 'infolog' : 1,
       \ 'mail' : 1
       \}
+let g:ycm_key_list_select_completion = ['<TAB>', '<Down>', '<Enter>']
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>yi :YcmCompleter GoToDefinition<CR>
 
