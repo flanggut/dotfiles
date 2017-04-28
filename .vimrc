@@ -106,7 +106,7 @@ let g:ycm_filetype_blacklist={
             \ 'markdown' : 1,
             \ 'md' : 1,
             \ 'text' : 1,
-            \ 'git' : 1
+            \ 'gitcommit' : 1
             \}
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>yi :YcmCompleter GoToDefinition<CR>
