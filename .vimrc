@@ -18,6 +18,7 @@ Plugin 'vim-ctrlspace/vim-ctrlspace'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'rdnetto/YCM-Generator'
 Plugin 'scrooloose/nerdcommenter'
+Plugin 'majutsushi/tagbar'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -64,7 +65,11 @@ set incsearch
 set ignorecase
 
 " Buffers and Windows
-nnoremap <silent> <leader>q :bdelete<CR>
+nnoremap <silent> <leader>q :bdelete<CR>    " close buffer
+nnoremap <C-J> <C-W><C-J>       " easier split navigation
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 set diffopt+=vertical           " split vertical in diff scenarios
 
 " ------------- Visual Stuff (make it pretty) --------------
@@ -103,6 +108,7 @@ augroup END
 " YCM
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_always_populate_location_list = 1
 let g:ycm_filetype_blacklist = {
       \ 'vim' : 1,
       \ 'gitcommit' : 1,
@@ -120,6 +126,7 @@ let g:ycm_filetype_blacklist = {
 let g:ycm_key_list_select_completion = ['<TAB>', '<Down>', '<Enter>']
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>yi :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>yf :YcmCompleter FixIt<CR>
 
 " CtrlSpace
 if executable("ag")
