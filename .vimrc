@@ -78,6 +78,8 @@ set bg=dark
 
 " GUI
 if has("gui_running")
+    set guioptions-=r       " remove right scrollbar
+    set guioptions-=L       " remove left scrollbar
     colorscheme solarized
     set guifont=Meslo\ LG\ S\ for\ Powerline
 endif
