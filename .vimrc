@@ -44,10 +44,11 @@ let mapleader = " "
 
 " Basic must haves
 set nocompatible
-set number
-set hidden
-set wildmode=longest,list
+set hidden                      " hide buffers instead of closing them
+set number                      " line numbers
+set wildmode=longest,list       " bash like completion in cmndln
 set wildmenu
+set noeb vb t_vb=               " no bells and other noises
 
 " Indentation
 set smarttab                    " Better tabs
@@ -66,10 +67,8 @@ set ignorecase
 
 " Buffers and Windows
 nnoremap <silent> <leader>q :bdelete<CR>    " close buffer
-nnoremap <C-J> <C-W><C-J>       " easier split navigation
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+nnoremap <tab> <c-w>w           " easier split navigation
+nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
 
 " ------------- Visual Stuff (make it pretty) --------------
