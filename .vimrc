@@ -19,6 +19,7 @@ Plugin 'Valloric/YouCompleteMe'
 Plugin 'rdnetto/YCM-Generator'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'majutsushi/tagbar'
+Plugin 'SirVer/ultisnips'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -66,7 +67,7 @@ set incsearch
 set ignorecase
 
 " Buffers and Windows
-nnoremap <silent> <leader>q :bdelete<CR>    " close buffer
+nnoremap <silent> <leader>q :bdelete<cr>    " close buffer
 nnoremap <tab> <c-w>w           " easier split navigation
 nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
@@ -84,13 +85,13 @@ if has("gui_running")
 endif
 
 " Invisible characters
-nmap <leader>v :set list!<CR>   " Toggle hidden characters
+nmap <leader>v :set list!<cr>   " Toggle hidden characters
 set nolist                      " Hide by default
 set listchars=tab:▸\ ,trail:-,extends:>,precedes:<,nbsp:⎵,eol:¬
 
 " --------------- Coding Stuff (mostly C++) ---------------
 " Set shortcut for make
-nnoremap <leader>b :make!<CR>
+nnoremap <leader>b :make!<cr>
 
 " Set Column limit indicator
 augroup collumnLimit
@@ -124,10 +125,9 @@ let g:ycm_filetype_blacklist = {
       \ 'infolog' : 1,
       \ 'mail' : 1
       \}
-let g:ycm_key_list_select_completion = ['<TAB>', '<Down>', '<Enter>']
-nnoremap <leader>yd :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>yi :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>yf :YcmCompleter FixIt<CR>
+nnoremap <leader>yd :YcmCompleter GoToDeclaration<cr>
+nnoremap <leader>yi :YcmCompleter GoToDefinition<cr>
+nnoremap <leader>yf :YcmCompleter FixIt<cr>
 
 " CtrlSpace
 if executable("ag")
@@ -143,7 +143,17 @@ if has("gui_running")
 endif
 
 " NERD Commenter
-noremap <silent> <leader>/ :call NERDComment(0, "toggle")<CR>
-noremap <silent> <leader>c :call NERDComment(0, "toggle")<CR>
+let g:NERDDefaultAlign = 'left'
+let g:NERDSpaceDelims = 1
+nnoremap <silent> <leader>/ :call NERDComment(0, "toggle")<cr>
+vnoremap <silent> <leader>/ :call NERDComment(0, "toggle")<cr>
+nnoremap <silent> <leader>x :call NERDComment(0, "toggle")<cr>
+vnoremap <silent> <leader>x :call NERDComment(0, "toggle")<cr>
 
+" UltiSnips
+let g:UltiSnipsExpandTrigger = '<c-j>'
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<c-tab>'
+let g:UltiSnipsEditSplit="vertical" " :UltiSnipsEdit splits window
+let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 
