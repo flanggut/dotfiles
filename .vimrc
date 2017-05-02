@@ -133,6 +133,7 @@ nnoremap <leader>yf :YcmCompleter FixIt<cr>
 if executable("ag")
     let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
 endif
+nnoremap <silent><c-p> :CtrlSpace O<cr>
 
 " Airline
 set laststatus=2
