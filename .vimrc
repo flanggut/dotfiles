@@ -49,7 +49,8 @@ set hidden                      " hide buffers instead of closing them
 set number                      " line numbers
 set wildmode=longest,list       " bash like completion in cmndln
 set wildmenu
-set noeb vb t_vb=               " no bells and other noises
+set noerrorbells visualbell t_vb=           " no bells and other noises
+autocmd GUIEnter * set visualbell t_vb=     " also disable in GUI
 
 " Indentation
 set smarttab                    " Better tabs
