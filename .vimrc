@@ -20,6 +20,7 @@ Plugin 'rdnetto/YCM-Generator'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'majutsushi/tagbar'
 Plugin 'SirVer/ultisnips'
+Plugin 'ervandew/supertab'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -69,6 +70,8 @@ set ignorecase
 
 " Buffers and Windows
 nnoremap <silent> <leader>q :bdelete<cr>    " close buffer
+nnoremap <silent> gb :bnext<cr>             " next buffer
+nnoremap <silent> gB :bprev<cr>             " prev buffer
 nnoremap <tab> <c-w>w           " easier split navigation
 nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
@@ -129,6 +132,14 @@ let g:ycm_filetype_blacklist = {
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<cr>
 nnoremap <leader>yi :YcmCompleter GoToDefinition<cr>
 nnoremap <leader>yf :YcmCompleter FixIt<cr>
+" make YCM compatible with UltiSnips (using supertab)
+let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
+let g:SuperTabDefaultCompletionType = '<C-j>'
+" this maps the Enter key to <C-y> to chose the current highlighted
+" item and close the selection list, same as other IDEs.
+" CONFLICT with some plugins like tpope/Endwise
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " CtrlSpace
 if executable("ag")
@@ -153,9 +164,9 @@ nnoremap <silent> <leader>x :call NERDComment(0, "toggle")<cr>
 vnoremap <silent> <leader>x :call NERDComment(0, "toggle")<cr>
 
 " UltiSnips
-let g:UltiSnipsExpandTrigger = '<c-j>'
+let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = '<tab>'
-let g:UltiSnipsJumpBackwardTrigger = '<c-tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 let g:UltiSnipsEditSplit="vertical" " :UltiSnipsEdit splits window
 let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 
