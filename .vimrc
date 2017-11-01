@@ -20,8 +20,9 @@ Plugin 'Valloric/YouCompleteMe'
 Plugin 'rdnetto/YCM-Generator'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'majutsushi/tagbar'
-Plugin 'SirVer/ultisnips'
-Plugin 'ervandew/supertab'
+Plugin 'rhysd/vim-clang-format'
+Plugin 'Yggdroot/indentLine'
+Plugin 'mhinz/vim-signify'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -58,9 +59,9 @@ autocmd GUIEnter * set visualbell t_vb=     " also disable in GUI
 set smarttab                    " Better tabs
 set smartindent                 " Inserts new level of indentation
 set autoindent                  " Copy indentation from previous line
-set tabstop=4                   " Columns a tab counts for
-set softtabstop=4               " Columns a tab inserts in insert mode
-set shiftwidth=4                " Columns inserted with the reindent operations
+set tabstop=2                   " Columns a tab counts for
+set softtabstop=2               " Columns a tab inserts in insert mode
+set shiftwidth=2                " Columns inserted with the reindent operations
 set shiftround                  " Always indent by multiple of shiftwidth
 set expandtab                   " Always use spaces instead of tabs
 
@@ -72,27 +73,33 @@ set ignorecase
 " Buffers and Windows
 nnoremap <silent> <leader>q :bdelete<cr>    " close buffer
 nnoremap <silent> gb :bnext<cr>             " next buffer
+nnoremap <silent> gj :bnext<cr>             " next buffer
 nnoremap <silent> gB :bprev<cr>             " prev buffer
+nnoremap <silent> gk :bprev<cr>             " prev buffer
 nnoremap <tab> <c-w>w           " easier split navigation
 nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
+set splitbelow                  "  below
+set completeopt-=preview
 
 " ------------- Visual Stuff (make it pretty) --------------
 syntax enable
 set bg=dark
-
-" GUI
-if has("gui_running")
-    set guioptions-=r       " remove right scrollbar
-    set guioptions-=L       " remove left scrollbar
-    colorscheme solarized
-    set guifont=Meslo\ LG\ S\ for\ Powerline
-endif
+colorscheme solarized
+set guioptions-=r       " remove right scrollbar
+set guioptions-=L       " remove left scrollbar
+set guifont=Meslo\ LG\ S\ for\ Powerline:h12
+let g:indentLine_color_gui = '#586e75'
+set linespace=3
 
 " Invisible characters
 nmap <leader>v :set list!<cr>   " Toggle hidden characters
 set nolist                      " Hide by default
-set listchars=tab:▸\ ,trail:-,extends:>,precedes:<,nbsp:⎵,eol:¬
+set listchars=tab:▸\ ,trail:-,extends:>,precedes:<,nbsp:⎵,eol:¬,space:·
+
+" Gutter
+highlight clear SignColumn
+set signcolumn=yes
 
 " --------------- Coding Stuff (mostly C++) ---------------
 " Set shortcut for make
@@ -112,9 +119,13 @@ augroup END
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
+" Tagbar
+nnoremap <leader>t :TagbarToggle<cr>
+let g:tagbar_width = 60
+
 " YCM
 let g:ycm_confirm_extra_conf = 0
-let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_add_preview_to_completeopt = 1
 let g:ycm_always_populate_location_list = 1
 let g:ycm_filetype_blacklist = {
       \ 'vim' : 1,
@@ -130,17 +141,14 @@ let g:ycm_filetype_blacklist = {
       \ 'infolog' : 1,
       \ 'mail' : 1
       \}
+nnoremap <leader>yg :YcmCompleter GoTo<cr>
+nnoremap <leader>yh :YcmCompleter GoToInclude<cr>
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<cr>
 nnoremap <leader>yi :YcmCompleter GoToDefinition<cr>
 nnoremap <leader>yf :YcmCompleter FixIt<cr>
-" make YCM compatible with UltiSnips (using supertab)
-let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
-let g:SuperTabDefaultCompletionType = '<C-j>'
-" this maps the Enter key to <C-y> to chose the current highlighted
-" item and close the selection list, same as other IDEs.
-" CONFLICT with some plugins like tpope/Endwise
-inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+let g:ycm_key_list_select_completion = ['<tab>', '<c-j>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<s-tab>', '<c-k>', '<Up>']
+let g:ycm_key_list_stop_completion = ['<cr>', '<c-y>']
 
 " CtrlSpace
 if executable("ag")
@@ -164,10 +172,25 @@ vnoremap <silent> <leader>/ :call NERDComment(0, "toggle")<cr>
 nnoremap <silent> <leader>x :call NERDComment(0, "toggle")<cr>
 vnoremap <silent> <leader>x :call NERDComment(0, "toggle")<cr>
 
-" UltiSnips
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = '<tab>'
-let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
-let g:UltiSnipsEditSplit="vertical" " :UltiSnipsEdit splits window
-let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
+" Clangformat
+let g:clang_format#detect_style_file = 1
+" Use clangformat only on the current scope
+autocmd FileType c,cpp,objc vnoremap <buffer>ff :ClangFormat<cr>
+function! MyClangFormat()
+    let s:pos = getpos( '. ')
+    let s:view = winsaveview()
+    normal va}ff
+    call setpos( '.', s:pos )
+    call winrestview( s:view )
+endfunc
+" map to <Leader>f in C++ code
+autocmd FileType c,cpp,objc nnoremap <buffer><leader>f :call MyClangFormat()<cr>
+autocmd FileType c,cpp,objc nnoremap <buffer><leader>cf :ClangFormat<cr>
+" Toggle auto formatting:
+nmap <leader>C :ClangFormatAutoToggle<cr>
+
+" Signify
+let g:signify_vcs_list = [ 'git', 'hg' ]
+let g:signify_disable_by_default = 1
+nnoremap <silent> <leader>si :SignifyToggle<cr>
 
