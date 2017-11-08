@@ -88,7 +88,7 @@ set bg=dark
 colorscheme solarized
 set guioptions-=r       " remove right scrollbar
 set guioptions-=L       " remove left scrollbar
-set guifont=Meslo\ LG\ S\ for\ Powerline:h12
+set guifont=SFMono\ Nerd\ Font:h13
 let g:indentLine_color_gui = '#586e75'
 set linespace=3
 
