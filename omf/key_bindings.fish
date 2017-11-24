@@ -1,2 +1,3 @@
-bind \cr reverse_history_search
+bind \ct fzf_file
+bind \cr fzf_reverse_history_search
 
