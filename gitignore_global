@@ -1,1 +1,12 @@
+# Mac stuff
 .DS_Store
+
+# Vim stuff
+.ycm_extra_conf.py
+*.swp
+
+# C++ source
+*.o
+*.a
+Makefile.dep
+
