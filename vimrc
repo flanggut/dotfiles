@@ -23,6 +23,7 @@ Plugin 'majutsushi/tagbar'
 Plugin 'rhysd/vim-clang-format'
 Plugin 'Yggdroot/indentLine'
 Plugin 'mhinz/vim-signify'
+Plugin 'haya14busa/incsearch.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -194,3 +195,14 @@ let g:signify_vcs_list = [ 'git', 'hg' ]
 let g:signify_disable_by_default = 1
 nnoremap <silent> <leader>si :SignifyToggle<cr>
 
+" Incsearch
+let g:incsearch#auto_nohlsearch = 1
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
