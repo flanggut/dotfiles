@@ -6,6 +6,7 @@
 [alias]
   co = checkout
   ci = commit
+  uci = reset HEAD^
   st = status
   cp = cherry-pick
   br = branch
