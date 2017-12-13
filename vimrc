@@ -24,6 +24,7 @@ Plugin 'rhysd/vim-clang-format'
 Plugin 'Yggdroot/indentLine'
 Plugin 'mhinz/vim-signify'
 Plugin 'haya14busa/incsearch.vim'
+Plugin 'lervag/vimtex'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -121,7 +122,7 @@ augroup END
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
 " Tagbar
-nnoremap <leader>t :TagbarToggle<cr>
+nnoremap <leader>t :TagbarOpenAutoClose<cr>
 let g:tagbar_width = 60
 
 " YCM
