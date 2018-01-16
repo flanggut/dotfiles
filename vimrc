@@ -24,6 +24,7 @@ Plugin 'rhysd/vim-clang-format'
 Plugin 'Yggdroot/indentLine'
 Plugin 'mhinz/vim-signify'
 Plugin 'haya14busa/incsearch.vim'
+Plugin 'haya14busa/vim-asterisk'
 Plugin 'lervag/vimtex'
 
 " All of your Plugins must be added before the following line
@@ -47,6 +48,7 @@ filetype plugin indent on    " required
 " ---------------------------------------------------------------------------
 " Set leader for all custom commands (all of them should start with <leader>)
 let mapleader = " "
+let maplocalleader = " "
 
 " Basic must haves
 set nocompatible
@@ -119,6 +121,11 @@ augroup collumnLimit
         \ let w:m1=matchadd('CollumnLimit', pattern, -1)
 augroup END
 
+
+" -------------------- Latex Stuff  -----------------------
+let g:tex_flavor = "latex"
+set conceallevel=0
+
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
 " Tagbar
@@ -151,6 +158,11 @@ nnoremap <leader>yf :YcmCompleter FixIt<cr>
 let g:ycm_key_list_select_completion = ['<tab>', '<c-j>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<s-tab>', '<c-k>', '<Up>']
 let g:ycm_key_list_stop_completion = ['<cr>', '<c-y>']
+" Ycm + vimtex
+if !exists('g:ycm_semantic_triggers')
+    let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " CtrlSpace
 if executable("ag")
@@ -196,14 +208,19 @@ let g:signify_vcs_list = [ 'git', 'hg' ]
 let g:signify_disable_by_default = 1
 nnoremap <silent> <leader>si :SignifyToggle<cr>
 
-" Incsearch
+" Incsearch and Asterisk
 let g:incsearch#auto_nohlsearch = 1
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-map n  <Plug>(incsearch-nohl-n)
-map N  <Plug>(incsearch-nohl-N)
-map *  <Plug>(incsearch-nohl-*)
-map #  <Plug>(incsearch-nohl-#)
-map g* <Plug>(incsearch-nohl-g*)
-map g# <Plug>(incsearch-nohl-g#)
+map /  <plug>(incsearch-forward)
+map ?  <plug>(incsearch-backward)
+map g/ <plug>(incsearch-stay)
+map n  <plug>(incsearch-nohl-n)
+map N  <plug>(incsearch-nohl-N)
+map *  <plug>(incsearch-nohl)<plug>(asterisk-*)
+map #  <plug>(incsearch-nohl)<plug>(asterisk-#)
+map g* <plug>(incsearch-nohl)<plug>(asterisk-g*)
+map g# <plug>(incsearch-nohl)<plug>(asterisk-g#)
+map z*  <plug>(incsearch-nohl0)<plug>(asterisk-z*)
+map gz* <plug>(incsearch-nohl0)<plug>(asterisk-gz*)
+map z#  <plug>(incsearch-nohl0)<plug>(asterisk-z#)
+map gz# <plug>(incsearch-nohl0)<plug>(asterisk-gz#)
+let g:asterisk#keeppos = 1
