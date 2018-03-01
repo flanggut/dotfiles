@@ -42,7 +42,6 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
-
 " ---------------------------------------------------------------------------
 " -------------------------------- Main VIMRC -------------------------------
 " ---------------------------------------------------------------------------
@@ -124,6 +123,8 @@ augroup END
 
 " -------------------- Latex Stuff  -----------------------
 let g:tex_flavor = "latex"
+let g:vimtex_quickfix_mode = 0
+let g:vimtex_index_split_width = 40
 augroup latexCommands
   autocmd!
   autocmd BufRead,BufNewFile *.tex
@@ -134,10 +135,10 @@ augroup latexCommands
         \ nmap <c-f> [s1z=<c-o>
   autocmd BufRead,BufNewFile *.tex
         \ set spell
+  " Change this if project specific file is needed
+  autocmd BufReadPre *.tex
+        \ let b:vimtex_main = 'main.tex'
 augroup END
-
-" Vimtex
-let g:vimtex_quickfix_mode = 0
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
@@ -237,3 +238,11 @@ map gz* <plug>(incsearch-nohl0)<plug>(asterisk-gz*)
 map z#  <plug>(incsearch-nohl0)<plug>(asterisk-z#)
 map gz# <plug>(incsearch-nohl0)<plug>(asterisk-gz#)
 let g:asterisk#keeppos = 1
+
+
+" --------------------------------------------------------------------
+" Load project specific .vimrc if required
+" --------------------------------------------------------------------
+set secure
+set exrc
+
