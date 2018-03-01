@@ -124,7 +124,20 @@ augroup END
 
 " -------------------- Latex Stuff  -----------------------
 let g:tex_flavor = "latex"
-set conceallevel=0
+augroup latexCommands
+  autocmd!
+  autocmd BufRead,BufNewFile *.tex
+        \ let g:indentLine_setConceal=0
+  autocmd BufRead,BufNewFile *.tex
+        \ imap <c-f> <c-g>u<Esc>[s1z=`]a<c-g>u
+  autocmd BufRead,BufNewFile *.tex
+        \ nmap <c-f> [s1z=<c-o>
+  autocmd BufRead,BufNewFile *.tex
+        \ set spell
+augroup END
+
+" Vimtex
+let g:vimtex_quickfix_mode = 0
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------

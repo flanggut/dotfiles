@@ -4,6 +4,7 @@
 # Vim stuff
 .ycm_extra_conf.py
 *.swp
+.cs_files
 
 # C++ source
 *.o
