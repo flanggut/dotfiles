@@ -26,6 +26,7 @@ Plugin 'mhinz/vim-signify'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'haya14busa/vim-asterisk'
 Plugin 'lervag/vimtex'
+Plugin 'ntpeters/vim-better-whitespace'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -135,7 +136,9 @@ augroup latexCommands
         \ nmap <c-f> [s1z=<c-o>
   autocmd BufRead,BufNewFile *.tex
         \ set spell
-  " Change this if project specific file is needed
+  autocmd BufRead,BufNewFile *.tex
+        \ set tw=110
+  " Change this in a project specific file if needed
   autocmd BufReadPre *.tex
         \ let b:vimtex_main = 'main.tex'
 augroup END
@@ -238,6 +241,9 @@ map gz* <plug>(incsearch-nohl0)<plug>(asterisk-gz*)
 map z#  <plug>(incsearch-nohl0)<plug>(asterisk-z#)
 map gz# <plug>(incsearch-nohl0)<plug>(asterisk-gz#)
 let g:asterisk#keeppos = 1
+
+" Better Whitespace
+nmap <leader>sw :StripWhitespace<cr>
 
 
 " --------------------------------------------------------------------
