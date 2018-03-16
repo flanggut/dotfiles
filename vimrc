@@ -27,6 +27,8 @@ Plugin 'haya14busa/incsearch.vim'
 Plugin 'haya14busa/vim-asterisk'
 Plugin 'lervag/vimtex'
 Plugin 'ntpeters/vim-better-whitespace'
+Plugin 'SirVer/ultisnips'
+Plugin 'ervandew/supertab'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -49,6 +51,10 @@ filetype plugin indent on    " required
 " Set leader for all custom commands (all of them should start with <leader>)
 let mapleader = " "
 let maplocalleader = " "
+
+" Quickly edit/reload this configuration file
+nnoremap <leader>rce :e $MYVIMRC<cr>
+nnoremap <leader>rcl :so $MYVIMRC<cr>
 
 " Basic must haves
 set nocompatible
@@ -172,14 +178,25 @@ nnoremap <leader>yh :YcmCompleter GoToInclude<cr>
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<cr>
 nnoremap <leader>yi :YcmCompleter GoToDefinition<cr>
 nnoremap <leader>yf :YcmCompleter FixIt<cr>
-let g:ycm_key_list_select_completion = ['<tab>', '<c-j>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<s-tab>', '<c-k>', '<Up>']
+
+let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
 let g:ycm_key_list_stop_completion = ['<cr>', '<c-y>']
+
+" make YCM compatible with UltiSnips (using supertab)
+let g:SuperTabDefaultCompletionType = '<C-j>'
+
 " Ycm + vimtex
 if !exists('g:ycm_semantic_triggers')
     let g:ycm_semantic_triggers = {}
 endif
 let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
+
+" Ultisnips
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
 " CtrlSpace
 if executable("ag")
@@ -244,7 +261,6 @@ let g:asterisk#keeppos = 1
 
 " Better Whitespace
 nmap <leader>sw :StripWhitespace<cr>
-
 
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required
