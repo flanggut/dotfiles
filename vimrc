@@ -143,6 +143,10 @@ augroup latexCommands
   autocmd BufRead,BufNewFile *.tex
         \ set spell
   autocmd BufRead,BufNewFile *.tex
+        \ set spelllang=en_us
+  autocmd BufRead,BufNewFile *.tex
+        \ set spellfile=~/.vim/myspell.utf-8.add
+  autocmd BufRead,BufNewFile *.tex
         \ set tw=110
   " Change this in a project specific file if needed
   autocmd BufReadPre *.tex
