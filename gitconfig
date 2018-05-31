@@ -13,7 +13,7 @@
   vv = branch -vv
   glog = log -n 40 --graph --full-history --all --pretty=format:"%h%x09%d%x20%s"
   df = "!f() { [ -z \"$GIT_PREFIX\" ] || cd \"$GIT_PREFIX\" && git diff --color \"$@\" | diff-so-fancy  | less --tabs=4 -RFX; }; f"
-  sl = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --all --since='90 days ago'
+  sl = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --all --since='180 days ago' --max-count=30
 
 [core]
   excludesfile = ~/.gitignore_global
