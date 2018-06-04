@@ -6,8 +6,8 @@ set -gx BD_OPT 'insensitive'
 switch (uname)
   case Darwin
     source ~/.iterm2_shell_integration.fish
-    alias vim = "mvim"
-    alias vi = "vim"
+    alias vim="mvim"
+    alias vi="vim"
     set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
 end
 

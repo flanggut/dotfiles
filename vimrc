@@ -29,6 +29,7 @@ Plugin 'lervag/vimtex'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'SirVer/ultisnips'
 Plugin 'ervandew/supertab'
+Plugin 'gilligan/vim-lldb'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
