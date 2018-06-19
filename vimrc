@@ -1,6 +1,7 @@
 " ------------------------------ VUNDLE Packages ------------------------------
 set nocompatible              " be iMproved, required
 filetype off                  " required
+set shell=/bin/bash           " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -29,6 +30,8 @@ Plugin 'lervag/vimtex'
 Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'SirVer/ultisnips'
 Plugin 'ervandew/supertab'
+Plugin 'scrooloose/nerdtree'
+Plugin 'mhinz/vim-startify'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -111,6 +114,10 @@ set listchars=tab:▸\ ,trail:-,extends:>,precedes:<,nbsp:⎵,eol:¬,space:·
 highlight clear SignColumn
 set signcolumn=yes
 
+if has("gui_running")
+  set lines=75 columns=150
+endif
+
 " --------------- Coding Stuff (mostly C++) ---------------
 " Set shortcut for make
 nnoremap <leader>b :make!<cr>
@@ -155,6 +162,9 @@ augroup END
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
+" Nerdtree
+map <C-n> :NERDTreeToggle<CR>
+
 " Tagbar
 nnoremap <leader>t :TagbarOpenAutoClose<cr>
 let g:tagbar_width = 60
@@ -204,17 +214,15 @@ let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
 " CtrlSpace
 if executable("ag")
-    let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
+    let g:CtrlSpaceGlobCommand = 'rg --files --color never'
 endif
 nnoremap <silent><c-p> :CtrlSpace O<cr>
 
 " Airline
 set laststatus=2
-if has("gui_running")
-    let g:airline_powerline_fonts = 1
-    let g:airline_theme='solarized'
-    let g:airline#extensions#tabline#enabled = 1
-endif
+let g:airline_powerline_fonts = 1
+let g:airline_theme='solarized'
+let g:airline#extensions#tabline#enabled = 1
 
 " NERD Commenter
 let g:NERDDefaultAlign = 'left'
@@ -247,20 +255,15 @@ let g:signify_disable_by_default = 1
 nnoremap <silent> <leader>si :SignifyToggle<cr>
 
 " Incsearch and Asterisk
-let g:incsearch#auto_nohlsearch = 1
+let g:incsearch#auto_nohlsearch = 0
+nnoremap <Esc><Esc> :<C-u>nohlsearch<CR>
 map /  <plug>(incsearch-forward)
 map ?  <plug>(incsearch-backward)
-map g/ <plug>(incsearch-stay)
-map n  <plug>(incsearch-nohl-n)
-map N  <plug>(incsearch-nohl-N)
-map *  <plug>(incsearch-nohl)<plug>(asterisk-*)
-map #  <plug>(incsearch-nohl)<plug>(asterisk-#)
-map g* <plug>(incsearch-nohl)<plug>(asterisk-g*)
-map g# <plug>(incsearch-nohl)<plug>(asterisk-g#)
-map z*  <plug>(incsearch-nohl0)<plug>(asterisk-z*)
-map gz* <plug>(incsearch-nohl0)<plug>(asterisk-gz*)
-map z#  <plug>(incsearch-nohl0)<plug>(asterisk-z#)
-map gz# <plug>(incsearch-nohl0)<plug>(asterisk-gz#)
+map g/  <plug>(incsearch-stay)
+map *  <plug>(asterisk-z*)
+map #  <plug>(asterisk-z#)
+map g* <plug>(asterisk-gz*)
+map g# <plug>(asterisk-gz#)
 let g:asterisk#keeppos = 1
 
 " Better Whitespace

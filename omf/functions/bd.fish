@@ -4,6 +4,8 @@
 # fish-bd main & usage function
 # https://github.com/0rax/bd-fish
 #
+# flanggut: update insensitive version to also allow fragments in the middle
+# of the name (instead of only the beginning)
 
 function __bd_usage
     printf "# fish-bd v1.3.0 (https://github.com/0rax/bd-fish)
@@ -78,7 +80,7 @@ function bd
     case "sensitive"
         set newpwd (echo $oldpwd | sed 's|\(.*/'$args[$i]'[^/]*/\).*|\1|')
     case "insensitive"
-        set newpwd (echo $oldpwd | perl -pe 's|(.*/'$args[$i]'[^/]*/).*|$1|i')
+        set newpwd (echo $oldpwd | perl -pe 's|(.*/[^/]*'$args[$i]'[^/]*/).*|$1|i')
     case '*' # classic
         set newpwd (echo $oldpwd | sed 's|\(.*/'$args[$i]'/\).*|\1|')
     end
