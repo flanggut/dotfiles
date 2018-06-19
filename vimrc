@@ -143,7 +143,7 @@ augroup collumnLimit
         \ set tw=100
   autocmd BufEnter,WinEnter,FileType cpp
         \ highlight CollumnLimit ctermbg=DarkGrey guibg=#586e75
-  let collumnLimit = 81 " feel free to customize
+  let collumnLimit = 101 " feel free to customize
   let pattern =
         \ '\%<' . (collumnLimit+1) . 'v.\%>' . collumnLimit . 'v'
   autocmd BufEnter,WinEnter,FileType cpp
