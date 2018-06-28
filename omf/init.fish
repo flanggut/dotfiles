@@ -4,6 +4,7 @@ set -g theme_date_format "+%H:%M:%S"
 set -gx BD_OPT 'insensitive'
 
 alias rg="rg --max-columns=160 -S"
+alias ...="cd ../.."
 
 switch (uname)
   case Darwin
