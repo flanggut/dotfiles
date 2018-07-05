@@ -1,63 +1,43 @@
-" ------------------------------ VUNDLE Packages ------------------------------
 set nocompatible              " be iMproved, required
 filetype off                  " required
 set shell=/bin/bash           " required
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+" ---------------------------------------------------------------------------
+" --------------------------------- vim-plug --------------------------------
+" ---------------------------------------------------------------------------
+call plug#begin('~/.vim/plugged')
 
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+Plug 'lifepillar/vim-solarized8'
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-fugitive'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-ctrlspace/vim-ctrlspace'
+Plug 'scrooloose/nerdcommenter'
+Plug 'majutsushi/tagbar'
+Plug 'rhysd/vim-clang-format'
+Plug 'Yggdroot/indentLine'
+Plug 'mhinz/vim-signify'
+Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/vim-asterisk'
+Plug 'lervag/vimtex'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'SirVer/ultisnips'
+Plug 'ervandew/supertab'
+Plug 'scrooloose/nerdtree'
+Plug 'mhinz/vim-startify'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'mhinz/vim-sayonara'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'jiangmiao/auto-pairs'
+Plug 'Valloric/YouCompleteMe', {'do': './install.py'}
+Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
 
-Plugin 'lifepillar/vim-solarized8'
-
-Plugin 'tpope/vim-sensible'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-projectionist'
-Plugin 'tpope/vim-fugitive'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'vim-ctrlspace/vim-ctrlspace'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'rdnetto/YCM-Generator'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'majutsushi/tagbar'
-Plugin 'rhysd/vim-clang-format'
-Plugin 'Yggdroot/indentLine'
-Plugin 'mhinz/vim-signify'
-Plugin 'haya14busa/incsearch.vim'
-Plugin 'haya14busa/vim-asterisk'
-Plugin 'lervag/vimtex'
-Plugin 'ntpeters/vim-better-whitespace'
-Plugin 'SirVer/ultisnips'
-Plugin 'ervandew/supertab'
-Plugin 'scrooloose/nerdtree'
-Plugin 'mhinz/vim-startify'
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
-Plugin 'mhinz/vim-sayonara'
-Plugin 'ludovicchabant/vim-gutentags'
-Plugin 'jiangmiao/auto-pairs'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-
+call plug#end()
 " ---------------------------------------------------------------------------
 " -------------------------------- Main VIMRC -------------------------------
 " ---------------------------------------------------------------------------
