@@ -13,6 +13,11 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'lifepillar/vim-solarized8'
+
+Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-projectionist'
 Plugin 'tpope/vim-fugitive'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -32,11 +37,11 @@ Plugin 'SirVer/ultisnips'
 Plugin 'ervandew/supertab'
 Plugin 'scrooloose/nerdtree'
 Plugin 'mhinz/vim-startify'
-Plugin 'derekwyatt/vim-fswitch'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'mhinz/vim-sayonara'
 Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'jiangmiao/auto-pairs'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -59,6 +64,8 @@ filetype plugin indent on    " required
 " Set leader for all custom commands (all of them should start with <leader>)
 let mapleader = " "
 let maplocalleader = " "
+" O_o
+nnoremap ; :
 
 " Quickly edit/reload this configuration file
 nnoremap <leader>rce :e $MYVIMRC<cr>
@@ -87,6 +94,7 @@ set expandtab                   " Always use spaces instead of tabs
 set hlsearch
 set incsearch
 set ignorecase
+set smartcase
 
 " Buffers and Windows
 nnoremap <silent> <leader>q :Sayonara!<cr>         " close buffer
@@ -99,6 +107,12 @@ nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
 set splitbelow                  "  below
 set completeopt-=preview
+
+" ------------- MacVim specifics -----------------
+if has("gui_macvim")
+  set macmeta
+endif
+
 
 " ------------- Visual Stuff (make it pretty) --------------
 syntax enable
@@ -178,8 +192,12 @@ augroup END
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
+" Version Control
+vmap <leader>hgb :<c-u>!hg blame -fu <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
+
 " Nerdtree
-map <C-n> :NERDTreeToggle<CR>
+map <C-n> :NERDTreeToggle<cr>
+map <C-m> :NERDTreeFind<cr>
 
 " Tagbar
 nnoremap <leader>t :TagbarOpenAutoClose<cr>
@@ -233,9 +251,6 @@ let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 if executable("rg")
     let g:CtrlSpaceGlobCommand = 'rg --files --color never'
 endif
-
-" fswitch
-nnoremap <silent> <leader>cc :FSHere<cr>
 
 " Airline
 set laststatus=2
@@ -303,13 +318,14 @@ autocmd BufEnter *
 " FZF
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   'rg --column --line-number --no-heading --color=always --smart-case -g !tags '.shellescape(<q-args>), 1,
   \           fzf#vim#with_preview('right:50%'),
   \   <bang>0)
 command! -bang -nargs=* Tags
   \ call fzf#vim#tags(<q-args>,
   \      {'options': '--preview "echo {} | cut -f1 -f4 -f5 | tr ''\t'' ''\n''  "'})
 nnoremap <silent><c-p> :Files<cr>
+nnoremap <silent><c-l> :Buffers<cr>
 nnoremap <silent><leader>p :Tags<cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
 nnoremap <leader>sp :Tags <c-r><c-w><cr>
@@ -331,10 +347,18 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
-
 " Gutentags
-let g:gutentags_cache_dir="~/.cache/gutentags"
-let g:gutentags_project_root=['compile_commands.json']
+let g:gutentags_project_root=['.gutctags']
+
+" Projectionist
+let g:projectionist_heuristics = {
+      \ "*": {
+      \   "*.cpp": {"alternate": "{}.h"},
+      \   "*.h": {"alternate": "{}.cpp"}
+      \ }
+      \ }
+nnoremap <silent> <leader>a :A<cr>
+
 
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required

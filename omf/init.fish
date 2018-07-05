@@ -3,8 +3,11 @@ set -g theme_date_format "+%H:%M:%S"
 
 set -gx BD_OPT 'insensitive'
 
+alias hgdf="hg diff --color=always | diff-so-fancy | less -R"
+alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias rg="rg --max-columns=160 -S"
 alias ...="cd ../.."
+
 
 switch (uname)
   case Darwin
@@ -12,6 +15,7 @@ switch (uname)
     alias vim="mvim"
     alias vi="vim"
     alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+    alias fll="rg --files | rg"
 end
 
 set -x LS_COLORS 'di=0;34:ln=0;36:ex=0;91'
