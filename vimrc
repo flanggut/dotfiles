@@ -7,6 +7,8 @@ set shell=/bin/bash           " required
 " ---------------------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
 
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'lifepillar/vim-solarized8'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
@@ -15,27 +17,27 @@ Plug 'tpope/vim-projectionist'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-ctrlspace/vim-ctrlspace'
-Plug 'scrooloose/nerdcommenter'
-Plug 'majutsushi/tagbar'
-Plug 'rhysd/vim-clang-format'
-Plug 'Yggdroot/indentLine'
+Plug 'mhinz/vim-sayonara'
 Plug 'mhinz/vim-signify'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/vim-asterisk'
-Plug 'lervag/vimtex'
+Plug 'vim-ctrlspace/vim-ctrlspace'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'SirVer/ultisnips'
 Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'mhinz/vim-sayonara'
-Plug 'ludovicchabant/vim-gutentags'
+Plug 'lervag/vimtex'
+Plug 'majutsushi/tagbar'
+Plug 'Yggdroot/indentLine'
 Plug 'jiangmiao/auto-pairs'
-Plug 'Valloric/YouCompleteMe', {'do': './install.py'}
+Plug 'scrooloose/nerdcommenter'
+Plug 'rhysd/vim-clang-format'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
 Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
 call plug#end()
 " ---------------------------------------------------------------------------
@@ -85,14 +87,13 @@ nnoremap <silent> gk :bprev<cr>             " prev buffer
 nnoremap <tab> <c-w>w           " easier split navigation
 nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
-set splitbelow                  "  below
+set splitbelow
 set completeopt-=preview
 
 " ------------- MacVim specifics -----------------
 if has("gui_macvim")
   set macmeta
 endif
-
 
 " ------------- Visual Stuff (make it pretty) --------------
 syntax enable
@@ -144,7 +145,6 @@ augroup collumnLimit
         \ let w:m1=matchadd('CollumnLimit', pattern, -1)
 augroup END
 
-
 " -------------------- Latex Stuff  -----------------------
 let g:tex_flavor = "latex"
 let g:vimtex_quickfix_mode = 0
@@ -173,7 +173,7 @@ augroup END
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
 " Version Control
-vmap <leader>hgb :<c-u>!hg blame -fu <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
+vmap <leader>hgb :<c-u>!hg blame -fudq <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
 
 " Nerdtree
 map <C-n> :NERDTreeToggle<cr>
@@ -305,13 +305,14 @@ command! -bang -nargs=* Tags
   \ call fzf#vim#tags(<q-args>,
   \      {'options': '--preview "echo {} | cut -f1 -f4 -f5 | tr ''\t'' ''\n''  "'})
 nnoremap <silent><c-p> :Files<cr>
-nnoremap <silent><c-l> :Buffers<cr>
+nnoremap <silent><c-k> :Commands<cr>
 nnoremap <silent><leader>p :Tags<cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
 nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>ll :Lines <cr>
 nnoremap <leader>rg :Rg<space>
 nnoremap <leader>sg :Rg <c-r><c-w><cr>
+nnoremap <leader>h :History: <cr>
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -329,6 +330,7 @@ let g:fzf_colors =
 
 " Gutentags
 let g:gutentags_project_root=['.gutctags']
+let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
 
 " Projectionist
 let g:projectionist_heuristics = {
@@ -339,6 +341,11 @@ let g:projectionist_heuristics = {
       \ }
 nnoremap <silent> <leader>a :A<cr>
 
+" Vebugger
+let g:vebugger_path_python_lldb='/usr/bin/python'
+let g:vebugger_view_source_cmd='edit'
+let g:vebugger_leader='<leader>d'
+nnoremap <silent><c-l> :VBGstepOver<cr>
 
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required
