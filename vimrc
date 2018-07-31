@@ -7,7 +7,7 @@ set shell=/bin/bash           " required
 " ---------------------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
 
-Plug 'junegunn/fzf'
+Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'lifepillar/vim-solarized8'
 Plug 'tpope/vim-sensible'
@@ -21,7 +21,7 @@ Plug 'mhinz/vim-sayonara'
 Plug 'mhinz/vim-signify'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/vim-asterisk'
-Plug 'vim-ctrlspace/vim-ctrlspace'
+Plug 'AndrewRadev/linediff.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'SirVer/ultisnips'
 Plug 'ervandew/supertab'
@@ -30,7 +30,6 @@ Plug 'mhinz/vim-startify'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'Yggdroot/indentLine'
-Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
@@ -46,8 +45,8 @@ call plug#end()
 " Set leader for all custom commands (all of them should start with <leader>)
 let mapleader = " "
 let maplocalleader = " "
-" O_o
-nnoremap ; :
+
+map ; f<space>
 
 " Quickly edit/reload this configuration file
 nnoremap <leader>rce :e $MYVIMRC<cr>
@@ -129,7 +128,7 @@ nnoremap <leader>sr :%s/\<<C-r><C-w>\>//g<Left><Left>
 
 " --------------- Coding Stuff (mostly C++) ---------------
 " Set shortcut for make
-nnoremap <leader>b :make!<cr>
+nnoremap <leader>B :make!<cr>
 
 " Set Column limit indicator
 augroup collumnLimit
@@ -178,10 +177,12 @@ vmap <leader>hgb :<c-u>!hg blame -fudq <c-r>=expand("%:p") <cr> \| sed -n <c-r>=
 " Nerdtree
 map <C-n> :NERDTreeToggle<cr>
 map <C-m> :NERDTreeFind<cr>
+let g:NERDTreeWinSize=80
 
 " Tagbar
 nnoremap <leader>t :TagbarOpenAutoClose<cr>
 let g:tagbar_width = 60
+let g:tagbar_sort = 0
 
 " YCM
 let g:ycm_confirm_extra_conf = 0
@@ -223,8 +224,8 @@ let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " Ultisnips
 let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+let g:UltiSnipsJumpForwardTrigger = "<right>"
+let g:UltiSnipsJumpBackwardTrigger = "<left>"
 let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
 " CtrlSpace
@@ -304,15 +305,17 @@ command! -bang -nargs=* Rg
 command! -bang -nargs=* Tags
   \ call fzf#vim#tags(<q-args>,
   \      {'options': '--preview "echo {} | cut -f1 -f4 -f5 | tr ''\t'' ''\n''  "'})
-nnoremap <silent><c-p> :Files<cr>
-nnoremap <silent><c-k> :Commands<cr>
-nnoremap <silent><leader>p :Tags<cr>
-nnoremap <leader>sl :Lines <c-r><c-w><cr>
-nnoremap <leader>sp :Tags <c-r><c-w><cr>
-nnoremap <leader>ll :Lines <cr>
-nnoremap <leader>rg :Rg<space>
-nnoremap <leader>sg :Rg <c-r><c-w><cr>
+nnoremap <c-a> :Buffers <cr>
+nnoremap <c-p> :Files<cr>
+nnoremap <c-k> :Commands<cr>
 nnoremap <leader>h :History: <cr>
+nnoremap <leader>lp :Tags<cr>
+nnoremap <leader>ll :Lines <cr>
+nnoremap <leader>lb :BLines <cr>
+nnoremap <leader>rg :Rg<space>
+nnoremap <leader>sp :Tags <c-r><c-w><cr>
+nnoremap <leader>sl :Lines <c-r><c-w><cr>
+nnoremap <leader>sg :Rg <c-r><c-w><cr>
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -340,12 +343,20 @@ let g:projectionist_heuristics = {
       \ }
       \ }
 nnoremap <silent> <leader>a :A<cr>
+nnoremap <silent> <leader>sa *:A<cr>
 
 " Vebugger
 let g:vebugger_path_python_lldb='/usr/bin/python'
 let g:vebugger_view_source_cmd='edit'
 let g:vebugger_leader='<leader>d'
 nnoremap <silent><c-l> :VBGstepOver<cr>
+
+" Linediff
+vnoremap <silent> <leader>ld :Linediff<cr>
+nnoremap <silent> <leader>ldr :LinediffReset<cr>
+
+" Unmap
+unmap <cr>
 
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required

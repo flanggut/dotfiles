@@ -1,5 +1,5 @@
 function fd
-  set dir (find -L . -mindepth 1 -maxdepth 3 -path '*/\.*' -prune -o -type d -print ^ /dev/null | cut -b3- | fzf --reverse --preview 'tree -C {} | head -200')
+  set dir (find -L . -mindepth 1 -maxdepth 4 -path '*/\.*' -prune -o -type d -print ^ /dev/null | cut -b3- | fzf --reverse --preview 'tree -C {} | head -200')
   if [ $dir ]
     cd $dir
   end

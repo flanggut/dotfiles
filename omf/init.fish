@@ -5,6 +5,8 @@ set -gx BD_OPT 'insensitive'
 
 alias hgdf="hg diff --color=always | diff-so-fancy | less -R"
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
+alias sl="hg sl --commit-info"
+
 alias rg="rg --max-columns=160 -S"
 alias ...="cd ../.."
 
