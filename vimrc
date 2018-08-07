@@ -224,8 +224,8 @@ let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " Ultisnips
 let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<right>"
-let g:UltiSnipsJumpBackwardTrigger = "<left>"
+let g:UltiSnipsJumpForwardTrigger = "<c-j>"
+let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
 " CtrlSpace
