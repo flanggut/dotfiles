@@ -228,11 +228,6 @@ let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
-" CtrlSpace
-if executable("rg")
-    let g:CtrlSpaceGlobCommand = 'rg --files --color never'
-endif
-
 " Airline
 set laststatus=2
 let g:airline_powerline_fonts = 1
