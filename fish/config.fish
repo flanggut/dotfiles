@@ -10,10 +10,9 @@ alias sl="hg fsl"
 alias rg="rg --max-columns=160 -S"
 alias ...="cd ../.."
 
-
 switch (uname)
   case Darwin
-    source ~/.iterm2_shell_integration.fish
+    test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
     alias vim="mvim"
     alias vi="vim"
     alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
@@ -43,3 +42,4 @@ set fish_color_search_match bryellow --background=brblack
 set fish_color_selection white --bold --background=brblack
 set fish_color_user brgreen
 set fish_color_valid_path --underline
+

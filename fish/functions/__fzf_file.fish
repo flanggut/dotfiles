@@ -1,4 +1,4 @@
-function fzf_file
+function __fzf_file
 
   set FILES (fzf --reverse -m)
   for file in $FILES
