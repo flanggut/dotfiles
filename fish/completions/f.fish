@@ -1,0 +1,1 @@
+/Users/flanggut/.config/fisherman/fasd/completions/f.fish

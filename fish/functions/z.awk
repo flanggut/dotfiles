@@ -1,0 +1,1 @@
+/Users/flanggut/.config/fisherman/z/functions/z.awk
