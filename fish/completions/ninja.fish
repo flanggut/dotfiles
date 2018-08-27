@@ -1,4 +1,4 @@
-complete -c ninja -f -a '(ninja -t targets all | cut -d: -f1 | grep -v [\.])' -d Target
+complete -c ninja -f -a '(ninja -t targets all | cut -d: -f1 | grep -v [\.\/] | grep -v cmake)' -d Target
 complete -x -c ninja -s t -x -a "(__fish_print_ninja_tools)" -d Tools
 complete -x -c ninja -s C -x -a "(__fish_complete_directories (commandline -ct))" -d "Change to DIR"
 complete -c ninja -s f -x -d "specify build file"

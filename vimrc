@@ -79,10 +79,11 @@ set smartcase
 
 " Buffers and Windows
 nnoremap <silent> <leader>q :Sayonara!<cr>         " close buffer
-nnoremap <silent> gb :bnext<cr>             " next buffer
-nnoremap <silent> gj :bnext<cr>             " next buffer
-nnoremap <silent> gB :bprev<cr>             " prev buffer
-nnoremap <silent> gk :bprev<cr>             " prev buffer
+nnoremap <silent> gb :bnext<cr>                    " next buffer
+nnoremap <silent> gj :bnext<cr>                    " next buffer
+nnoremap <silent> gB :bprev<cr>                    " prev buffer
+nnoremap <silent> gk :bprev<cr>                    " prev buffer
+nnoremap <silent> <leader>V :vertical sb#<cr>      " open buffer in split
 nnoremap <tab> <c-w>w           " easier split navigation
 nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
@@ -292,6 +293,51 @@ autocmd BufEnter *
   \ endif
 
 " FZF
+" function! s:align_lists(lists)
+"   let maxes = {}
+"   for list in a:lists
+"     let i = 0
+"     while i < len(list)
+"       let maxes[i] = max([get(maxes, i, 0), len(list[i])])
+"       let i += 1
+"     endwhile
+"   endfor
+"   for list in a:lists
+"     call map(list, "printf('%-'.maxes[v:key].'s', v:val)")
+"   endfor
+"   return a:lists
+" endfunction
+
+" function! s:btags_source()
+"   let lines = map(split(system(printf(
+"     \ 'ctags -f - --sort=no --excmd=number --language-force=%s %s',
+"     \ &filetype, expand('%:S'))), "\n"), 'split(v:val, "\t")')
+"   if v:shell_error
+"     throw 'failed to extract tags'
+"   endif
+"   return map(s:align_lists(lines), 'join(v:val, "\t")')
+" endfunction
+
+" function! s:btags_sink(line)
+"   execute split(a:line, "\t")[2]
+" endfunction
+
+" function! s:btags()
+"   try
+"     call fzf#run({
+"     \ 'source':  s:btags_source(),
+"     \ 'options': '+m -d "\t" --with-nth 1,4.. -n 1 --tiebreak=index',
+"     \ 'down':    '40%',
+"     \ 'sink':    function('s:btags_sink')})
+"   catch
+"     echohl WarningMsg
+"     echom v:exception
+"     echohl None
+"   endtry
+" endfunction
+
+" command! BTags call s:btags()
+
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case -g !tags '.shellescape(<q-args>), 1,
@@ -300,13 +346,20 @@ command! -bang -nargs=* Rg
 command! -bang -nargs=* Tags
   \ call fzf#vim#tags(<q-args>,
   \      {'options': '--preview "echo {} | cut -f1 -f4 -f5 | tr ''\t'' ''\n''  "'})
-nnoremap <c-a> :Buffers <cr>
+command! -bang -nargs=* Files
+  \ call fzf#run(fzf#wrap({
+  \ 'source': 'rg --files',
+  \ 'down': '30%',
+  \ }))
+
 nnoremap <c-p> :Files<cr>
-nnoremap <c-k> :Commands<cr>
-nnoremap <leader>h :History: <cr>
-nnoremap <leader>lp :Tags<cr>
-nnoremap <leader>ll :Lines <cr>
-nnoremap <leader>lb :BLines <cr>
+nnoremap <c-l> :Buffers <cr>
+nnoremap <c-k> :BTags <cr>
+nnoremap <leader>fc :Commands<cr>
+nnoremap <leader>fh :History: <cr>
+nnoremap <leader>fp :Tags<cr>
+nnoremap <leader>fl :Lines <cr>
+nnoremap <leader>fbl :BLines <cr>
 nnoremap <leader>rg :Rg<space>
 nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
@@ -339,12 +392,6 @@ let g:projectionist_heuristics = {
       \ }
 nnoremap <silent> <leader>a :A<cr>
 nnoremap <silent> <leader>sa *:A<cr>
-
-" Vebugger
-let g:vebugger_path_python_lldb='/usr/bin/python'
-let g:vebugger_view_source_cmd='edit'
-let g:vebugger_leader='<leader>d'
-nnoremap <silent><c-l> :VBGstepOver<cr>
 
 " Linediff
 vnoremap <silent> <leader>ld :Linediff<cr>

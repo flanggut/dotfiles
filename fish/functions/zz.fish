@@ -1,1 +1,0 @@
-/Users/flanggut/.config/fisherman/fasd/functions/zz.fish
