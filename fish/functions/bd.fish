@@ -1,1 +1,0 @@
-/Users/flanggut/.config/fisherman/bd/functions/bd.fish
