@@ -1,1 +1,0 @@
-/Users/flanggut/.config/fisherman/thefuck/init.fish
