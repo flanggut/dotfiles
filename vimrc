@@ -355,11 +355,11 @@ command! -bang -nargs=* Files
 nnoremap <c-p> :Files<cr>
 nnoremap <c-l> :Buffers <cr>
 nnoremap <c-k> :BTags <cr>
-nnoremap <leader>fc :Commands<cr>
-nnoremap <leader>fh :History: <cr>
-nnoremap <leader>fp :Tags<cr>
-nnoremap <leader>fl :Lines <cr>
-nnoremap <leader>fbl :BLines <cr>
+nnoremap <leader>C :Commands<cr>
+nnoremap <leader>H :History: <cr>
+nnoremap <leader>P :Tags<cr>
+nnoremap <leader>L :Lines <cr>
+nnoremap <leader>B :BLines <cr>
 nnoremap <leader>rg :Rg<space>
 nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>

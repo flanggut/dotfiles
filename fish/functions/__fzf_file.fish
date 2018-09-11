@@ -1,6 +1,6 @@
 function __fzf_file
 
-  set FILES (fzf --reverse -m)
+  set FILES (fzf -m)
   for file in $FILES
     commandline -it -- "\"$file\""
     commandline -it -- " "

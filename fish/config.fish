@@ -3,9 +3,10 @@ set -g theme_date_format "+%H:%M:%S"
 
 set -gx BD_OPT 'insensitive'
 
-alias hgdf="hg diff --color=always | diff-so-fancy | less -R"
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
+alias show="hg show --stat ; and hg diff -r .^ --color=always | diff-so-fancy | less -R"
 alias sl="hg fsl"
+alias brewown="sudo chown -R (whoami) (brew --prefix)/*"
 
 alias rg="rg --max-columns=160 -S"
 alias ...="cd ../.."
