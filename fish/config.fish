@@ -10,7 +10,8 @@ set -g theme_date_format "+%H:%M:%S"
 set -gx BD_OPT 'insensitive'
 
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
-alias show="hg show --stat ; and hg diff -r .^ --color=always | diff-so-fancy | less -R"
+alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
+alias shows="hg show --stat"
 alias sl="hg fsl"
 alias brewown="sudo chown -R (whoami) (brew --prefix)/*"
 
