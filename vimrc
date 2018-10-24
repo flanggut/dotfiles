@@ -33,7 +33,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'scrooloose/nerdcommenter'
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer'}
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
 Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
@@ -89,6 +89,7 @@ nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
 set splitbelow
 set completeopt-=preview
+nnoremap <silent> <leader>E :lopen<cr>             " open jump list
 
 " ------------- MacVim specifics -----------------
 if has("gui_macvim")
@@ -123,9 +124,20 @@ if has("gui_running")
   set lines=75 columns=150
 endif
 
-" --------------- General Editing Commands ----------------
+" -------------------- Search Commands ---------------------
 "  Search and replace
 nnoremap <leader>sr :%s/\<<C-r><C-w>\>//g<Left><Left>
+" Search for selected text, forwards or backwards.
+vnoremap <silent> * :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R><C-R>=substitute(
+  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R><C-R>=substitute(
+  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 " --------------- Coding Stuff (mostly C++) ---------------
 " Set shortcut for make
@@ -173,7 +185,7 @@ augroup END
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
 " Version Control
-vmap <leader>hgb :<c-u>!hg blame -fudq <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
+vmap <leader>hgb :<c-u>!hg blame -fundq <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
 
 " Nerdtree
 map <C-n> :NERDTreeToggle<cr>
@@ -204,6 +216,7 @@ let g:ycm_filetype_blacklist = {
       \ 'infolog' : 1,
       \ 'mail' : 1
       \}
+nnoremap <leader>Y :YcmRestartServer<cr>
 nnoremap <leader>yg :YcmCompleter GoTo<cr>
 nnoremap <leader>yh :YcmCompleter GoToInclude<cr>
 nnoremap <leader>yd :YcmCompleter GoToDeclaration<cr>
@@ -264,7 +277,7 @@ nmap <leader>C :ClangFormatAutoToggle<cr>
 " Signify
 let g:signify_vcs_list = [ 'git', 'hg' ]
 let g:signify_disable_by_default = 1
-nnoremap <silent> <leader>si :SignifyToggle<cr>
+"nnoremap <silent> <leader>si :SignifyToggle<cr>
 
 " Incsearch and Asterisk
 let g:incsearch#auto_nohlsearch = 0
@@ -284,7 +297,7 @@ let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 
 " Startify on new buffers
-nmap <leader>sf :Startify<cr>
+nmap <leader>S :Startify<cr>
 let g:startify_change_to_dir = 0
 autocmd BufEnter *
   \ if !exists('t:startify_new_tab') && empty(expand('%')) |
@@ -292,52 +305,7 @@ autocmd BufEnter *
   \   Startify |
   \ endif
 
-" FZF
-" function! s:align_lists(lists)
-"   let maxes = {}
-"   for list in a:lists
-"     let i = 0
-"     while i < len(list)
-"       let maxes[i] = max([get(maxes, i, 0), len(list[i])])
-"       let i += 1
-"     endwhile
-"   endfor
-"   for list in a:lists
-"     call map(list, "printf('%-'.maxes[v:key].'s', v:val)")
-"   endfor
-"   return a:lists
-" endfunction
-
-" function! s:btags_source()
-"   let lines = map(split(system(printf(
-"     \ 'ctags -f - --sort=no --excmd=number --language-force=%s %s',
-"     \ &filetype, expand('%:S'))), "\n"), 'split(v:val, "\t")')
-"   if v:shell_error
-"     throw 'failed to extract tags'
-"   endif
-"   return map(s:align_lists(lines), 'join(v:val, "\t")')
-" endfunction
-
-" function! s:btags_sink(line)
-"   execute split(a:line, "\t")[2]
-" endfunction
-
-" function! s:btags()
-"   try
-"     call fzf#run({
-"     \ 'source':  s:btags_source(),
-"     \ 'options': '+m -d "\t" --with-nth 1,4.. -n 1 --tiebreak=index',
-"     \ 'down':    '40%',
-"     \ 'sink':    function('s:btags_sink')})
-"   catch
-"     echohl WarningMsg
-"     echom v:exception
-"     echohl None
-"   endtry
-" endfunction
-
-" command! BTags call s:btags()
-
+" FZF commands
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case -g !tags '.shellescape(<q-args>), 1,
@@ -345,7 +313,7 @@ command! -bang -nargs=* Rg
   \   <bang>0)
 command! -bang -nargs=* Tags
   \ call fzf#vim#tags(<q-args>,
-  \      {'options': '--preview "echo {} | cut -f1 -f4 -f5 | tr ''\t'' ''\n''  "'})
+  \      {'options': '--preview "echo {} | cut -f1 -f3 -f4 -f5 | tr ''\t'' ''\n''  "'})
 command! -bang -nargs=* Files
   \ call fzf#run(fzf#wrap({
   \ 'source': 'rg --files',
