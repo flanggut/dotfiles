@@ -1,16 +1,18 @@
-##### Bootstrap fisher #####
+############################
+#     Bootstrap fisher     #
 if not functions -q fisher
     set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
     curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
     fish -c fisher
 end
-############################
 
+############################
+#        Setup Theme       #
 set -g theme_color_scheme solarized
 set -g theme_date_format "+%H:%M:%S"
 
-set -gx BD_OPT 'insensitive'
-
+############################
+#       Alias Config       #
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
 alias shows="hg show --stat"
@@ -22,6 +24,8 @@ alias brewown="sudo chown -R (whoami) (brew --prefix)/*"
 alias rg="rg --max-columns=160 -S"
 alias ...="cd ../.."
 
+############################
+#       Mac Specifics      #
 switch (uname)
   case Darwin
     test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
@@ -30,6 +34,8 @@ switch (uname)
     alias fll="rg --files | rg"
 end
 
+############################
+#          Colors          #
 set -x LS_COLORS 'di=0;34:ln=0;36:ex=0;91'
 
 set fish_color_autosuggestion 555 brblack
