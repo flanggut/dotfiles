@@ -1,8 +1,8 @@
-fish/functions/fisher.fish
-fish/completions/bd.fish
+.DS_Store
+fish/completions/fisher.fish
 fish/functions/z.awk
 fish/functions/fuck.fish
-fish/functions/bd.fish
+fish/functions/fisher.fish
 fish/functions/bobthefish_display_colors.fish
 fish/functions/zadd.awk
 fish/functions/__bobthefish_colors.fish
@@ -20,5 +20,6 @@ fish/functions/fish_mode_prompt.fish
 fish/functions/__z_add.fish
 fish/functions/__z_complete.fish
 fish/functions/__z_clean.fish
-fish/conf.d/thefuck.init.fish
+fish/conf.d/plugin-thefuck_init.fish
 fish/conf.d/z.fish
+fish/conf.d/fisher.fish
