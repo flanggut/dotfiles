@@ -93,6 +93,7 @@ nnoremap <silent> <leader>E :lopen<cr>             " open jump list
 
 " ------------- MacVim specifics -----------------
 if has("gui_macvim")
+  set guifont=SFMono\ Nerd\ Font:h13
   set macmeta
 endif
 
@@ -102,7 +103,6 @@ set bg=dark
 colorscheme solarized8_flat
 set guioptions-=r       " remove right scrollbar
 set guioptions-=L       " remove left scrollbar
-set guifont=SFMono\ Nerd\ Font:h13
 let g:indentLine_color_gui = '#586e75'
 set linespace=3
 if has('termguicolors')
@@ -191,6 +191,10 @@ vmap <leader>hgb :<c-u>!hg blame -fundq <c-r>=expand("%:p") <cr> \| sed -n <c-r>
 map <C-n> :NERDTreeToggle<cr>
 map <C-m> :NERDTreeFind<cr>
 let g:NERDTreeWinSize=80
+let g:NERDTreeQuitOnOpen=1
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeDirArrows = 1
+let g:NERDTreeShowBookmarks=1
 
 " Tagbar
 nnoremap <leader>t :TagbarOpenAutoClose<cr>
