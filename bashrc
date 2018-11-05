@@ -1,3 +1,4 @@
+# Note: This is outdated and superseded by fish
 # Exports
 #----------------------------------------------------------
 export PLATFORM=$(uname -s)
