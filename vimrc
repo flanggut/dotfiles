@@ -91,6 +91,10 @@ set splitbelow
 set completeopt-=preview
 nnoremap <silent> <leader>E :lopen<cr>             " open jump list
 
+" ------------- NeoVim specifics -----------------
+set runtimepath^=~/.vim runtimepath+=~/.vim/after
+let &packpath=&runtimepath
+
 " ------------- MacVim specifics -----------------
 if has("gui_macvim")
   set guifont=SFMono\ Nerd\ Font:h13

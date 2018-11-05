@@ -13,13 +13,15 @@ set -g theme_date_format "+%H:%M:%S"
 
 ############################
 #       Alias Config       #
+alias vim="nvim"
+
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
 alias shows="hg show --stat"
 alias sl="hg fsl"
 alias histe="hg histedit"
 
-alias brewown="sudo chown -R (whoami) (brew --prefix)/*"
+alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin"
 
 alias rg="rg --max-columns=160 -S"
 alias ...="cd ../.."
@@ -29,7 +31,6 @@ alias ...="cd ../.."
 switch (uname)
   case Darwin
     test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
-    alias vim="mvim"
     alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
     alias fll="rg --files | rg"
 end

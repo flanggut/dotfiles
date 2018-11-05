@@ -8,6 +8,7 @@ function __fzf_hg
   # ENTER : hg update to given commit and exit
   # CTRL-U: hg update to given commit and toggle preview to refresh
   # CTRL-G: hg graft given commit and toggle preview to refresh
+  # CTRL-R: hg rebase -s commit -d master
   # CTRL-S: hg show commit
   # CTRL-Y: copy commit id to clipboard and exit
   hg sl --color always 2>/dev/null > $SLCACHE
@@ -17,6 +18,7 @@ function __fzf_hg
   --bind "enter:execute(hg up {} && hg fsl --color always 2>/dev/null)+abort" \
   --bind "ctrl-u:execute(hg up {} && hg sl --color always 2>/dev/null > $SLCACHE)+toggle-preview+toggle-preview" \
   --bind "ctrl-g:execute(hg graft {} && hg sl --color always 2>/dev/null > $SLCACHE)+toggle-preview+toggle-preview" \
+  --bind "ctrl-r:execute(hg rebase -s {} -d master && hg sl --color always 2>/dev/null > $SLCACHE)+toggle-preview+toggle-preview" \
   --bind "ctrl-s:execute(hg show --color always {} | less -R)" \
   --bind "ctrl-y:execute(printf {} | pbcopy)+abort"
 
