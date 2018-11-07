@@ -18,7 +18,7 @@ function __fzf_hg
   --bind "enter:execute(hg up {} && hg fsl --color always 2>/dev/null)+abort" \
   --bind "ctrl-u:execute(hg up {} && hg sl --color always 2>/dev/null > $SLCACHE)+toggle-preview+toggle-preview" \
   --bind "ctrl-g:execute(hg graft {} && hg sl --color always 2>/dev/null > $SLCACHE)+toggle-preview+toggle-preview" \
-  --bind "ctrl-r:execute(hg rebase -s {} -d master && hg sl --color always 2>/dev/null > $SLCACHE)+toggle-preview+toggle-preview" \
+  --bind "ctrl-r:execute(hg rebase -s {} -d master)+abort" \
   --bind "ctrl-s:execute(hg show --color always {} | less -R)" \
   --bind "ctrl-y:execute(printf {} | pbcopy)+abort"
 
