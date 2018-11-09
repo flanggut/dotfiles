@@ -1,6 +1,18 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
-set shell=/bin/bash           " required
+" ----------- Regular Vim specifics --------------
+set nocompatible
+set shell=/bin/bash
+
+" ------------- NeoVim specifics -----------------
+if has("nvim")
+  set runtimepath^=~/.vim runtimepath+=~/.vim/after
+  let &packpath=&runtimepath
+endif
+
+" ------------- MacVim specifics -----------------
+if has("gui_macvim")
+  set guifont=SFMono\ Nerd\ Font:h13
+  set macmeta
+endif
 
 " ---------------------------------------------------------------------------
 " --------------------------------- vim-plug --------------------------------
@@ -90,16 +102,6 @@ set diffopt+=vertical           " split vertical in diff scenarios
 set splitbelow
 set completeopt-=preview
 nnoremap <silent> <leader>E :lopen<cr>             " open jump list
-
-" ------------- NeoVim specifics -----------------
-set runtimepath^=~/.vim runtimepath+=~/.vim/after
-let &packpath=&runtimepath
-
-" ------------- MacVim specifics -----------------
-if has("gui_macvim")
-  set guifont=SFMono\ Nerd\ Font:h13
-  set macmeta
-endif
 
 " ------------- Visual Stuff (make it pretty) --------------
 syntax enable
@@ -304,7 +306,7 @@ nmap <leader>sw :StripWhitespace<cr>
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 
-" Startify on new buffers
+" Startify
 nmap <leader>S :Startify<cr>
 let g:startify_change_to_dir = 0
 autocmd BufEnter *
