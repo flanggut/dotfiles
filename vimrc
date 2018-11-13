@@ -309,11 +309,6 @@ let g:strip_whitespace_on_save=1
 " Startify
 nmap <leader>S :Startify<cr>
 let g:startify_change_to_dir = 0
-autocmd BufEnter *
-  \ if !exists('t:startify_new_tab') && empty(expand('%')) |
-  \   let t:startify_new_tab = 1 |
-  \   Startify |
-  \ endif
 
 " FZF commands
 command! -bang -nargs=* Rg
