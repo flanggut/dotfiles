@@ -97,6 +97,7 @@ nnoremap <silent> gB :bprev<cr>                    " prev buffer
 nnoremap <silent> gk :bprev<cr>                    " prev buffer
 nnoremap <silent> <leader>V :vertical sb#<cr>      " open buffer in split
 nnoremap <tab> <c-w>w           " easier split navigation
+nnoremap <c-m> <c-i>            " have to remap c-i since tab == c-i
 nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
 set splitbelow
