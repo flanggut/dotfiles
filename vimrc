@@ -29,6 +29,11 @@ Plug 'tpope/vim-projectionist'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'pdavydov108/vim-lsp-cquery'
 Plug 'mhinz/vim-sayonara'
 Plug 'mhinz/vim-signify'
 Plug 'haya14busa/incsearch.vim'
@@ -45,8 +50,6 @@ Plug 'Yggdroot/indentLine'
 Plug 'scrooloose/nerdcommenter'
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
-Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 
@@ -209,43 +212,43 @@ let g:tagbar_width = 60
 let g:tagbar_sort = 0
 
 " YCM
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_always_populate_location_list = 1
-let g:ycm_filetype_blacklist = {
-      \ 'vim' : 1,
-      \ 'gitcommit' : 1,
-      \ 'tagbar' : 1,
-      \ 'qf' : 1,
-      \ 'notes' : 1,
-      \ 'markdown' : 1,
-      \ 'unite' : 1,
-      \ 'text' : 1,
-      \ 'vimwiki' : 1,
-      \ 'pandoc' : 1,
-      \ 'infolog' : 1,
-      \ 'mail' : 1
-      \}
-nnoremap <leader>Y :YcmRestartServer<cr>
-nnoremap <leader>yg :YcmCompleter GoTo<cr>
-nnoremap <leader>yh :YcmCompleter GoToInclude<cr>
-nnoremap <leader>yd :YcmCompleter GoToDeclaration<cr>
-nnoremap <leader>yi :YcmCompleter GoToDefinition<cr>
-nnoremap <leader>yf :YcmCompleter FixIt<cr>
+"let g:ycm_confirm_extra_conf = 0
+"let g:ycm_add_preview_to_completeopt = 1
+"let g:ycm_autoclose_preview_window_after_insertion = 1
+"let g:ycm_always_populate_location_list = 1
+"let g:ycm_filetype_blacklist = {
+"      \ 'vim' : 1,
+"      \ 'gitcommit' : 1,
+"      \ 'tagbar' : 1,
+"      \ 'qf' : 1,
+"      \ 'notes' : 1,
+"      \ 'markdown' : 1,
+"      \ 'unite' : 1,
+"      \ 'text' : 1,
+"      \ 'vimwiki' : 1,
+"      \ 'pandoc' : 1,
+"      \ 'infolog' : 1,
+"      \ 'mail' : 1
+"      \}
+"nnoremap <leader>Y :YcmRestartServer<cr>
+"nnoremap <leader>yg :YcmCompleter GoTo<cr>
+"nnoremap <leader>yh :YcmCompleter GoToInclude<cr>
+"nnoremap <leader>yd :YcmCompleter GoToDeclaration<cr>
+"nnoremap <leader>yi :YcmCompleter GoToDefinition<cr>
+"nnoremap <leader>yf :YcmCompleter FixIt<cr>
 
-let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
-let g:ycm_key_list_stop_completion = ['<cr>', '<c-y>']
+"let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
+"let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
+"let g:ycm_key_list_stop_completion = ['<cr>', '<c-y>']
 
 " make YCM compatible with UltiSnips (using supertab)
 let g:SuperTabDefaultCompletionType = '<C-j>'
 
 " Ycm + vimtex
-if !exists('g:ycm_semantic_triggers')
-    let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
+"if !exists('g:ycm_semantic_triggers')
+"    let g:ycm_semantic_triggers = {}
+"endif
+"let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " Ultisnips
 let g:UltiSnipsExpandTrigger = "<tab>"
@@ -312,6 +315,7 @@ nmap <leader>S :Startify<cr>
 let g:startify_change_to_dir = 0
 
 " FZF commands
+"   Files
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case -g !tags '.shellescape(<q-args>), 1,
@@ -338,6 +342,34 @@ nnoremap <leader>rg :Rg<space>
 nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
 nnoremap <leader>sg :Rg <c-r><c-w><cr>
+
+"   Quickfix and location list
+command! QuickFix call <SID>QuickFix()
+command! LocationList call <SID>LocationList()
+
+function! s:QuickFix() abort
+  call s:FuzzyPick(getqflist(), 'cc')
+endfunction
+
+function! s:LocationList() abort
+  call s:FuzzyPick(getloclist(0), 'll')
+endfunction
+
+function! s:FuzzyPick(items, jump) abort
+  let items = map(a:items, {idx, item ->
+      \ string(idx).' '.bufname(item.bufnr).' '.item.text})
+  call fzf#run({'source': items, 'sink': function('<SID>Pick', [a:jump]),
+      \'options': '--with-nth 2.. --reverse', 'down': '40%'})
+endfunction
+
+function! s:Pick(jump, item) abort
+  let idx = split(a:item, ' ')[0]
+  execute a:jump idx + 1
+endfunction
+
+nnoremap <leader>lq :QuickFix<cr>
+nnoremap <leader>ll :LocationList<cr>
+
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -370,6 +402,43 @@ nnoremap <silent> <leader>sa *:A<cr>
 " Linediff
 vnoremap <silent> <leader>ld :Linediff<cr>
 nnoremap <silent> <leader>ldr :LinediffReset<cr>
+
+" vim-lsp and asynccomplete
+if executable('cquery')
+   au User lsp_setup call lsp#register_server({
+      \ 'name': 'cquery',
+      \ 'cmd': {server_info->['cquery']},
+      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+      \ 'initialization_options': { 'cacheDirectory': $HOME .'/.cache/cquery' },
+      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+      \ })
+endif
+if executable('pyls')
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+endif
+
+let g:lsp_signs_error = {'text': '✗'}
+let g:lsp_signs_enabled = 1                " enable signs
+let g:lsp_diagnostics_echo_cursor = 1      " enable echo under cursor when in normal mode
+let g:asyncomplete_smart_completion = 1
+let g:asyncomplete_auto_popup = 1
+let g:asyncomplete_remove_duplicates = 1
+set completeopt+=preview
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+" vim-lsp key map (for historic reasons based on ycm)
+nnoremap <leader>yd :LspDefinition<cr>
+nnoremap <leader>ye :LspNextError<cr>
+nnoremap <leader>yf :LspCodeAction<cr>
+nnoremap <leader>yi :LspImplementation<cr>
+nnoremap <leader>yr :LspReferences<cr>
+nnoremap <leader>yt :LspTypeDefinition<cr>
+"nnoremap <leader>yh :YcmCompleter GoToInclude<cr>
 
 " Unmap
 unmap <cr>
