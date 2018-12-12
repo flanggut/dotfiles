@@ -29,19 +29,20 @@ Plug 'tpope/vim-projectionist'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'pdavydov108/vim-lsp-cquery'
+
+"Plug 'prabirshrestha/async.vim'
+"Plug 'prabirshrestha/vim-lsp'
+"Plug 'prabirshrestha/asyncomplete.vim'
+"Plug 'prabirshrestha/asyncomplete-lsp.vim'
+"Plug 'pdavydov108/vim-lsp-cquery'
+
 Plug 'mhinz/vim-sayonara'
 Plug 'mhinz/vim-signify'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/vim-asterisk'
 Plug 'AndrewRadev/linediff.vim'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'SirVer/ultisnips'
-Plug 'ervandew/supertab'
+"Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 Plug 'lervag/vimtex'
@@ -52,6 +53,27 @@ Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
+
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
+" A dependency of 'ncm2'.
+Plug 'roxma/nvim-yarp'
+Plug 'ncm2/ncm2'
+Plug 'ncm2/ncm2-ultisnips'
+Plug 'ncm2/ncm2-bufword'
+Plug 'ncm2/ncm2-tmux'
+Plug 'ncm2/ncm2-path'
+
+Plug 'SirVer/ultisnips'
+
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"let g:deoplete#enable_at_startup = 1
+
+" Plug 'Shougo/neosnippet.vim'
+" Plug 'Shougo/neosnippet-snippets'
 
 call plug#end()
 " ---------------------------------------------------------------------------
@@ -242,7 +264,7 @@ let g:tagbar_sort = 0
 "let g:ycm_key_list_stop_completion = ['<cr>', '<c-y>']
 
 " make YCM compatible with UltiSnips (using supertab)
-let g:SuperTabDefaultCompletionType = '<C-j>'
+" let g:SuperTabDefaultCompletionType = '<C-j>'
 
 " Ycm + vimtex
 "if !exists('g:ycm_semantic_triggers')
@@ -251,10 +273,10 @@ let g:SuperTabDefaultCompletionType = '<C-j>'
 "let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " Ultisnips
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<c-j>"
-let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
-let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
+"let g:UltiSnipsExpandTrigger = "<tab>"
+"let g:UltiSnipsJumpForwardTrigger = "<c-j>"
+"let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
+"let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
 " Airline
 set laststatus=2
@@ -403,42 +425,77 @@ nnoremap <silent> <leader>sa *:A<cr>
 vnoremap <silent> <leader>ld :Linediff<cr>
 nnoremap <silent> <leader>ldr :LinediffReset<cr>
 
-" vim-lsp and asynccomplete
-if executable('cquery')
-   au User lsp_setup call lsp#register_server({
-      \ 'name': 'cquery',
-      \ 'cmd': {server_info->['cquery']},
-      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-      \ 'initialization_options': { 'cacheDirectory': $HOME .'/.cache/cquery' },
-      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
-      \ })
-endif
-if executable('pyls')
-    " pip install python-language-server
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-endif
+" LanguageClient
+let g:LanguageClient_rootMarkers = {
+    \ 'cpp': ['compile_commands.json'],
+    \ }
 
-let g:lsp_signs_error = {'text': '✗'}
-let g:lsp_signs_enabled = 1                " enable signs
-let g:lsp_diagnostics_echo_cursor = 1      " enable echo under cursor when in normal mode
-let g:asyncomplete_smart_completion = 1
-let g:asyncomplete_auto_popup = 1
-let g:asyncomplete_remove_duplicates = 1
-set completeopt+=preview
-autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+let g:LanguageClient_serverCommands = {
+    \ 'cpp': ['cquery',
+    \ '--log-file=/tmp/cquery-vim.log',
+    \ '--init={"cacheDirectory":"$HOME/.cache/cquery/"}']
+    \ }
+
+nnoremap <leader>yd :call LanguageClient#textDocument_definition()<cr>
+nnoremap <leader>yf :call LanguageClient#textDocument_codeAction()<cr>
+nnoremap <leader>yi :call LanguageClient#textDocument_implementation()<cr>
+nnoremap <leader>yt :call LanguageClient#textDocument_typeDefinition()<cr>
+
+" ncm2
+autocmd BufEnter  *  call ncm2#enable_for_buffer()
+set completeopt=noinsert,menuone,noselect
+
+" Use <tab> to select the popup menu and <cr> to close
+imap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
+imap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
+imap <silent><expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
+
+" UltiSnips
+" c-j c-k for moving in snippet
+" let g:UltiSnipsExpandTrigger		= "<Plug>(ultisnips_expand)"
+let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
+let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
+let g:UltiSnipsRemoveSelectModeMappings = 0
+" Press enter key to trigger snippet expansion
+" The parameters are the same as `:help feedkeys()`
+inoremap <silent> <expr> <cr> ncm2_ultisnips#expand_or("\<cr>", 'n')
+
+" vim-lsp and asynccomplete
+"if executable('cquery')
+"   au User lsp_setup call lsp#register_server({
+"      \ 'name': 'cquery',
+"      \ 'cmd': {server_info->['cquery']},
+"      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+"      \ 'initialization_options': { 'cacheDirectory': $HOME .'/.cache/cquery' },
+"      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+"      \ })
+"endif
+"if executable('pyls')
+"    " pip install python-language-server
+"    au User lsp_setup call lsp#register_server({
+"        \ 'name': 'pyls',
+"        \ 'cmd': {server_info->['pyls']},
+"        \ 'whitelist': ['python'],
+"        \ })
+"endif
+"
+"let g:lsp_signs_error = {'text': '✗'}
+"let g:lsp_signs_enabled = 1                " enable signs
+"let g:lsp_diagnostics_echo_cursor = 1      " enable echo under cursor when in normal mode
+"let g:asyncomplete_smart_completion = 1
+"let g:asyncomplete_auto_popup = 1
+"let g:asyncomplete_remove_duplicates = 1
+"set completeopt+=preview
+"autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " vim-lsp key map (for historic reasons based on ycm)
-nnoremap <leader>yd :LspDefinition<cr>
-nnoremap <leader>ye :LspNextError<cr>
-nnoremap <leader>yf :LspCodeAction<cr>
-nnoremap <leader>yi :LspImplementation<cr>
-nnoremap <leader>yr :LspReferences<cr>
-nnoremap <leader>yt :LspTypeDefinition<cr>
-"nnoremap <leader>yh :YcmCompleter GoToInclude<cr>
+"nnoremap <leader>yd :LspDefinition<cr>
+"nnoremap <leader>ye :LspNextError<cr>
+"nnoremap <leader>yf :LspCodeAction<cr>
+"nnoremap <leader>yi :LspImplementation<cr>
+"nnoremap <leader>yr :LspReferences<cr>
+"nnoremap <leader>yt :LspTypeDefinition<cr>
+"nnoremap <leader>yq :LspDocumentSymbol<bar>:QuickFix<cr>
 
 " Unmap
 unmap <cr>
