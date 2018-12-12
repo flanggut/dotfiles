@@ -353,7 +353,7 @@ nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
 nnoremap <leader>sg :Rg <c-r><c-w><cr>
 
-"   Quickfix and location list
+" FZF Quickfix and location list
 command! QuickFix call <SID>QuickFix()
 command! LocationList call <SID>LocationList()
 
@@ -433,6 +433,7 @@ let g:LanguageClient_serverCommands = {
 nnoremap <leader>yb :call LanguageClient#cquery_base()<cr>
 nnoremap <leader>yc :call LanguageClient#cquery_callers()<cr>
 nnoremap <leader>yd :call LanguageClient#textDocument_definition()<cr>
+nnoremap <c-a>      :call LanguageClient#textDocument_definition()<cr>
 nnoremap <leader>ye :call LanguageClient#explainErrorAtPoint()<cr>
 nnoremap <leader>yf :call LanguageClient#textDocument_codeAction()<cr>
 nnoremap <leader>yh :call LanguageClient#textDocument_hover()<cr>
@@ -444,7 +445,7 @@ nnoremap <leader>yv :call LanguageClient#cquery_vars()<cr>
 " ncm2 (with ultisnips integration)
 autocmd BufEnter  *  call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
-inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
+inoremap <silent> <expr> <cr> ncm2_ultisnips#expand_or("\<cr>", 'n')
 
 " vim-lsp
 "if executable('cquery')
