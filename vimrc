@@ -30,19 +30,12 @@ Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-"Plug 'prabirshrestha/async.vim'
-"Plug 'prabirshrestha/vim-lsp'
-"Plug 'prabirshrestha/asyncomplete.vim'
-"Plug 'prabirshrestha/asyncomplete-lsp.vim'
-"Plug 'pdavydov108/vim-lsp-cquery'
-
 Plug 'mhinz/vim-sayonara'
 Plug 'mhinz/vim-signify'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/vim-asterisk'
 Plug 'AndrewRadev/linediff.vim'
 Plug 'ntpeters/vim-better-whitespace'
-"Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 Plug 'lervag/vimtex'
@@ -53,27 +46,25 @@ Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
+Plug 'SirVer/ultisnips'
 
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
+"Plug 'prabirshrestha/asyncomplete.vim'
+"Plug 'prabirshrestha/async.vim'
+"Plug 'prabirshrestha/vim-lsp'
+"Plug 'pdavydov108/vim-lsp-cquery'
+"Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-" A dependency of 'ncm2'.
-Plug 'roxma/nvim-yarp'
+Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh' }
+
+Plug 'roxma/nvim-yarp' " A dependency of 'ncm2'
 Plug 'ncm2/ncm2'
 Plug 'ncm2/ncm2-ultisnips'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
 
-Plug 'SirVer/ultisnips'
-
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "let g:deoplete#enable_at_startup = 1
-
-" Plug 'Shougo/neosnippet.vim'
-" Plug 'Shougo/neosnippet-snippets'
 
 call plug#end()
 " ---------------------------------------------------------------------------
@@ -263,9 +254,6 @@ let g:tagbar_sort = 0
 "let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
 "let g:ycm_key_list_stop_completion = ['<cr>', '<c-y>']
 
-" make YCM compatible with UltiSnips (using supertab)
-" let g:SuperTabDefaultCompletionType = '<C-j>'
-
 " Ycm + vimtex
 "if !exists('g:ycm_semantic_triggers')
 "    let g:ycm_semantic_triggers = {}
@@ -425,6 +413,12 @@ nnoremap <silent> <leader>sa *:A<cr>
 vnoremap <silent> <leader>ld :Linediff<cr>
 nnoremap <silent> <leader>ldr :LinediffReset<cr>
 
+" UltiSnips
+let g:UltiSnipsExpandTrigger		= "<c-j>"
+let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
+let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
+let g:UltiSnipsRemoveSelectModeMappings = 0
+
 " LanguageClient
 let g:LanguageClient_rootMarkers = {
     \ 'cpp': ['compile_commands.json'],
@@ -436,37 +430,29 @@ let g:LanguageClient_serverCommands = {
     \ '--init={"cacheDirectory":"$HOME/.cache/cquery/"}']
     \ }
 
+nnoremap <leader>yb :call LanguageClient#cquery_base()<cr>
+nnoremap <leader>yc :call LanguageClient#cquery_callers()<cr>
 nnoremap <leader>yd :call LanguageClient#textDocument_definition()<cr>
+nnoremap <leader>ye :call LanguageClient#explainErrorAtPoint()<cr>
 nnoremap <leader>yf :call LanguageClient#textDocument_codeAction()<cr>
+nnoremap <leader>yh :call LanguageClient#textDocument_hover()<cr>
 nnoremap <leader>yi :call LanguageClient#textDocument_implementation()<cr>
+nnoremap <leader>ys :call LanguageClient#textDocument_documentSymbol()<cr>
 nnoremap <leader>yt :call LanguageClient#textDocument_typeDefinition()<cr>
+nnoremap <leader>yv :call LanguageClient#cquery_vars()<cr>
 
-" ncm2
+" ncm2 (with ultisnips integration)
 autocmd BufEnter  *  call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
+inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
 
-" Use <tab> to select the popup menu and <cr> to close
-imap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
-imap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
-imap <silent><expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
-
-" UltiSnips
-" c-j c-k for moving in snippet
-" let g:UltiSnipsExpandTrigger		= "<Plug>(ultisnips_expand)"
-let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
-let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
-let g:UltiSnipsRemoveSelectModeMappings = 0
-" Press enter key to trigger snippet expansion
-" The parameters are the same as `:help feedkeys()`
-inoremap <silent> <expr> <cr> ncm2_ultisnips#expand_or("\<cr>", 'n')
-
-" vim-lsp and asynccomplete
+" vim-lsp
 "if executable('cquery')
 "   au User lsp_setup call lsp#register_server({
 "      \ 'name': 'cquery',
 "      \ 'cmd': {server_info->['cquery']},
 "      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-"      \ 'initialization_options': { 'cacheDirectory': $HOME .'/.cache/cquery' },
+"      \ 'initialization_options': { 'cacheDirectory': $HOME .'/.cache/cquery'},
 "      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
 "      \ })
 "endif
@@ -482,13 +468,6 @@ inoremap <silent> <expr> <cr> ncm2_ultisnips#expand_or("\<cr>", 'n')
 "let g:lsp_signs_error = {'text': '✗'}
 "let g:lsp_signs_enabled = 1                " enable signs
 "let g:lsp_diagnostics_echo_cursor = 1      " enable echo under cursor when in normal mode
-"let g:asyncomplete_smart_completion = 1
-"let g:asyncomplete_auto_popup = 1
-"let g:asyncomplete_remove_duplicates = 1
-"set completeopt+=preview
-"autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-
-" vim-lsp key map (for historic reasons based on ycm)
 "nnoremap <leader>yd :LspDefinition<cr>
 "nnoremap <leader>ye :LspNextError<cr>
 "nnoremap <leader>yf :LspCodeAction<cr>
@@ -497,8 +476,17 @@ inoremap <silent> <expr> <cr> ncm2_ultisnips#expand_or("\<cr>", 'n')
 "nnoremap <leader>yt :LspTypeDefinition<cr>
 "nnoremap <leader>yq :LspDocumentSymbol<bar>:QuickFix<cr>
 
-" Unmap
-unmap <cr>
+" asyncomplete
+"let g:asyncomplete_smart_completion = 1
+"let g:asyncomplete_auto_popup = 1
+"let g:asyncomplete_remove_duplicates = 1
+"set completeopt+=preview
+"autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+" Use <tab> to select the popup menu and <cr> to close
+imap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
+imap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
+imap <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
 
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required
