@@ -18,13 +18,13 @@ function __fzf_hg
   # New version: also search for commit message
   hg sl --color always 2>/dev/null | sed -e 's/^[\|\ \/]*//' | sed '/^$/d' | paste - - | cut -c 4- | \
   fzf --ansi --no-sort --reverse --preview-window right:90% \
-  --preview 'grep --color=always -E "$(echo {} | cut -c -8)|\$" ~/.cache/fzf_hg_smartlog'
-  --bind "enter:execute(hg up {} && hg fsl --color always 2>/dev/null)+abort" \
-  --bind "ctrl-u:execute(hg up {} && hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog)+toggle-preview+toggle-preview" \
-  --bind "ctrl-g:execute(hg graft {} && hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog)+toggle-preview+toggle-preview" \
-  --bind "ctrl-r:execute(hg rebase -s {} -d master)+abort" \
-  --bind "ctrl-s:execute(hg show --color always {} | less -R)" \
-  --bind "ctrl-y:execute(printf {} | pbcopy)+abort"
+  --preview 'grep --color=always -E "$(echo {} | cut -c -8)|\$" ~/.cache/fzf_hg_smartlog' \
+  --bind 'enter:execute(hg up "$(echo {} | cut -c -8)" && hg fsl --color always 2>/dev/null)+abort' \
+  --bind 'ctrl-u:execute(hg up "$(echo {} | cut -c -8)" && hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog)+toggle-preview+toggle-preview' \
+  --bind 'ctrl-g:execute(hg graft "$(echo {} | cut -c -8)" && hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog)+toggle-preview+toggle-preview' \
+  --bind 'ctrl-r:execute(hg rebase -s "$(echo {} | cut -c -8)" -d master)+abort' \
+  --bind 'ctrl-s:execute(hg show --color always "$(echo {} | cut -c -8)" | less -R)' \
+  --bind 'ctrl-y:execute(printf "$(echo {} | cut -c -8)" | pbcopy)+abort'
 
   # Reprint the command line
   commandline ""
