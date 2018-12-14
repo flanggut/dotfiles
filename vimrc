@@ -44,18 +44,11 @@ Plug 'Yggdroot/indentLine'
 Plug 'scrooloose/nerdcommenter'
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'SirVer/ultisnips'
 
-"Plug 'prabirshrestha/asyncomplete.vim'
-"Plug 'prabirshrestha/async.vim'
-"Plug 'prabirshrestha/vim-lsp'
-"Plug 'pdavydov108/vim-lsp-cquery'
-"Plug 'prabirshrestha/asyncomplete-lsp.vim'
-
 Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh' }
-
 Plug 'roxma/nvim-yarp' " A dependency of 'ncm2'
 Plug 'ncm2/ncm2'
 Plug 'ncm2/ncm2-ultisnips'
@@ -63,6 +56,11 @@ Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
 
+"Plug 'prabirshrestha/asyncomplete.vim'
+"Plug 'prabirshrestha/async.vim'
+"Plug 'prabirshrestha/vim-lsp'
+"Plug 'pdavydov108/vim-lsp-cquery'
+"Plug 'prabirshrestha/asyncomplete-lsp.vim'
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "let g:deoplete#enable_at_startup = 1
 
@@ -88,6 +86,7 @@ set wildmode=longest,list       " bash like completion in cmndln
 set wildmenu
 set noerrorbells visualbell t_vb=           " no bells and other noises
 autocmd GUIEnter * set visualbell t_vb=     " also disable in GUI
+set noshowmode                  " no mode in cmdln
 
 " Indentation
 set smarttab                    " Better tabs
@@ -369,7 +368,7 @@ function! s:FuzzyPick(items, jump) abort
   let items = map(a:items, {idx, item ->
       \ string(idx).' '.bufname(item.bufnr).' '.item.text})
   call fzf#run({'source': items, 'sink': function('<SID>Pick', [a:jump]),
-      \'options': '--with-nth 2.. --reverse', 'down': '40%'})
+      \'options': '--with-nth 2.. --reverse', 'down': '30%'})
 endfunction
 
 function! s:Pick(jump, item) abort
@@ -433,11 +432,12 @@ let g:LanguageClient_serverCommands = {
 nnoremap <leader>yb :call LanguageClient#cquery_base()<cr>
 nnoremap <leader>yc :call LanguageClient#cquery_callers()<cr>
 nnoremap <leader>yd :call LanguageClient#textDocument_definition()<cr>
-nnoremap <c-a>      :call LanguageClient#textDocument_definition()<cr>
+nnoremap <c-j>      :call LanguageClient#textDocument_definition()<cr>
 nnoremap <leader>ye :call LanguageClient#explainErrorAtPoint()<cr>
 nnoremap <leader>yf :call LanguageClient#textDocument_codeAction()<cr>
 nnoremap <leader>yh :call LanguageClient#textDocument_hover()<cr>
 nnoremap <leader>yi :call LanguageClient#textDocument_implementation()<cr>
+nnoremap <leader>yr :call LanguageClient#textDocument_rename()<cr>
 nnoremap <leader>ys :call LanguageClient#textDocument_documentSymbol()<cr>
 nnoremap <leader>yt :call LanguageClient#textDocument_typeDefinition()<cr>
 nnoremap <leader>yv :call LanguageClient#cquery_vars()<cr>
@@ -445,7 +445,10 @@ nnoremap <leader>yv :call LanguageClient#cquery_vars()<cr>
 " ncm2 (with ultisnips integration)
 autocmd BufEnter  *  call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
-inoremap <silent> <expr> <cr> ncm2_ultisnips#expand_or("\<cr>", 'n')
+let g:ncm2#popup_delay = 0
+inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
+inoremap <silent> <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("", 'n') : "\<cr>"
 
 " vim-lsp
 "if executable('cquery')
@@ -484,11 +487,7 @@ inoremap <silent> <expr> <cr> ncm2_ultisnips#expand_or("\<cr>", 'n')
 "set completeopt+=preview
 "autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-" Use <tab> to select the popup menu and <cr> to close
-imap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
-imap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
-imap <expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
-
+nmap <cr> :
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required
 " --------------------------------------------------------------------
