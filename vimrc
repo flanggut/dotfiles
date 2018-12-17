@@ -47,6 +47,8 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'SirVer/ultisnips'
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
 
 Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh' }
 Plug 'roxma/nvim-yarp' " A dependency of 'ncm2'
@@ -55,6 +57,7 @@ Plug 'ncm2/ncm2-ultisnips'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-tmux'
 Plug 'ncm2/ncm2-path'
+Plug 'ncm2/ncm2-markdown-subscope'
 
 "Plug 'prabirshrestha/asyncomplete.vim'
 "Plug 'prabirshrestha/async.vim'
@@ -323,8 +326,11 @@ let g:strip_whitespace_on_save=1
 nmap <leader>S :Startify<cr>
 let g:startify_change_to_dir = 0
 
+" Markdown
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_folding_level = 2
+
 " FZF commands
-"   Files
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case -g !tags '.shellescape(<q-args>), 1,
@@ -487,7 +493,9 @@ inoremap <silent> <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("", 'n') :
 "set completeopt+=preview
 "autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-nmap <cr> :
+" Other remapping and instant snippets (using F keys in insert mode)
+nnoremap <expr> <cr> foldclosed(line('.')) == -1 ? "\<cr>" : "zO"
+inoremap <F12> <c-r>=strftime("%d %b %Y")<cr>
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required
 " --------------------------------------------------------------------
