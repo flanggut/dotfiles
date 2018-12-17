@@ -49,6 +49,7 @@ Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'SirVer/ultisnips'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
+Plug 'itspriddle/vim-marked'
 
 Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh' }
 Plug 'roxma/nvim-yarp' " A dependency of 'ncm2'
@@ -220,6 +221,7 @@ let g:NERDTreeQuitOnOpen=1
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeDirArrows = 1
 let g:NERDTreeShowBookmarks=1
+let g:NERDTreeChDirMode=2
 
 " Tagbar
 nnoremap <leader>t :TagbarOpenAutoClose<cr>
