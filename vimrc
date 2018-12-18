@@ -18,41 +18,57 @@ endif
 " --------------------------------- vim-plug --------------------------------
 " ---------------------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
-
-Plug '/usr/local/opt/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'lifepillar/vim-solarized8'
+" Some simple defaults
 Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-projectionist'
-Plug 'tpope/vim-fugitive'
+
+" Visual
+Plug 'lifepillar/vim-solarized8'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-Plug 'mhinz/vim-sayonara'
-Plug 'mhinz/vim-signify'
-Plug 'haya14busa/incsearch.vim'
-Plug 'haya14busa/vim-asterisk'
-Plug 'AndrewRadev/linediff.vim'
-Plug 'ntpeters/vim-better-whitespace'
+" Buffers and Windows
 Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
-Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
+Plug 'mhinz/vim-sayonara'
+
+" Moving around
+Plug 'justinmk/vim-sneak'
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-projectionist'
+Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/vim-asterisk'
+Plug 'unblevable/quick-scope'
+
+" General Editing
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-fugitive'
+Plug 'mhinz/vim-signify'
+Plug 'AndrewRadev/linediff.vim'
+Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
 Plug 'scrooloose/nerdcommenter'
-Plug 'rhysd/vim-clang-format'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'SirVer/ultisnips'
-Plug 'godlygeek/tabular'
+
+" Markdown
+Plug 'godlygeek/tabular' "required for markdown
 Plug 'plasticboy/vim-markdown'
 Plug 'itspriddle/vim-marked'
 
+" Latex
+Plug 'lervag/vimtex'
+
+" C++
+Plug 'rhysd/vim-clang-format'
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh' }
-Plug 'roxma/nvim-yarp' " A dependency of 'ncm2'
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
+
+" Auto Complete
+Plug 'roxma/nvim-yarp' "required for ncm2
 Plug 'ncm2/ncm2'
 Plug 'ncm2/ncm2-ultisnips'
 Plug 'ncm2/ncm2-bufword'
@@ -75,8 +91,6 @@ call plug#end()
 " Set leader for all custom commands (all of them should start with <leader>)
 let mapleader = " "
 let maplocalleader = " "
-
-map ; f<space>
 
 " Quickly edit/reload this configuration file
 nnoremap <leader>rce :e $MYVIMRC<cr>
@@ -109,7 +123,8 @@ set ignorecase
 set smartcase
 
 " Buffers and Windows
-nnoremap <silent> <leader>q :Sayonara!<cr>         " close buffer
+nnoremap <silent> <leader>q :Sayonara<cr>          " close buffer
+nnoremap <silent> <leader>Q :Sayonara!<cr>         " close buffer
 nnoremap <silent> gb :bnext<cr>                    " next buffer
 nnoremap <silent> gj :bnext<cr>                    " next buffer
 nnoremap <silent> gB :bprev<cr>                    " prev buffer
@@ -210,6 +225,9 @@ augroup END
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
+"  QuickScope
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+
 " Version Control
 vmap <leader>hgb :<c-u>!hg blame -fundq <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
 
@@ -305,7 +323,7 @@ nmap <leader>C :ClangFormatAutoToggle<cr>
 " Signify
 let g:signify_vcs_list = [ 'git', 'hg' ]
 let g:signify_disable_by_default = 1
-"nnoremap <silent> <leader>si :SignifyToggle<cr>
+nnoremap <silent> <leader>si :SignifyToggle<cr>
 
 " Incsearch and Asterisk
 let g:incsearch#auto_nohlsearch = 0
@@ -456,7 +474,7 @@ set completeopt=noinsert,menuone,noselect
 let g:ncm2#popup_delay = 0
 inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
-inoremap <silent> <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("", 'n') : "\<cr>"
+inoremap <silent> <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("\<cr>", 'n') : "\<cr>"
 
 " vim-lsp
 "if executable('cquery')
