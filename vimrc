@@ -1,7 +1,6 @@
 " ----------- Regular Vim specifics --------------
 set nocompatible
 set shell=/bin/bash
-
 " ------------- NeoVim specifics -----------------
 if has("nvim")
   set runtimepath^=~/.vim runtimepath+=~/.vim/after
@@ -36,6 +35,7 @@ Plug 'mhinz/vim-sayonara'
 Plug 'justinmk/vim-sneak'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'fszymanski/fzf-quickfix'
 Plug 'tpope/vim-projectionist'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/vim-asterisk'
@@ -63,23 +63,26 @@ Plug 'lervag/vimtex'
 " C++
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh' }
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+" Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh' }
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'pdavydov108/vim-lsp-cquery'
+" Plug 'ncm2/ncm2-vim-lsp'
 
 " Auto Complete
-Plug 'roxma/nvim-yarp' "required for ncm2
-Plug 'ncm2/ncm2'
-Plug 'ncm2/ncm2-ultisnips'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-tmux'
-Plug 'ncm2/ncm2-path'
-Plug 'ncm2/ncm2-markdown-subscope'
+" Plug 'roxma/nvim-yarp' "required for ncm2
+" Plug 'ncm2/ncm2'
+" Plug 'ncm2/ncm2-ultisnips'
+" Plug 'ncm2/ncm2-bufword'
+" Plug 'ncm2/ncm2-tmux'
+" Plug 'ncm2/ncm2-path'
+" Plug 'ncm2/ncm2-markdown-subscope'
+
 
 "Plug 'prabirshrestha/asyncomplete.vim'
-"Plug 'prabirshrestha/async.vim'
-"Plug 'prabirshrestha/vim-lsp'
-"Plug 'pdavydov108/vim-lsp-cquery'
 "Plug 'prabirshrestha/asyncomplete-lsp.vim'
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "let g:deoplete#enable_at_startup = 1
@@ -228,6 +231,9 @@ augroup END
 "  QuickScope
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
+"  vim-sneak
+let g:sneak#s_next = 1
+
 " Version Control
 vmap <leader>hgb :<c-u>!hg blame -fundq <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
 
@@ -245,48 +251,6 @@ let g:NERDTreeChDirMode=2
 nnoremap <leader>t :TagbarOpenAutoClose<cr>
 let g:tagbar_width = 60
 let g:tagbar_sort = 0
-
-" YCM
-"let g:ycm_confirm_extra_conf = 0
-"let g:ycm_add_preview_to_completeopt = 1
-"let g:ycm_autoclose_preview_window_after_insertion = 1
-"let g:ycm_always_populate_location_list = 1
-"let g:ycm_filetype_blacklist = {
-"      \ 'vim' : 1,
-"      \ 'gitcommit' : 1,
-"      \ 'tagbar' : 1,
-"      \ 'qf' : 1,
-"      \ 'notes' : 1,
-"      \ 'markdown' : 1,
-"      \ 'unite' : 1,
-"      \ 'text' : 1,
-"      \ 'vimwiki' : 1,
-"      \ 'pandoc' : 1,
-"      \ 'infolog' : 1,
-"      \ 'mail' : 1
-"      \}
-"nnoremap <leader>Y :YcmRestartServer<cr>
-"nnoremap <leader>yg :YcmCompleter GoTo<cr>
-"nnoremap <leader>yh :YcmCompleter GoToInclude<cr>
-"nnoremap <leader>yd :YcmCompleter GoToDeclaration<cr>
-"nnoremap <leader>yi :YcmCompleter GoToDefinition<cr>
-"nnoremap <leader>yf :YcmCompleter FixIt<cr>
-
-"let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
-"let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
-"let g:ycm_key_list_stop_completion = ['<cr>', '<c-y>']
-
-" Ycm + vimtex
-"if !exists('g:ycm_semantic_triggers')
-"    let g:ycm_semantic_triggers = {}
-"endif
-"let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
-
-" Ultisnips
-"let g:UltiSnipsExpandTrigger = "<tab>"
-"let g:UltiSnipsJumpForwardTrigger = "<c-j>"
-"let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
-"let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
 " Airline
 set laststatus=2
@@ -330,7 +294,7 @@ let g:incsearch#auto_nohlsearch = 0
 nnoremap <Esc><Esc> :<C-u>nohlsearch<CR>
 map /  <plug>(incsearch-forward)
 map ?  <plug>(incsearch-backward)
-map g/  <plug>(incsearch-stay)
+map g/ <plug>(incsearch-stay)
 map *  <plug>(asterisk-z*)
 map #  <plug>(asterisk-z#)
 map g* <plug>(asterisk-gz*)
@@ -378,32 +342,7 @@ nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
 nnoremap <leader>sg :Rg <c-r><c-w><cr>
 
-" FZF Quickfix and location list
-command! QuickFix call <SID>QuickFix()
-command! LocationList call <SID>LocationList()
-
-function! s:QuickFix() abort
-  call s:FuzzyPick(getqflist(), 'cc')
-endfunction
-
-function! s:LocationList() abort
-  call s:FuzzyPick(getloclist(0), 'll')
-endfunction
-
-function! s:FuzzyPick(items, jump) abort
-  let items = map(a:items, {idx, item ->
-      \ string(idx).' '.bufname(item.bufnr).' '.item.text})
-  call fzf#run({'source': items, 'sink': function('<SID>Pick', [a:jump]),
-      \'options': '--with-nth 2.. --reverse', 'down': '30%'})
-endfunction
-
-function! s:Pick(jump, item) abort
-  let idx = split(a:item, ' ')[0]
-  execute a:jump idx + 1
-endfunction
-
-nnoremap <leader>lq :QuickFix<cr>
-nnoremap <leader>ll :LocationList<cr>
+nmap <leader>lq <Plug>(fzf-quickfix)
 
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -443,41 +382,74 @@ let g:UltiSnipsExpandTrigger		= "<c-j>"
 let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
 let g:UltiSnipsRemoveSelectModeMappings = 0
+let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
+
+" CoC
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+autocmd User CocQuickfixChange :call fzf_quickfix#run()
+
+let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
+let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+
+nmap <silent>         [c <Plug>(coc-diagnostic-prev)
+nmap <silent>         ]c <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>yd <Plug>(coc-definition)
+nmap <silent>      <c-j> <Plug>(coc-definition)
+nmap <silent> <leader>yi <Plug>(coc-implementation)
+nmap <silent> <leader>yr <Plug>(coc-references)
+nmap <silent> <leader>yt <Plug>(coc-type-definition)
+
+nmap <leader>ya <Plug>(coc-codeaction)
+nmap <leader>yf <Plug>(coc-fix-current)
 
 " LanguageClient
-let g:LanguageClient_rootMarkers = {
-    \ 'cpp': ['compile_commands.json'],
-    \ }
+" let g:LanguageClient_loggingLevel = 'INFO'
+" let g:LanguageClient_rootMarkers = {
+"     \ 'cpp': ['compile_commands.json'],
+"     \ }
 
-let g:LanguageClient_serverCommands = {
-    \ 'cpp': ['cquery',
-    \ '--log-file=/tmp/cquery-vim.log',
-    \ '--init={"cacheDirectory":"$HOME/.cache/cquery/"}']
-    \ }
+" let g:LanguageClient_serverCommands = {
+"     \ 'cpp': ['cquery',
+"     \ '--log-file=/tmp/cquery-vim.log',
+"     \ '--init={"cacheDirectory":"$HOME/.cache/cquery/"}']
+"     \ }
 
-nnoremap <leader>yb :call LanguageClient#cquery_base()<cr>
-nnoremap <leader>yc :call LanguageClient#cquery_callers()<cr>
-nnoremap <leader>yd :call LanguageClient#textDocument_definition()<cr>
-nnoremap <c-j>      :call LanguageClient#textDocument_definition()<cr>
-nnoremap <leader>ye :call LanguageClient#explainErrorAtPoint()<cr>
-nnoremap <leader>yf :call LanguageClient#textDocument_codeAction()<cr>
-nnoremap <leader>yh :call LanguageClient#textDocument_hover()<cr>
-nnoremap <leader>yi :call LanguageClient#textDocument_implementation()<cr>
-nnoremap <leader>yr :call LanguageClient#textDocument_rename()<cr>
-nnoremap <leader>ys :call LanguageClient#textDocument_documentSymbol()<cr>
-nnoremap <leader>yt :call LanguageClient#textDocument_typeDefinition()<cr>
-nnoremap <leader>yv :call LanguageClient#cquery_vars()<cr>
+" augroup LanguageClientBufferEnter
+"     autocmd BufEnter *.cpp,*.c,*.h call LanguageClient#handleBufWritePost()
+" augroup END
+
+" nnoremap <leader>yb :call LanguageClient#cquery_base()<cr>
+" nnoremap <leader>yc :call LanguageClient#cquery_callers()<cr>
+" nnoremap <leader>yd :call LanguageClient#textDocument_definition()<cr>
+" nnoremap <c-j>      :call LanguageClient#textDocument_definition()<cr>
+" nnoremap <leader>ye :call LanguageClient#explainErrorAtPoint()<cr>
+" nnoremap <leader>yf :call LanguageClient#textDocument_codeAction()<cr>
+" nnoremap <leader>yh :call LanguageClient#textDocument_hover()<cr>
+" nnoremap <leader>yi :call LanguageClient#textDocument_implementation()<cr>
+" nnoremap <leader>yr :call LanguageClient#textDocument_rename()<cr>
+" nnoremap <leader>ys :call LanguageClient#textDocument_documentSymbol()<cr>
+" nnoremap <leader>yt :call LanguageClient#textDocument_typeDefinition()<cr>
+" nnoremap <leader>yv :call LanguageClient#cquery_vars()<cr>
 
 " ncm2 (with ultisnips integration)
-autocmd BufEnter  *  call ncm2#enable_for_buffer()
-set completeopt=noinsert,menuone,noselect
-let g:ncm2#popup_delay = 0
-inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
-inoremap <silent> <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("\<cr>", 'n') : "\<cr>"
+" autocmd BufEnter  *  call ncm2#enable_for_buffer()
+" set completeopt=noinsert,menuone,noselect
+" let g:ncm2#popup_delay = 0
+" inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
+" inoremap <silent> <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("\<cr>", 'n') : "\<cr>"
 
 " vim-lsp
-"if executable('cquery')
+" if executable('cquery')
 "   au User lsp_setup call lsp#register_server({
 "      \ 'name': 'cquery',
 "      \ 'cmd': {server_info->['cquery']},
@@ -485,26 +457,26 @@ inoremap <silent> <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("\<cr>", '
 "      \ 'initialization_options': { 'cacheDirectory': $HOME .'/.cache/cquery'},
 "      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
 "      \ })
-"endif
-"if executable('pyls')
+" endif
+" if executable('pyls')
 "    " pip install python-language-server
 "    au User lsp_setup call lsp#register_server({
 "        \ 'name': 'pyls',
 "        \ 'cmd': {server_info->['pyls']},
 "        \ 'whitelist': ['python'],
 "        \ })
-"endif
-"
-"let g:lsp_signs_error = {'text': '✗'}
-"let g:lsp_signs_enabled = 1                " enable signs
-"let g:lsp_diagnostics_echo_cursor = 1      " enable echo under cursor when in normal mode
-"nnoremap <leader>yd :LspDefinition<cr>
-"nnoremap <leader>ye :LspNextError<cr>
-"nnoremap <leader>yf :LspCodeAction<cr>
-"nnoremap <leader>yi :LspImplementation<cr>
-"nnoremap <leader>yr :LspReferences<cr>
-"nnoremap <leader>yt :LspTypeDefinition<cr>
-"nnoremap <leader>yq :LspDocumentSymbol<bar>:QuickFix<cr>
+" endif
+
+" let g:lsp_signs_error = {'text': '✗'}
+" let g:lsp_signs_enabled = 1                " enable signs
+" let g:lsp_diagnostics_echo_cursor = 1      " enable echo under cursor when in normal mode
+" nnoremap <leader>yd :LspDefinition<cr>
+" nnoremap <leader>ye :LspNextError<cr>
+" nnoremap <leader>yf :LspCodeAction<cr>
+" nnoremap <leader>yi :LspImplementation<cr>
+" nnoremap <leader>yr :LspReferences<cr>
+" nnoremap <leader>yt :LspTypeDefinition<cr>
+" nnoremap <leader>yq :LspDocumentSymbol<bar>:QuickFix<cr>
 
 " asyncomplete
 "let g:asyncomplete_smart_completion = 1
