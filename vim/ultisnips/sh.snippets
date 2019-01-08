@@ -1,0 +1,8 @@
+snippet bashspin
+sp='/-\|'
+sc=0
+spin() {
+    printf "\rProcessing ${sp:sc++:1}"
+    ((sc==${#sp})) && sc=0
+}
+endsnippet
