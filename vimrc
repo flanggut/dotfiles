@@ -214,9 +214,9 @@ augroup latexCommands
   autocmd BufRead,BufNewFile *.tex
         \ nmap <c-f> [s1z=<c-o>
   autocmd BufRead,BufNewFile *.tex
-        \ set spell
+        \ setlocal spell
   autocmd BufRead,BufNewFile *.tex
-        \ set spelllang=en_us
+        \ setlocal spelllang=en_us
   autocmd BufRead,BufNewFile *.tex
         \ set spellfile=~/.vim/myspell.utf-8.add
   autocmd BufRead,BufNewFile *.tex
@@ -226,6 +226,16 @@ augroup latexCommands
         \ let b:vimtex_main = 'main.tex'
 augroup END
 
+" -------------------- Markdown Stuff  -----------------------
+augroup markdownCommands
+  autocmd!
+  autocmd BufRead,BufNewFile *.md
+        \ nmap <c-f> [s1z=<c-o>
+  autocmd BufRead,BufNewFile *.md
+        \ setlocal spell
+  autocmd BufRead,BufNewFile *.md
+        \ setlocal spelllang=en_us
+augroup END
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
 "  QuickScope
@@ -313,6 +323,7 @@ let g:startify_change_to_dir = 0
 " Markdown
 let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_folding_level = 2
+let g:vim_markdown_conceal = 0
 
 " FZF commands
 command! -bang -nargs=* Rg
