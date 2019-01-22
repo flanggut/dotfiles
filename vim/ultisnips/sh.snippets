@@ -6,3 +6,21 @@ spin() {
     ((sc==${#sp})) && sc=0
 }
 endsnippet
+
+snippet hostplatform
+case "$(uname -s)" in
+  Darwin)
+    HOST_PLATFORM=mac
+    ;;
+  Linux*)
+    HOST_PLATFORM=linux
+    ;;
+  CYGWIN*|MINGW32*|MSYS*)
+    HOST_PLATFORM=win
+    ;;
+  *)
+    echo "Unknown platform: $(uname -s)"
+    exit 1
+    ;;
+esac
+endsnippet
