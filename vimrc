@@ -19,6 +19,9 @@ endif
 call plug#begin('~/.vim/plugged')
 " Some simple defaults
 Plug 'tpope/vim-sensible'
+if !has("nvim")
+  Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+endif
 
 " Visual
 Plug 'lifepillar/vim-solarized8'
@@ -30,12 +33,14 @@ Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 Plug 'majutsushi/tagbar'
 Plug 'mhinz/vim-sayonara'
+Plug 'Shougo/denite.nvim'
+Plug 'vim-scripts/BufOnly.vim'
 
 " Moving around
-Plug 'justinmk/vim-sneak'
-Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'fszymanski/fzf-quickfix'
+Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-projectionist'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/vim-asterisk'
@@ -56,6 +61,7 @@ Plug 'SirVer/ultisnips'
 Plug 'godlygeek/tabular' "required for markdown
 Plug 'plasticboy/vim-markdown'
 Plug 'itspriddle/vim-marked'
+Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
 
 " Latex
 Plug 'lervag/vimtex'
@@ -63,29 +69,7 @@ Plug 'lervag/vimtex'
 " C++
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-Plug 'idanarye/vim-vebugger', {'branch': 'develop'}
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-" Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh' }
-" Plug 'prabirshrestha/async.vim'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'pdavydov108/vim-lsp-cquery'
-" Plug 'ncm2/ncm2-vim-lsp'
-
-" Auto Complete
-" Plug 'roxma/nvim-yarp' "required for ncm2
-" Plug 'ncm2/ncm2'
-" Plug 'ncm2/ncm2-ultisnips'
-" Plug 'ncm2/ncm2-bufword'
-" Plug 'ncm2/ncm2-tmux'
-" Plug 'ncm2/ncm2-path'
-" Plug 'ncm2/ncm2-markdown-subscope'
-
-
-"Plug 'prabirshrestha/asyncomplete.vim'
-"Plug 'prabirshrestha/asyncomplete-lsp.vim'
-"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"let g:deoplete#enable_at_startup = 1
 
 call plug#end()
 " ---------------------------------------------------------------------------
@@ -238,6 +222,9 @@ augroup markdownCommands
 augroup END
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
+" VimWiki
+let g:vimwiki_list = [{'syntax': 'markdown', 'ext': '.md'}]
+
 "  QuickScope
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
@@ -249,7 +236,7 @@ vmap <leader>hgb :<c-u>!hg blame -fundq <c-r>=expand("%:p") <cr> \| sed -n <c-r>
 
 " Nerdtree
 map <C-n> :NERDTreeToggle<cr>
-map <C-m> :NERDTreeFind<cr>
+nnoremap <silent> <leader>nf :NERDTreeFind<cr>
 let g:NERDTreeWinSize=80
 let g:NERDTreeQuitOnOpen=1
 let g:NERDTreeMinimalUI = 1
@@ -314,7 +301,7 @@ let g:asterisk#keeppos = 1
 " Better Whitespace
 nmap <leader>sw :StripWhitespace<cr>
 let g:better_whitespace_enabled=1
-let g:strip_whitespace_on_save=1
+let g:strip_whitespace_on_save=0
 
 " Startify
 nmap <leader>S :Startify<cr>
@@ -406,99 +393,30 @@ inoremap <silent><expr> <TAB>
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-autocmd User CocQuickfixChange :call fzf_quickfix#run()
 
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 
-nmap <silent>         [c <Plug>(coc-diagnostic-prev)
-nmap <silent>         ]c <Plug>(coc-diagnostic-next)
+nmap <silent>         [e <Plug>(coc-diagnostic-prev)
+nmap <silent>         ]e <Plug>(coc-diagnostic-next)
 nmap <silent> <leader>yd <Plug>(coc-definition)
 nmap <silent>      <c-j> <Plug>(coc-definition)
 nmap <silent> <leader>yi <Plug>(coc-implementation)
 nmap <silent> <leader>yr <Plug>(coc-references)
 nmap <silent> <leader>yt <Plug>(coc-type-definition)
+nmap <silent> <leader>ya <Plug>(coc-codeaction)
+nmap <silent> <leader>yf <Plug>(coc-fix-current)
+nmap <silent> <leader>dd :<C-u>Denite coc-diagnostic<cr>
 
-nmap <leader>ya <Plug>(coc-codeaction)
-nmap <leader>yf <Plug>(coc-fix-current)
-
-" LanguageClient
-" let g:LanguageClient_loggingLevel = 'INFO'
-" let g:LanguageClient_rootMarkers = {
-"     \ 'cpp': ['compile_commands.json'],
-"     \ }
-
-" let g:LanguageClient_serverCommands = {
-"     \ 'cpp': ['cquery',
-"     \ '--log-file=/tmp/cquery-vim.log',
-"     \ '--init={"cacheDirectory":"$HOME/.cache/cquery/"}']
-"     \ }
-
-" augroup LanguageClientBufferEnter
-"     autocmd BufEnter *.cpp,*.c,*.h call LanguageClient#handleBufWritePost()
-" augroup END
-
-" nnoremap <leader>yb :call LanguageClient#cquery_base()<cr>
-" nnoremap <leader>yc :call LanguageClient#cquery_callers()<cr>
-" nnoremap <leader>yd :call LanguageClient#textDocument_definition()<cr>
-" nnoremap <c-j>      :call LanguageClient#textDocument_definition()<cr>
-" nnoremap <leader>ye :call LanguageClient#explainErrorAtPoint()<cr>
-" nnoremap <leader>yf :call LanguageClient#textDocument_codeAction()<cr>
-" nnoremap <leader>yh :call LanguageClient#textDocument_hover()<cr>
-" nnoremap <leader>yi :call LanguageClient#textDocument_implementation()<cr>
-" nnoremap <leader>yr :call LanguageClient#textDocument_rename()<cr>
-" nnoremap <leader>ys :call LanguageClient#textDocument_documentSymbol()<cr>
-" nnoremap <leader>yt :call LanguageClient#textDocument_typeDefinition()<cr>
-" nnoremap <leader>yv :call LanguageClient#cquery_vars()<cr>
-
-" ncm2 (with ultisnips integration)
-" autocmd BufEnter  *  call ncm2#enable_for_buffer()
-" set completeopt=noinsert,menuone,noselect
-" let g:ncm2#popup_delay = 0
-" inoremap <expr> <tab> pumvisible() ? "\<c-n>" : "\<tab>"
-" inoremap <expr> <s-tab> pumvisible() ? "\<c-p>" : "\<s-Tab>"
-" inoremap <silent> <expr> <cr> pumvisible() ? ncm2_ultisnips#expand_or("\<cr>", 'n') : "\<cr>"
-
-" vim-lsp
-" if executable('cquery')
-"   au User lsp_setup call lsp#register_server({
-"      \ 'name': 'cquery',
-"      \ 'cmd': {server_info->['cquery']},
-"      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-"      \ 'initialization_options': { 'cacheDirectory': $HOME .'/.cache/cquery'},
-"      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
-"      \ })
-" endif
-" if executable('pyls')
-"    " pip install python-language-server
-"    au User lsp_setup call lsp#register_server({
-"        \ 'name': 'pyls',
-"        \ 'cmd': {server_info->['pyls']},
-"        \ 'whitelist': ['python'],
-"        \ })
-" endif
-
-" let g:lsp_signs_error = {'text': '✗'}
-" let g:lsp_signs_enabled = 1                " enable signs
-" let g:lsp_diagnostics_echo_cursor = 1      " enable echo under cursor when in normal mode
-" nnoremap <leader>yd :LspDefinition<cr>
-" nnoremap <leader>ye :LspNextError<cr>
-" nnoremap <leader>yf :LspCodeAction<cr>
-" nnoremap <leader>yi :LspImplementation<cr>
-" nnoremap <leader>yr :LspReferences<cr>
-" nnoremap <leader>yt :LspTypeDefinition<cr>
-" nnoremap <leader>yq :LspDocumentSymbol<bar>:QuickFix<cr>
-
-" asyncomplete
-"let g:asyncomplete_smart_completion = 1
-"let g:asyncomplete_auto_popup = 1
-"let g:asyncomplete_remove_duplicates = 1
-"set completeopt+=preview
-"autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+" Denite mappings
+call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('insert', '<C-n>', '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+call denite#custom#map('insert', '<C-p>', '<denite:move_to_previous_line>', 'noremap')
 
 " Other remapping and instant snippets (using F keys in insert mode)
 nnoremap <expr> <cr> foldclosed(line('.')) == -1 ? "\<cr>" : "zO"
-inoremap <F12> <c-r>=strftime("%d %b %Y")<cr>
+inoremap <F12> <c-r>=strftime("%Y-%m-%d")<cr>
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required
 " --------------------------------------------------------------------
