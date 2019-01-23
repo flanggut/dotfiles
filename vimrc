@@ -117,6 +117,7 @@ nnoremap <silent> gj :bnext<cr>                    " next buffer
 nnoremap <silent> gB :bprev<cr>                    " prev buffer
 nnoremap <silent> gk :bprev<cr>                    " prev buffer
 nnoremap <silent> <leader>V :vertical sb#<cr>      " open buffer in split
+nnoremap <silent> <leader>bo :BufOnly              " close all other buffers
 nnoremap <tab> <c-w>w           " easier split navigation
 nnoremap <c-m> <c-i>            " have to remap c-i since tab == c-i
 nnoremap <bs> <c-w>W
