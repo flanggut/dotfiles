@@ -70,6 +70,7 @@ Plug 'lervag/vimtex'
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc-denite'
 
 call plug#end()
 " ---------------------------------------------------------------------------
