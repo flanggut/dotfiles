@@ -110,16 +110,16 @@ set ignorecase
 set smartcase
 
 " Buffers and Windows
-nnoremap <silent> <leader>q :Sayonara<cr>          " close buffer
-nnoremap <silent> <leader>Q :Sayonara!<cr>         " close buffer
-nnoremap <silent> gb :bnext<cr>                    " next buffer
-nnoremap <silent> gj :bnext<cr>                    " next buffer
-nnoremap <silent> gB :bprev<cr>                    " prev buffer
-nnoremap <silent> gk :bprev<cr>                    " prev buffer
-nnoremap <silent> <leader>V :vertical sb#<cr>      " open buffer in split
-nnoremap <silent> <leader>bo :BufOnly              " close all other buffers
-nnoremap <tab> <c-w>w           " easier split navigation
-nnoremap <c-m> <c-i>            " have to remap c-i since tab == c-i
+nnoremap <silent> <leader>q :Sayonara<cr>
+nnoremap <silent> <leader>Q :Sayonara!<cr>
+nnoremap <silent> gb :bnext<cr>
+nnoremap <silent> gj :bnext<cr>
+nnoremap <silent> gB :bprev<cr>
+nnoremap <silent> gk :bprev<cr>
+nnoremap <silent> <leader>V :vertical sb#<cr>
+nnoremap <silent> <leader>bo :BufOnly<cr>
+nnoremap <tab> <c-w>w
+nnoremap <c-m> <c-i>
 nnoremap <bs> <c-w>W
 set diffopt+=vertical           " split vertical in diff scenarios
 set splitbelow
@@ -398,8 +398,8 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 
-nmap <silent>         [e <Plug>(coc-diagnostic-prev)
-nmap <silent>         ]e <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>e  <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>E  <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>yd <Plug>(coc-definition)
 nmap <silent>      <c-j> <Plug>(coc-definition)
 nmap <silent> <leader>yi <Plug>(coc-implementation)
