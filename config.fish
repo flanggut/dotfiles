@@ -15,6 +15,7 @@ set -g theme_date_format "+%H:%M:%S"
 #       Alias Config       #
 alias vim="nvim"
 alias duh="du -h -d1"
+alias lss="tree -C | less -r"
 
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
