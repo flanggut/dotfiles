@@ -93,6 +93,7 @@ set wildmenu
 set noerrorbells visualbell t_vb=           " no bells and other noises
 autocmd GUIEnter * set visualbell t_vb=     " also disable in GUI
 set noshowmode                  " no mode in cmdln
+set cmdheight=2
 
 " Indentation
 set smarttab                    " Better tabs
@@ -304,6 +305,8 @@ let g:asterisk#keeppos = 1
 nmap <leader>sw :StripWhitespace<cr>
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=0
+let g:strip_max_file_size = 10000
+let g:strip_whitelines_at_eof=1
 
 " Startify
 nmap <leader>S :Startify<cr>
@@ -314,7 +317,19 @@ let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_folding_level = 2
 let g:vim_markdown_conceal = 0
 
-" FZF commands
+" Denite
+call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('insert', '<C-n>', '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+call denite#custom#map('insert', '<C-p>', '<denite:move_to_previous_line>', 'noremap')
+" call denite#custom#option('default', 'highlight_mode_insert', 'StatusLine')
+call denite#custom#option('default', 'highlight_matched_char', 'Title')
+call denite#custom#source('line', 'matchers', ['matcher/fuzzy'])
+call denite#custom#source('line', 'sorters', ['sorter/rank'])
+nnoremap <leader>dc :<c-u>Denite command<cr>
+nnoremap <c-l> :<c-u>Denite buffer<cr>
+
+" FZF
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case -g !tags '.shellescape(<q-args>), 1,
@@ -330,8 +345,8 @@ command! -bang -nargs=* Files
   \ }))
 
 nnoremap <c-p> :Files<cr>
-nnoremap <c-l> :Buffers <cr>
-nnoremap <c-k> :BTags <cr>
+" nnoremap <c-l> :Buffers <cr>
+" nnoremap <c-k> :BTags <cr>
 nnoremap <leader>C :Commands<cr>
 nnoremap <leader>H :History: <cr>
 nnoremap <leader>P :Tags<cr>
@@ -385,6 +400,11 @@ let g:UltiSnipsRemoveSelectModeMappings = 0
 let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
 " CoC
+let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
+let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+
+command! -nargs=0 Format :call CocAction('format')
+
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -396,12 +416,11 @@ inoremap <silent><expr> <TAB>
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
-let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
 
 nmap <silent> <leader>e  <Plug>(coc-diagnostic-next)
 nmap <silent> <leader>E  <Plug>(coc-diagnostic-prev)
-nmap <silent> <leader>yd <Plug>(coc-definition)
+nmap <silent> <leader>yd <Plug>(coc-declaration)
 nmap <silent>      <c-j> <Plug>(coc-definition)
 nmap <silent> <leader>yi <Plug>(coc-implementation)
 nmap <silent> <leader>yr <Plug>(coc-references)
@@ -409,12 +428,6 @@ nmap <silent> <leader>yt <Plug>(coc-type-definition)
 nmap <silent> <leader>ya <Plug>(coc-codeaction)
 nmap <silent> <leader>yf <Plug>(coc-fix-current)
 nmap <silent> <leader>dd :<C-u>Denite coc-diagnostic<cr>
-
-" Denite mappings
-call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
-call denite#custom#map('insert', '<C-n>', '<denite:move_to_next_line>', 'noremap')
-call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
-call denite#custom#map('insert', '<C-p>', '<denite:move_to_previous_line>', 'noremap')
 
 " Other remapping and instant snippets (using F keys in insert mode)
 nnoremap <expr> <cr> foldclosed(line('.')) == -1 ? "\<cr>" : "zO"
