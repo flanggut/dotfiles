@@ -33,7 +33,6 @@ Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 Plug 'majutsushi/tagbar'
 Plug 'mhinz/vim-sayonara'
-Plug 'Shougo/denite.nvim'
 Plug 'vim-scripts/BufOnly.vim'
 
 " Moving around
@@ -41,7 +40,6 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'fszymanski/fzf-quickfix'
 Plug 'justinmk/vim-sneak'
-Plug 'tpope/vim-projectionist'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/vim-asterisk'
 Plug 'unblevable/quick-scope'
@@ -70,7 +68,6 @@ Plug 'lervag/vimtex'
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-Plug 'neoclide/coc-denite'
 
 call plug#end()
 " ---------------------------------------------------------------------------
@@ -104,6 +101,8 @@ set softtabstop=2               " Columns a tab inserts in insert mode
 set shiftwidth=2                " Columns inserted with the reindent operations
 set shiftround                  " Always indent by multiple of shiftwidth
 set expandtab                   " Always use spaces instead of tabs
+set foldmethod=syntax
+set nofoldenable
 
 " Search
 set hlsearch
@@ -171,9 +170,6 @@ vnoremap <silent> # :<C-U>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 " --------------- Coding Stuff (mostly C++) ---------------
-" Set shortcut for make
-nnoremap <leader>B :make!<cr>
-
 " Set Column limit indicator
 augroup collumnLimit
   autocmd!
@@ -226,7 +222,7 @@ augroup END
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
 " VimWiki
-let g:vimwiki_list = [{'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki_list = [{'syntax': 'markdown', 'ext': '.md', 'nested_syntaxes': {'cpp': 'cpp'}}]
 
 "  QuickScope
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
@@ -317,18 +313,6 @@ let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_folding_level = 2
 let g:vim_markdown_conceal = 0
 
-" Denite
-call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
-call denite#custom#map('insert', '<C-n>', '<denite:move_to_next_line>', 'noremap')
-call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
-call denite#custom#map('insert', '<C-p>', '<denite:move_to_previous_line>', 'noremap')
-" call denite#custom#option('default', 'highlight_mode_insert', 'StatusLine')
-call denite#custom#option('default', 'highlight_matched_char', 'Title')
-call denite#custom#source('line', 'matchers', ['matcher/fuzzy'])
-call denite#custom#source('line', 'sorters', ['sorter/rank'])
-nnoremap <leader>dc :<c-u>Denite command<cr>
-nnoremap <c-l> :<c-u>Denite buffer<cr>
-
 " FZF
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
@@ -345,13 +329,12 @@ command! -bang -nargs=* Files
   \ }))
 
 nnoremap <c-p> :Files<cr>
-" nnoremap <c-l> :Buffers <cr>
-" nnoremap <c-k> :BTags <cr>
+nnoremap <c-l> :Buffers<cr>
+nnoremap <c-k> :BTags <cr>
 nnoremap <leader>C :Commands<cr>
 nnoremap <leader>H :History: <cr>
 nnoremap <leader>P :Tags<cr>
-nnoremap <leader>L :Lines <cr>
-nnoremap <leader>B :BLines <cr>
+nnoremap <leader>L :BLines <cr>
 nnoremap <leader>rg :Rg<space>
 nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
@@ -377,16 +360,15 @@ let g:fzf_colors =
 " Gutentags
 let g:gutentags_project_root=['.gutctags']
 let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
-
-" Projectionist
-let g:projectionist_heuristics = {
-      \ "*": {
-      \   "*.cpp": {"alternate": "{}.h"},
-      \   "*.h": {"alternate": "{}.cpp"}
-      \ }
-      \ }
-nnoremap <silent> <leader>a :A<cr>
-nnoremap <silent> <leader>sa *:A<cr>
+"   Search alternate file in tags
+nnoremap <leader>a :<c-u>tjump /^<c-r>=expand("%:t:r")<cr>\.\(<c-r>=join(get(
+        \ {
+        \ 'c':   ['h'],
+        \ 'cpp': ['h','hpp'],
+        \ 'h':   ['c','cpp'],
+        \ 'hpp': ['cpp']
+        \ },
+        \  expand("%:e"), ['UNKNOWN EXTENSION']), '\\\|')<cr>\)$<cr>
 
 " Linediff
 vnoremap <silent> <leader>ld :Linediff<cr>
@@ -404,6 +386,7 @@ let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_er
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 
 command! -nargs=0 Format :call CocAction('format')
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -427,7 +410,7 @@ nmap <silent> <leader>yr <Plug>(coc-references)
 nmap <silent> <leader>yt <Plug>(coc-type-definition)
 nmap <silent> <leader>ya <Plug>(coc-codeaction)
 nmap <silent> <leader>yf <Plug>(coc-fix-current)
-nmap <silent> <leader>dd :<C-u>Denite coc-diagnostic<cr>
+nmap <silent> <leader>dd :<C-u>CocList diagnostics<cr>
 
 " Other remapping and instant snippets (using F keys in insert mode)
 nnoremap <expr> <cr> foldclosed(line('.')) == -1 ? "\<cr>" : "zO"
