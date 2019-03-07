@@ -6,6 +6,7 @@ function __fzf_hg
   # CTRL-U: hg update to given commit and toggle preview to refresh
   # CTRL-G: hg graft given commit and toggle preview to refresh
   # CTRL-R: hg rebase -s commit -d master
+  # CTRL-H: hg rebase -s commit -d .
   # CTRL-S: hg show commit
   # CTRL-Y: copy commit id to clipboard and exit
   hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog
@@ -22,7 +23,8 @@ function __fzf_hg
   --bind 'enter:execute(hg up "$(echo {} | cut -c -8)" && hg fsl --color always 2>/dev/null)+abort' \
   --bind 'ctrl-u:execute(hg up "$(echo {} | cut -c -8)" && hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog)+toggle-preview+toggle-preview' \
   --bind 'ctrl-g:execute(hg graft "$(echo {} | cut -c -8)" && hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog)+toggle-preview+toggle-preview' \
-  --bind 'ctrl-r:execute(hg rebase -s "$(echo {} | cut -c -8)" -d master)+abort' \
+  --bind 'ctrl-r:execute(hg rebase -s "$(echo {} | cut -c -8)" -d master )+abort' \
+  --bind 'ctrl-h:execute(hg rebase -s "$(echo {} | cut -c -8)" -d . )+abort' \
   --bind 'ctrl-s:execute(hg show --color always "$(echo {} | cut -c -8)" | less -R)' \
   --bind 'ctrl-y:execute(printf "$(echo {} | cut -c -8)" | pbcopy)+abort'
 
