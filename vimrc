@@ -1,4 +1,4 @@
-" ----------- Regular Vim specifics --------------
+
 set nocompatible
 set shell=/bin/bash
 " ------------- NeoVim specifics -----------------
@@ -19,9 +19,7 @@ endif
 call plug#begin('~/.vim/plugged')
 " Some simple defaults
 Plug 'tpope/vim-sensible'
-if !has("nvim")
-  Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-endif
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 
 " Visual
 Plug 'lifepillar/vim-solarized8'
@@ -101,8 +99,6 @@ set softtabstop=2               " Columns a tab inserts in insert mode
 set shiftwidth=2                " Columns inserted with the reindent operations
 set shiftround                  " Always indent by multiple of shiftwidth
 set expandtab                   " Always use spaces instead of tabs
-set foldmethod=syntax
-set nofoldenable
 
 " Search
 set hlsearch
@@ -235,7 +231,7 @@ vmap <leader>hgb :<c-u>!hg blame -fundq <c-r>=expand("%:p") <cr> \| sed -n <c-r>
 
 " Nerdtree
 map <C-n> :NERDTreeToggle<cr>
-nnoremap <silent> <leader>nf :NERDTreeFind<cr>
+nnoremap <silent> <leader>nn :NERDTreeFind<cr>
 let g:NERDTreeWinSize=80
 let g:NERDTreeQuitOnOpen=1
 let g:NERDTreeMinimalUI = 1
@@ -328,8 +324,49 @@ command! -bang -nargs=* Files
   \ 'down': '30%',
   \ }))
 
+let g:fzf_action = {
+  \ 'ctrl-d': 'bdelete',
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+function! s:action_for(key, ...)
+  let default = a:0 ? a:1 : ''
+  let Cmd = get(get(g:, 'fzf_action', default), a:key, default)
+  return type(Cmd) == type('') ? Cmd : default
+endfunction
+
+function! s:bufopen(lines)
+  if len(a:lines) < 2
+    return
+  endif
+  let b = matchstr(a:lines[1], '\[\zs[0-9]*\ze\]')
+  let cmd = s:action_for(a:lines[0])
+  if !empty(cmd)
+    if cmd == 'bdelete'
+      execute 'silent' cmd b
+      return
+    endif
+    execute 'silent' cmd
+  endif
+  execute 'buffer' b
+endfunction
+
+function! s:fzf_buffers()
+  call fzf#vim#buffers({
+  \ 'sink*':   function('s:bufopen'),
+  \ 'options': ['+m', '-x', '--tiebreak=index', '--header-lines=1', '--ansi', '-d', '\t', '-n', '2,1..2', '--prompt', 'Buf> ']
+  \})
+endfunction
+
+command! FZFMru call fzf#run({
+\  'source':  v:oldfiles,
+\  'sink':    'e',
+\  'options': '-m -x +s',
+\  'down':    '40%'})
+
 nnoremap <c-p> :Files<cr>
-nnoremap <c-l> :Buffers<cr>
+nnoremap <c-l> :call <sid>fzf_buffers()<cr>
 nnoremap <c-k> :BTags <cr>
 nnoremap <leader>C :Commands<cr>
 nnoremap <leader>H :History: <cr>
@@ -339,6 +376,8 @@ nnoremap <leader>rg :Rg<space>
 nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
 nnoremap <leader>sg :Rg <c-r><c-w><cr>
+nnoremap <leader>M :FZFMru<cr>
+
 
 nmap <leader>lq <Plug>(fzf-quickfix)
 
@@ -385,9 +424,6 @@ let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 
-command! -nargs=0 Format :call CocAction('format')
-command! -nargs=? Fold :call CocAction('fold', <f-args>)
-
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -401,6 +437,9 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
 
+command! -nargs=0 Format :call CocAction('format')
+
+nmap <silent> <leader>F :Format<cr>
 nmap <silent> <leader>e  <Plug>(coc-diagnostic-next)
 nmap <silent> <leader>E  <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>yd <Plug>(coc-declaration)
@@ -420,4 +459,3 @@ inoremap <F12> <c-r>=strftime("%Y-%m-%d")<cr>
 " --------------------------------------------------------------------
 set secure
 set exrc
-
