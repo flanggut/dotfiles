@@ -88,7 +88,8 @@ set wildmenu
 set noerrorbells visualbell t_vb=           " no bells and other noises
 autocmd GUIEnter * set visualbell t_vb=     " also disable in GUI
 set noshowmode                  " no mode in cmdln
-set cmdheight=2
+set cmdheight=3
+set shortmess+=c
 
 " Indentation
 set smarttab                    " Better tabs
@@ -397,8 +398,26 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " Gutentags
-let g:gutentags_project_root=['.gutctags']
+let g:gutentags_modules = ['ctags', 'gtags_cscope']
+let g:gutentags_project_root = ['.hg', '.git']
 let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
+let g:gutentags_file_list_command = 'rg --files --type cpp'
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extras=+qf']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+function! s:get_gutentags_status(mods) abort
+    let l:msg = ''
+    if index(a:mods, 'ctags') >= 0
+       let l:msg .= '♨'
+     endif
+     if index(a:mods, 'cscope') >= 0
+       let l:msg .= '♺'
+     endif
+     return l:msg
+endfunction
+set statusline+=%{gutentags#statusline_cb(
+                    \function('<SID>get_gutentags_status'))}
+
 "   Search alternate file in tags
 nnoremap <leader>a :<c-u>tjump /^<c-r>=expand("%:t:r")<cr>\.\(<c-r>=join(get(
         \ {
@@ -435,7 +454,22 @@ inoremap <silent><expr> <TAB>
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
+" Use K for show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+augroup signaturehelponjump
+  " Update signature help on jump placeholder
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+au CursorHoldI,CursorMovedI * sil call CocActionAsync('showSignatureHelp')
 
 command! -nargs=0 Format :call CocAction('format')
 
@@ -450,6 +484,10 @@ nmap <silent> <leader>yt <Plug>(coc-type-definition)
 nmap <silent> <leader>ya <Plug>(coc-codeaction)
 nmap <silent> <leader>yf <Plug>(coc-fix-current)
 nmap <silent> <leader>dd :<C-u>CocList diagnostics<cr>
+" caller
+nmap <silent> <leader>xc :call CocLocations('ccls','$ccls/call')<cr>
+" callee
+nmap <silent> <leader>xC :call CocLocations('ccls','$ccls/call',{'callee':v:true})<cr>
 
 " Other remapping and instant snippets (using F keys in insert mode)
 nnoremap <expr> <cr> foldclosed(line('.')) == -1 ? "\<cr>" : "zO"
