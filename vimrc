@@ -88,7 +88,7 @@ set wildmenu
 set noerrorbells visualbell t_vb=           " no bells and other noises
 autocmd GUIEnter * set visualbell t_vb=     " also disable in GUI
 set noshowmode                  " no mode in cmdln
-set cmdheight=3
+set cmdheight=2
 set shortmess+=c
 
 " Indentation
@@ -398,7 +398,6 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 
 " Gutentags
-let g:gutentags_modules = ['ctags', 'gtags_cscope']
 let g:gutentags_project_root = ['.hg', '.git']
 let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
 let g:gutentags_file_list_command = 'rg --files --type cpp'
@@ -417,6 +416,7 @@ function! s:get_gutentags_status(mods) abort
 endfunction
 set statusline+=%{gutentags#statusline_cb(
                     \function('<SID>get_gutentags_status'))}
+let g:airline#extensions#gutentags#enabled = 1
 
 "   Search alternate file in tags
 nnoremap <leader>a :<c-u>tjump /^<c-r>=expand("%:t:r")<cr>\.\(<c-r>=join(get(
