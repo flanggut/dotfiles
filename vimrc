@@ -367,7 +367,7 @@ command! FZFMru call fzf#run({
 \  'down':    '40%'})
 
 nnoremap <c-p> :Files<cr>
-nnoremap <c-l> :call <sid>fzf_buffers()<cr>
+nnoremap <silent><c-l> :call <sid>fzf_buffers()<cr>
 nnoremap <c-k> :BTags <cr>
 nnoremap <leader>C :Commands<cr>
 nnoremap <leader>H :History: <cr>
