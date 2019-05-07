@@ -90,6 +90,7 @@ autocmd GUIEnter * set visualbell t_vb=     " also disable in GUI
 set noshowmode                  " no mode in cmdln
 set cmdheight=2
 set shortmess+=c
+set updatetime=300
 
 " Indentation
 set smarttab                    " Better tabs
@@ -216,6 +217,12 @@ augroup markdownCommands
   autocmd BufRead,BufNewFile *.md
         \ setlocal spelllang=en_us
 augroup END
+
+" Markdown Plugin
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_folding_level = 2
+let g:vim_markdown_conceal = 0
+
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
 " VimWiki
@@ -304,11 +311,16 @@ let g:strip_whitelines_at_eof=1
 " Startify
 nmap <leader>S :Startify<cr>
 let g:startify_change_to_dir = 0
-
-" Markdown
-let g:vim_markdown_toc_autofit = 1
-let g:vim_markdown_folding_level = 2
-let g:vim_markdown_conceal = 0
+let g:startify_lists = [
+  \ { 'type': 'files',     'header': ['   MRU']            },
+  \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+  \ { 'type': 'sessions',  'header': ['   Sessions']       },
+  \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+  \ { 'type': 'commands',  'header': ['   Commands']       },
+  \ ]
+let g:startify_bookmarks = [ {'c': '~/.vimrc'} ]
+let g:startify_enable_special = 0
+let g:startify_session_persistence = 1
 
 " FZF
 command! -bang -nargs=* Rg
@@ -369,10 +381,10 @@ command! FZFMru call fzf#run({
 nnoremap <c-p> :Files<cr>
 nnoremap <silent><c-l> :call <sid>fzf_buffers()<cr>
 nnoremap <c-k> :BTags <cr>
+nnoremap <leader>ll :BLines <cr>
 nnoremap <leader>C :Commands<cr>
 nnoremap <leader>H :History: <cr>
 nnoremap <leader>P :Tags<cr>
-nnoremap <leader>L :BLines <cr>
 nnoremap <leader>rg :Rg<space>
 nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
@@ -404,19 +416,6 @@ let g:gutentags_file_list_command = 'rg --files --type cpp'
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extras=+qf']
 let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
-function! s:get_gutentags_status(mods) abort
-    let l:msg = ''
-    if index(a:mods, 'ctags') >= 0
-       let l:msg .= '♨'
-     endif
-     if index(a:mods, 'cscope') >= 0
-       let l:msg .= '♺'
-     endif
-     return l:msg
-endfunction
-set statusline+=%{gutentags#statusline_cb(
-                    \function('<SID>get_gutentags_status'))}
-let g:airline#extensions#gutentags#enabled = 1
 
 "   Search alternate file in tags
 nnoremap <leader>a :<c-u>tjump /^<c-r>=expand("%:t:r")<cr>\.\(<c-r>=join(get(
@@ -465,11 +464,13 @@ function! s:show_documentation()
   endif
 endfunction
 
+au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
+
 augroup signaturehelponjump
   " Update signature help on jump placeholder
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
-au CursorHoldI,CursorMovedI * sil call CocActionAsync('showSignatureHelp')
+imap <silent> <c-k> <c-o>:call CocActionAsync('showSignatureHelp')<cr>
 
 command! -nargs=0 Format :call CocAction('format')
 
@@ -487,7 +488,8 @@ nmap <silent> <leader>dd :<C-u>CocList diagnostics<cr>
 " caller
 nmap <silent> <leader>xc :call CocLocations('ccls','$ccls/call')<cr>
 " callee
-nmap <silent> <leader>xC :call CocLocations('ccls','$ccls/call',{'callee':v:true})<cr>
+nmap <silent> <leader>XC :call CocLocations('ccls','$ccls/call',{'callee':v:true})<cr>
+
 
 " Other remapping and instant snippets (using F keys in insert mode)
 nnoremap <expr> <cr> foldclosed(line('.')) == -1 ? "\<cr>" : "zO"
