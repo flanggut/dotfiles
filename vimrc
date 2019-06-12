@@ -128,16 +128,19 @@ nnoremap <silent> <leader>E :lopen<cr>             " open jump list
 " ------------- Visual Stuff (make it pretty) --------------
 syntax enable
 set bg=dark
-colorscheme solarized8_flat
 set guioptions-=r       " remove right scrollbar
 set guioptions-=L       " remove left scrollbar
-let g:indentLine_color_gui = '#586e75'
 set linespace=3
+
+" Colors
+let g:indentLine_color_gui = '#586e75'
 if has('termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
+" Set colorscheme last
+colorscheme solarized8_flat
 
 " Invisible characters
 nmap <leader>v :set list!<cr>   " Toggle hidden characters
@@ -325,7 +328,7 @@ let g:startify_session_persistence = 1
 " FZF
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case -g !tags '.shellescape(<q-args>), 1,
+  \   'rg --no-ignore-messages --column --line-number --no-heading --color=always --smart-case -g !tags '.shellescape(<q-args>), 1,
   \           fzf#vim#with_preview('right:50%'),
   \   <bang>0)
 command! -bang -nargs=* Tags
@@ -333,7 +336,7 @@ command! -bang -nargs=* Tags
   \      {'options': '--preview "echo {} | cut -f1 -f3 -f4 -f5 | tr ''\t'' ''\n''  "'})
 command! -bang -nargs=* Files
   \ call fzf#run(fzf#wrap({
-  \ 'source': 'rg --files',
+  \ 'source': 'rg --no-ignore-messages --files',
   \ 'down': '30%',
   \ }))
 
