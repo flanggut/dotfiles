@@ -15,7 +15,8 @@ set -g theme_date_format "+%H:%M:%S"
 #       Alias Config       #
 alias vim="nvim"
 alias duh="du -h -d1"
-alias lss="tree -C | less -r"
+alias ll="tree -C | less -r"
+alias mru="ls -t | head -5"
 
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
@@ -23,9 +24,9 @@ alias shows="hg show --stat"
 alias sl="hg fsl"
 alias histe="hg histedit"
 
-alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin"
+alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin /usr/local/bin"
 
-alias rg="rg --max-columns=160 -S"
+alias rg="rg --no-ignore-messages --max-columns=160 -S"
 alias ...="cd ../.."
 
 ############################
