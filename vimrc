@@ -65,7 +65,7 @@ Plug 'lervag/vimtex'
 " C++
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 " ---------------------------------------------------------------------------
@@ -414,6 +414,7 @@ let g:fzf_colors =
 
 " Gutentags
 let g:gutentags_project_root = ['.hg', '.git']
+let g:gutentags_exclude_filetypes = ['text']
 let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
 let g:gutentags_file_list_command = 'rg --files --type cpp'
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extras=+qf']
