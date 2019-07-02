@@ -158,6 +158,8 @@ endif
 " -------------------- Search Commands ---------------------
 "  Search and replace
 nnoremap <leader>sr :%s/\<<C-r><C-w>\>//g<Left><Left>
+vnoremap <leader>sr "hy:%s/<C-r>h//gc<left><left><left>
+
 " Search for selected text, forwards or backwards.
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
@@ -314,6 +316,7 @@ let g:strip_whitelines_at_eof=1
 " Startify
 nmap <leader>S :Startify<cr>
 let g:startify_change_to_dir = 0
+let g:startify_files_number = 20
 let g:startify_lists = [
   \ { 'type': 'files',     'header': ['   MRU']            },
   \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
@@ -385,6 +388,7 @@ nnoremap <c-p> :Files<cr>
 nnoremap <silent><c-l> :call <sid>fzf_buffers()<cr>
 nnoremap <c-k> :BTags <cr>
 nnoremap <leader>ll :BLines <cr>
+nnoremap <leader>L :Lines <cr>
 nnoremap <leader>C :Commands<cr>
 nnoremap <leader>H :History: <cr>
 nnoremap <leader>P :Tags<cr>
@@ -414,9 +418,9 @@ let g:fzf_colors =
 
 " Gutentags
 let g:gutentags_project_root = ['.hg', '.git']
-let g:gutentags_exclude_filetypes = ['text']
+let g:gutentags_exclude_filetypes = ['text', 'hgcommit', 'gitcommit', 'python']
 let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
-let g:gutentags_file_list_command = 'rg --files --type cpp'
+let g:gutentags_file_list_command = 'rg --no-ignore-messages --files --type cpp'
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extras=+qf']
 let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
