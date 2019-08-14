@@ -21,6 +21,7 @@ alias mru="ls -t | head -5"
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
 alias shows="hg show --stat"
+alias sshow="hg st -m"
 alias sl="hg fsl"
 alias histe="hg histedit"
 
