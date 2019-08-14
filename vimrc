@@ -65,7 +65,8 @@ Plug 'lervag/vimtex'
 " C++
 Plug 'rhysd/vim-clang-format'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
+" Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh \| UpdateRemotePlugins' }
 
 call plug#end()
 " ---------------------------------------------------------------------------
@@ -171,6 +172,10 @@ vnoremap <silent> # :<C-U>
   \gvy?<C-R><C-R>=substitute(
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
+
+" -------------------- Terminal mode ----------------------
+tnoremap <esc><esc> <c-\><c-n>
+set timeoutlen=500
 
 " --------------- Coding Stuff (mostly C++) ---------------
 " Set Column limit indicator
@@ -284,8 +289,8 @@ function! MyClangFormat()
     call winrestview( s:view )
 endfunc
 " map to <Leader>f in C++ code
-autocmd FileType c,cpp,objc nnoremap <buffer><leader>f :call MyClangFormat()<cr>
-autocmd FileType c,cpp,objc nnoremap <buffer><leader>cf :ClangFormat<cr>
+autocmd FileType c,cpp,objc nnoremap <buffer><leader>cf :call MyClangFormat()<cr>
+autocmd FileType c,cpp,objc nnoremap <buffer><leader>f :ClangFormat<cr>
 " Toggle auto formatting:
 nmap <leader>C :ClangFormatAutoToggle<cr>
 
@@ -304,7 +309,7 @@ map *  <plug>(asterisk-z*)
 map #  <plug>(asterisk-z#)
 map g* <plug>(asterisk-gz*)
 map g# <plug>(asterisk-gz#)
-let g:asterisk#keeppos = 1
+" let g:asterisk#keeppos = 1
 
 " Better Whitespace
 nmap <leader>sw :StripWhitespace<cr>
@@ -461,7 +466,6 @@ inoremap <silent><expr> <TAB>
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-" Use K for show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
