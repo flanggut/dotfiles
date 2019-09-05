@@ -383,12 +383,6 @@ function! s:fzf_buffers()
   \})
 endfunction
 
-command! FZFMru call fzf#run({
-\  'source':  v:oldfiles,
-\  'sink':    'e',
-\  'options': '-m -x +s',
-\  'down':    '40%'})
-
 nnoremap <c-p> :Files<cr>
 nnoremap <silent><c-l> :call <sid>fzf_buffers()<cr>
 nnoremap <c-k> :BTags <cr>
@@ -429,6 +423,14 @@ let g:gutentags_file_list_command = 'rg --no-ignore-messages --files --type cpp'
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extras=+qf']
 let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+" This can be disabled when issue
+" https://github.com/ludovicchabant/vim-gutentags/issues/178 is fixed {{{
+let g:gutentags_enabled = 0
+augroup auto_gutentags
+  au FileType python,java,scala,sh,groovy,vim,clojure,typescript,cpp let g:gutentags_enabled=1
+augroup end
+" }}}
+
 
 "   Search alternate file in tags
 nnoremap <leader>a :<c-u>tjump /^<c-r>=expand("%:t:r")<cr>\.\(<c-r>=join(get(
