@@ -248,7 +248,18 @@ let g:sneak#s_next = 1
 vmap <leader>hgb :<c-u>!hg blame -fundq <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
 
 " Nerdtree
-map <C-n> :NERDTreeToggle<cr>
+" If more than one window and previous buffer was NERDTree, go back to it.
+autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
+
+function! NerdTreeFindOrClose()
+  if exists("g:NERDTree") && g:NERDTree.IsOpen()
+    :NERDTreeToggle
+  else
+    :NERDTreeFind
+  endif
+endfunction
+map <C-n> :call NerdTreeFindOrClose()<cr>
+
 nnoremap <silent> <leader>nn :NERDTreeFind<cr>
 let g:NERDTreeWinSize=80
 let g:NERDTreeQuitOnOpen=1
@@ -342,7 +353,7 @@ command! -bang -nargs=* Rg
 command! -bang -nargs=* Tags
   \ call fzf#vim#tags(<q-args>,
   \      {'options': '--preview "echo {} | cut -f1 -f3 -f4 -f5 | tr ''\t'' ''\n''  "'})
-command! -bang -nargs=* Files
+command! -bang -nargs=* FilesRg
   \ call fzf#run(fzf#wrap({
   \ 'source': 'rg --no-ignore-messages --files',
   \ 'down': '30%',
@@ -383,7 +394,7 @@ function! s:fzf_buffers()
   \})
 endfunction
 
-nnoremap <c-p> :Files<cr>
+nnoremap <c-p> :FilesRg<cr>
 nnoremap <silent><c-l> :call <sid>fzf_buffers()<cr>
 nnoremap <c-k> :BTags <cr>
 nnoremap <leader>ll :BLines <cr>
