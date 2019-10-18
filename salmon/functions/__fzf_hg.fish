@@ -17,7 +17,7 @@ function __fzf_hg
   # --preview "grep --color=always -E '{}|\$' ~/.cache/fzf_hg_smartlog" \
 
   # New version: also search for commit message
-  hg sl --color always 2>/dev/null | sed -e 's/^[\|\ \/]*//' | egrep -A 1 '(^o|\@)' | sed '/^--$/d' | paste - - | cut -c 4- | \
+  hg sl --color always 2>/dev/null | sed -e 's/^[\|\ \/]*//' | egrep -A 1 '(^(o|\@))' | sed '/^--$/d' | paste - - | cut -c 4- | \
   fzf --ansi --no-sort --reverse --preview-window right:80% \
   --preview 'grep --color=always -E "$(echo {} | cut -c -8)|\$" ~/.cache/fzf_hg_smartlog' \
   --bind 'enter:execute(hg up "$(echo {} | cut -c -8)" && hg fsl --color always 2>/dev/null)+abort' \
