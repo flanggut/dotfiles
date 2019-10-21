@@ -64,7 +64,7 @@ Plug 'lervag/vimtex'
 
 " C++
 Plug 'rhysd/vim-clang-format'
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
 " Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh \| UpdateRemotePlugins' }
 
