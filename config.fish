@@ -22,7 +22,7 @@ alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
 alias shows="hg show --stat"
 alias sshow="hg st -m"
-alias sl="hg fsl"
+alias sl="hg sl -r ."
 alias histe="hg histedit"
 
 alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin /usr/local/bin"
