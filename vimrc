@@ -57,7 +57,7 @@ Plug 'SirVer/ultisnips'
 Plug 'godlygeek/tabular' "required for markdown
 Plug 'plasticboy/vim-markdown'
 Plug 'itspriddle/vim-marked'
-Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
+" Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
 
 " Latex
 Plug 'lervag/vimtex'
