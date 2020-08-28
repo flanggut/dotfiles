@@ -65,3 +65,6 @@ set fish_color_selection white --bold --background=brblack
 set fish_color_user brgreen
 set fish_color_valid_path --underline
 
+############################
+#     Launch Starship      #
+starship init fish | source
