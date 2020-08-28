@@ -16,5 +16,5 @@
   sl = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --all --since='180 days ago' --max-count=30
 
 [core]
-  excludesfile = ~/.gitignore_global
+  excludesfile = ~/.gitignore
   editor = vim
