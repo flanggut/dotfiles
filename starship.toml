@@ -1,0 +1,11 @@
+# ~/.config/starship.toml
+
+[directory]
+fish_style_pwd_dir_length = 1
+truncation_length = 4
+
+[python]
+disabled = true
+
+[nodejs]
+disabled = true
