@@ -22,6 +22,7 @@ Plug 'tpope/vim-sensible'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 
 " Visual
+Plug 'arcticicestudio/nord-vim'
 Plug 'lifepillar/vim-solarized8'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -65,7 +66,7 @@ Plug 'lervag/vimtex'
 " C++
 Plug 'rhysd/vim-clang-format'
 " Plug 'ludovicchabant/vim-gutentags'
-Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh \| UpdateRemotePlugins' }
 
 call plug#end()
@@ -141,7 +142,8 @@ if has('termguicolors')
   set termguicolors
 endif
 " Set colorscheme last
-colorscheme solarized8_flat
+" colorscheme solarized8_flat
+colorscheme nord
 
 " Invisible characters
 nmap <leader>v :set list!<cr>   " Toggle hidden characters
@@ -276,7 +278,7 @@ let g:tagbar_sort = 0
 " Airline
 set laststatus=2
 let g:airline_powerline_fonts = 1
-let g:airline_theme='solarized'
+" let g:airline_theme='solarized'
 let g:airline#extensions#tabline#enabled = 1
 
 " NERD Commenter
