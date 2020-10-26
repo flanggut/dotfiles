@@ -12,6 +12,11 @@ set -g theme_color_scheme solarized
 set -g theme_date_format "+%H:%M:%S"
 
 ############################
+#      Global Configs      #
+set -gx SHELL fish
+set -gx EDITOR vim
+
+############################
 #       Alias Config       #
 alias vim="nvim"
 alias duh="du -h -d1"
@@ -64,6 +69,9 @@ set fish_color_search_match bryellow --background=brblack
 set fish_color_selection white --bold --background=brblack
 set fish_color_user brgreen
 set fish_color_valid_path --underline
+
+set -g theme_newline_cursor yes
+set -g theme_newline_prompt '❯ '
 
 # Starship prompt
 if type -q starship
