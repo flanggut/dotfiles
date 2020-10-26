@@ -65,6 +65,14 @@ set fish_color_selection white --bold --background=brblack
 set fish_color_user brgreen
 set fish_color_valid_path --underline
 
-############################
-#     Launch Starship      #
-starship init fish | source
+# Starship prompt
+if type -q starship
+    starship init fish | source
+end
+
+if test "$TERM_PROGRAM" = "iTerm.app"
+    # Enable iTerm2 tmux integration
+    set -x ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX YES
+    # iTerm2 Shell integration
+    source ~/.iterm2_shell_integration.(basename $SHELL)
+end
