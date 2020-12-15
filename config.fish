@@ -39,7 +39,6 @@ alias ...="cd ../.."
 #       Mac Specifics      #
 switch (uname)
   case Darwin
-    test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
     alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
     alias fll="rg --files | rg"
 end
