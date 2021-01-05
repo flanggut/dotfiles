@@ -1,4 +1,3 @@
-
 set nocompatible
 set shell=/bin/bash
 " ------------- NeoVim specifics -----------------
@@ -6,26 +5,40 @@ if has("nvim")
   set runtimepath^=~/.vim runtimepath+=~/.vim/after
   let &packpath=&runtimepath
 endif
-
-" ------------- MacVim specifics -----------------
-if has("gui_macvim")
-  set guifont=SFMono\ Nerd\ Font:h13
-  set macmeta
-endif
-
 " ---------------------------------------------------------------------------
 " --------------------------------- vim-plug --------------------------------
+" ---------------------------------------------------------------------------
+"  Bootstrap
+if has('nvim')
+  let vimplug_exists=expand('~/.local/share/nvim/site/autoload/plug.vim')
+else
+  let vimplug_exists=expand('~/.vim/autoload/plug.vim')
+endif
+
+if !filereadable(vimplug_exists)
+  if !executable(curl_exists)
+    echoerr "You have to install curl or first install vim-plug yourself!"
+    execute "q!"
+  endif
+  echo "Installing Vim-Plug..."
+  echo ""
+  silent exec "!"curl_exists" -fLo " . shellescape(vimplug_exists) . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+  let g:not_finish_vimplug = "yes"
+
+  autocmd VimEnter * PlugInstall
+endif
 " ---------------------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
 " Some simple defaults
 Plug 'tpope/vim-sensible'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'kassio/neoterm'
 
 " Visual
 Plug 'arcticicestudio/nord-vim'
-Plug 'lifepillar/vim-solarized8'
+Plug 'ayu-theme/ayu-vim'
+Plug 'arzg/vim-colors-xcode'
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 
 " Buffers and Windows
 Plug 'scrooloose/nerdtree'
@@ -37,13 +50,11 @@ Plug 'vim-scripts/BufOnly.vim'
 " Moving around
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'fszymanski/fzf-quickfix'
-Plug 'justinmk/vim-sneak'
-Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/vim-asterisk'
 Plug 'unblevable/quick-scope'
 
 " General Editing
+Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
@@ -52,22 +63,11 @@ Plug 'AndrewRadev/linediff.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'Yggdroot/indentLine'
 Plug 'scrooloose/nerdcommenter'
-Plug 'SirVer/ultisnips'
-
-" Markdown
-Plug 'godlygeek/tabular' "required for markdown
-Plug 'plasticboy/vim-markdown'
-Plug 'itspriddle/vim-marked'
-" Plug 'vimwiki/vimwiki', { 'branch': 'dev' }
-
-" Latex
-Plug 'lervag/vimtex'
-
-" C++
-Plug 'rhysd/vim-clang-format'
-" Plug 'ludovicchabant/vim-gutentags'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Plug 'sakhnik/nvim-gdb', { 'do': ':!./install.sh \| UpdateRemotePlugins' }
+
+" Swift
+" Plug 'keith/swift.vim'
+Plug 'arzg/vim-swift'
 
 call plug#end()
 " ---------------------------------------------------------------------------
@@ -93,6 +93,8 @@ set noshowmode                  " no mode in cmdln
 set cmdheight=2
 set shortmess+=c
 set updatetime=300
+set timeoutlen=500
+set ttimeoutlen=5
 
 " Indentation
 set smarttab                    " Better tabs
@@ -103,6 +105,7 @@ set softtabstop=2               " Columns a tab inserts in insert mode
 set shiftwidth=2                " Columns inserted with the reindent operations
 set shiftround                  " Always indent by multiple of shiftwidth
 set expandtab                   " Always use spaces instead of tabs
+autocmd FileType swift setlocal shiftwidth=4 softtabstop=4 expandtab
 
 " Search
 set hlsearch
@@ -122,6 +125,7 @@ nnoremap <silent> <leader>bo :BufOnly<cr>
 nnoremap <tab> <c-w>w
 nnoremap <c-m> <c-i>
 nnoremap <bs> <c-w>W
+inoremap <c-l> <c-o>$
 set diffopt+=vertical           " split vertical in diff scenarios
 set splitbelow
 set completeopt-=preview
@@ -134,16 +138,25 @@ set guioptions-=r       " remove right scrollbar
 set guioptions-=L       " remove left scrollbar
 set linespace=3
 
-" Colors
+" IndentLine {{
+let g:indentLine_char = '│'
+let g:indentLine_first_char = '│'
+let g:indentLine_showFirstIndentLevel = 1
 let g:indentLine_color_gui = '#586e75'
+" }}
+"
+" Colors
 if has('termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
+
 " Set colorscheme last
-" colorscheme solarized8_flat
-colorscheme nord
+" colorscheme nord
+" let ayucolor="mirage"
+" colorscheme ayu
+colorscheme xcodedark
 
 " Invisible characters
 nmap <leader>v :set list!<cr>   " Toggle hidden characters
@@ -174,10 +187,6 @@ vnoremap <silent> # :<C-U>
   \gvy?<C-R><C-R>=substitute(
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
-
-" -------------------- Terminal mode ----------------------
-tnoremap <esc><esc> <c-\><c-n>
-set timeoutlen=500
 
 " --------------- Coding Stuff (mostly C++) ---------------
 " Set Column limit indicator
@@ -237,6 +246,11 @@ let g:vim_markdown_conceal = 0
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
+"
+let g:neoterm_default_mod = 'botright'
+let g:neoterm_autoscroll = 1
+nnoremap <silent><leader>ter :T fish<cr>
+
 " VimWiki
 let g:vimwiki_list = [{'syntax': 'markdown', 'ext': '.md', 'nested_syntaxes': {'cpp': 'cpp'}}]
 
@@ -270,15 +284,9 @@ let g:NERDTreeDirArrows = 1
 let g:NERDTreeShowBookmarks=1
 let g:NERDTreeChDirMode=2
 
-" Tagbar
-nnoremap <leader>t :TagbarOpenAutoClose<cr>
-let g:tagbar_width = 60
-let g:tagbar_sort = 0
-
 " Airline
 set laststatus=2
 let g:airline_powerline_fonts = 1
-" let g:airline_theme='solarized'
 let g:airline#extensions#tabline#enabled = 1
 
 " NERD Commenter
@@ -314,15 +322,14 @@ nnoremap <silent> <leader>si :SignifyToggle<cr>
 
 " Incsearch and Asterisk
 let g:incsearch#auto_nohlsearch = 0
-nnoremap <Esc><Esc> :<C-u>nohlsearch<CR>
-map /  <plug>(incsearch-forward)
-map ?  <plug>(incsearch-backward)
-map g/ <plug>(incsearch-stay)
+nnoremap <esc><esc> :<C-u>nohlsearch<CR>
+" map /  <plug>(incsearch-forward)
+" map ?  <plug>(incsearch-backward)
+" map g/ <plug>(incsearch-stay)
 map *  <plug>(asterisk-z*)
 map #  <plug>(asterisk-z#)
 map g* <plug>(asterisk-gz*)
 map g# <plug>(asterisk-gz#)
-" let g:asterisk#keeppos = 1
 
 " Better Whitespace
 nmap <leader>sw :StripWhitespace<cr>
@@ -396,6 +403,31 @@ function! s:fzf_buffers()
   \})
 endfunction
 
+function! CreateCenteredFloatingWindow()
+    let width = min([&columns - 4, max([80, &columns - 20])])
+    let height = min([&lines - 4, max([20, &lines - 10])])
+    let top = ((&lines - height) / 2) - 1
+    let left = (&columns - width) / 2
+    let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+
+    let top = "╭" . repeat("─", width - 2) . "╮"
+    let mid = "│" . repeat(" ", width - 2) . "│"
+    let bot = "╰" . repeat("─", width - 2) . "╯"
+    let lines = [top] + repeat([mid], height - 2) + [bot]
+    let s:buf = nvim_create_buf(v:false, v:true)
+    call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+    call nvim_open_win(s:buf, v:true, opts)
+    set winhl=Normal:Floating
+    let opts.row += 1
+    let opts.height -= 2
+    let opts.col += 2
+    let opts.width -= 4
+    call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+    au BufWipeout <buffer> exe 'bw '.s:buf
+endfunction
+
+let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+
 nnoremap <c-p> :FilesRg<cr>
 nnoremap <silent><c-l> :call <sid>fzf_buffers()<cr>
 nnoremap <c-k> :BTags <cr>
@@ -409,7 +441,6 @@ nnoremap <leader>sp :Tags <c-r><c-w><cr>
 nnoremap <leader>sl :Lines <c-r><c-w><cr>
 nnoremap <leader>sg :Rg <c-r><c-w><cr>
 nnoremap <leader>M :FZFMru<cr>
-
 
 nmap <leader>lq <Plug>(fzf-quickfix)
 
@@ -428,43 +459,9 @@ let g:fzf_colors =
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
 
-" Gutentags
-let g:gutentags_project_root = ['.hg', '.git']
-let g:gutentags_exclude_filetypes = ['text', 'hgcommit', 'gitcommit', 'python']
-let g:gutentags_cache_dir = $HOME .'/.cache/guten_tags'
-let g:gutentags_file_list_command = 'rg --no-ignore-messages --files --type cpp'
-let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extras=+qf']
-let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
-let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
-" This can be disabled when issue
-" https://github.com/ludovicchabant/vim-gutentags/issues/178 is fixed {{{
-let g:gutentags_enabled = 0
-augroup auto_gutentags
-  au FileType python,java,scala,sh,groovy,vim,clojure,typescript,cpp let g:gutentags_enabled=1
-augroup end
-" }}}
-
-
-"   Search alternate file in tags
-nnoremap <leader>a :<c-u>tjump /^<c-r>=expand("%:t:r")<cr>\.\(<c-r>=join(get(
-        \ {
-        \ 'c':   ['h'],
-        \ 'cpp': ['h','hpp'],
-        \ 'h':   ['c','cpp'],
-        \ 'hpp': ['cpp']
-        \ },
-        \  expand("%:e"), ['UNKNOWN EXTENSION']), '\\\|')<cr>\)$<cr>
-
 " Linediff
 vnoremap <silent> <leader>ld :Linediff<cr>
 nnoremap <silent> <leader>ldr :LinediffReset<cr>
-
-" UltiSnips
-let g:UltiSnipsExpandTrigger		= "<c-j>"
-let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
-let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
-let g:UltiSnipsRemoveSelectModeMappings = 0
-let g:UltiSnipsSnippetsDir="~/.vim/ultisnips"
 
 " CoC
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
@@ -479,29 +476,33 @@ inoremap <silent><expr> <TAB>
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr> <c-j>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><c-k> pumvisible() ? "\<C-p>" : "\<C-h>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
+" Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
-  if &filetype == 'vim'
+  if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
   else
-    call CocAction('doHover')
+    execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
 
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
 au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
-
-augroup signaturehelponjump
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-imap <silent> <c-k> <c-o>:call CocActionAsync('showSignatureHelp')<cr>
 
 command! -nargs=0 Format :call CocAction('format')
 
-nmap <silent> <leader>F :Format<cr>
+nmap <silent> <leader>f :Format<cr>
 nmap <silent> <leader>e  <Plug>(coc-diagnostic-next)
 nmap <silent> <leader>E  <Plug>(coc-diagnostic-prev)
 nmap <silent> <leader>yd <Plug>(coc-declaration)
@@ -512,15 +513,11 @@ nmap <silent> <leader>yt <Plug>(coc-type-definition)
 nmap <silent> <leader>ya <Plug>(coc-codeaction)
 nmap <silent> <leader>yf <Plug>(coc-fix-current)
 nmap <silent> <leader>dd :<C-u>CocList diagnostics<cr>
-" caller
-nmap <silent> <leader>xc :call CocLocations('ccls','$ccls/call')<cr>
-" callee
-nmap <silent> <leader>XC :call CocLocations('ccls','$ccls/call',{'callee':v:true})<cr>
-
 
 " Other remapping and instant snippets (using F keys in insert mode)
 nnoremap <expr> <cr> foldclosed(line('.')) == -1 ? "\<cr>" : "zO"
 inoremap <F12> <c-r>=strftime("%Y-%m-%d")<cr>
+
 " --------------------------------------------------------------------
 " Load project specific .vimrc if required
 " --------------------------------------------------------------------
