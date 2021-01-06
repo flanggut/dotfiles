@@ -242,13 +242,15 @@ let g:vim_markdown_conceal = 0
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
-"
+" Airline
+set laststatus=2
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+
+" Neoterm
 let g:neoterm_default_mod = 'botright'
 let g:neoterm_autoscroll = 1
 nnoremap <silent><leader>ter :T fish<cr>
-
-" VimWiki
-let g:vimwiki_list = [{'syntax': 'markdown', 'ext': '.md', 'nested_syntaxes': {'cpp': 'cpp'}}]
 
 "  QuickScope
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
@@ -256,10 +258,7 @@ let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 "  vim-sneak
 let g:sneak#s_next = 1
 
-" Version Control
-vmap <leader>hgb :<c-u>!hg blame -fundq <c-r>=expand("%:p") <cr> \| sed -n <c-r>=line("'<") <cr>,<c-r>=line("'>") <cr>p <cr>
-
-" Nerdtree
+" NERDTree
 " If more than one window and previous buffer was NERDTree, go back to it.
 autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
 
@@ -279,11 +278,6 @@ let g:NERDTreeMinimalUI = 1
 let g:NERDTreeDirArrows = 1
 let g:NERDTreeShowBookmarks=1
 let g:NERDTreeChDirMode=2
-
-" Airline
-set laststatus=2
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
 
 " NERD Commenter
 let g:NERDDefaultAlign = 'left'
