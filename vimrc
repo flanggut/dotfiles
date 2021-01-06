@@ -145,18 +145,14 @@ let g:indentLine_showFirstIndentLevel = 1
 let g:indentLine_color_gui = '#586e75'
 " }}
 "
-" Colors
-if has('termguicolors')
-  " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
 
-" Set colorscheme last
+" Colors
 " colorscheme nord
 " let ayucolor="mirage"
 " colorscheme ayu
 colorscheme xcodedark
+hi Normal ctermfg=white ctermbg=black
+hi EndOfBuffer ctermbg=black
 
 " Invisible characters
 nmap <leader>v :set list!<cr>   " Toggle hidden characters
