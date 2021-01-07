@@ -58,7 +58,7 @@ fish_style_pwd_dir_length = 1
 truncation_length = 4
 
 [cmd_duration]
-min_time = 50
+min_time = 10
 show_milliseconds = true
 format = "❮ [$duration](bright-black) "
 
