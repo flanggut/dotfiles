@@ -4,6 +4,7 @@ set shell=/bin/bash
 if has("nvim")
   set runtimepath^=~/.vim runtimepath+=~/.vim/after
   let &packpath=&runtimepath
+  set termguicolors
 endif
 " ---------------------------------------------------------------------------
 " --------------------------------- vim-plug --------------------------------
@@ -39,6 +40,7 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'ayu-theme/ayu-vim'
 Plug 'arzg/vim-colors-xcode'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " Buffers and Windows
 Plug 'scrooloose/nerdtree'
@@ -52,6 +54,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'haya14busa/vim-asterisk'
 Plug 'unblevable/quick-scope'
+Plug 'justinmk/vim-sneak'
 
 " General Editing
 Plug 'jiangmiao/auto-pairs'
@@ -246,6 +249,7 @@ let g:vim_markdown_conceal = 0
 set laststatus=2
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='minimalist'
 
 " Neoterm
 let g:neoterm_default_mod = 'botright'
@@ -256,7 +260,28 @@ nnoremap <silent><leader>ter :T fish<cr>
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
 "  vim-sneak
-let g:sneak#s_next = 1
+let g:sneak#s_next = 0
+let g:sneak#f_reset = 1
+let g:sneak#t_reset = 1
+let g:sneak#prompt = '> '
+let g:sneak#absolute_dir = 0
+nmap f <Plug>Sneak_f
+nmap F <Plug>Sneak_F
+xmap f <Plug>Sneak_f
+xmap F <Plug>Sneak_F
+omap f <Plug>Sneak_f
+omap F <Plug>Sneak_F
+
+nmap t <Plug>Sneak_t
+nmap T <Plug>Sneak_T
+xmap t <Plug>Sneak_t
+xmap T <Plug>Sneak_T
+omap t <Plug>Sneak_t
+omap T <Plug>Sneak_T
+
+nmap <expr> N sneak#is_sneaking() ? '<Plug>Sneak_,' : 'N'
+nmap <expr> n sneak#is_sneaking() ? '<Plug>Sneak_;' : 'n'
+highlight Sneak cterm=bold ctermbg=yellow ctermfg=black
 
 " NERDTree
 " If more than one window and previous buffer was NERDTree, go back to it.
