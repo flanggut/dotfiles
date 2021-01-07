@@ -1,11 +1,78 @@
 # ~/.config/starship.toml
 
+format = """
+$username\
+$hostname\
+$shlvl\
+$kubernetes\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$hg_branch\
+$docker_context\
+$package\
+$cmake\
+$dart\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$golang\
+$helm\
+$java\
+$julia\
+$kotlin\
+$nim\
+$nodejs\
+$ocaml\
+$perl\
+$php\
+$purescript\
+$python\
+$ruby\
+$rust\
+$swift\
+$terraform\
+$zig\
+$nix_shell\
+$conda\
+$memory_usage\
+$aws\
+$gcloud\
+$openstack\
+$env_var\
+$crystal\
+$custom\
+$jobs\
+$battery\
+$cmd_duration\
+$time\
+$line_break\
+$status\
+$character"""
+
 [directory]
 fish_style_pwd_dir_length = 1
 truncation_length = 4
+
+[cmd_duration]
+min_time = 50
+show_milliseconds = true
+format = "❮ [$duration](bright-black) "
+
+[time]
+disabled = false
+format = "❮ [$time]($style) "
+style = "bright-black"
 
 [python]
 disabled = true
 
 [nodejs]
 disabled = true
+
+[swift]
+disabled = true
+
