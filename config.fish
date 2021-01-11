@@ -1,14 +1,15 @@
 ############################
 #     Bootstrap fisher     #
 if not functions -q fisher
-    set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
-    curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
-    fish -c fisher
+    curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+    fisher install jethrokuan/z
+    fisher install acomagu/fish-async-prompt
+    # If async prompt creates errors due to a missing right prompt:
+    # set -U async_prompt_functions fish_prompt
 end
 
 ############################
 #        Setup Theme       #
-set -g theme_color_scheme solarized
 set -g theme_date_format "+%H:%M:%S"
 
 ############################
