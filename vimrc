@@ -4,7 +4,6 @@ set shell=/bin/bash
 if has("nvim")
   set runtimepath^=~/.vim runtimepath+=~/.vim/after
   let &packpath=&runtimepath
-  set termguicolors
 endif
 " ---------------------------------------------------------------------------
 " --------------------------------- vim-plug --------------------------------
