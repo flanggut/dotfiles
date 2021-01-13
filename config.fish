@@ -3,9 +3,7 @@
 if not functions -q fisher
     curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
     fisher install jethrokuan/z
-    fisher install acomagu/fish-async-prompt
-    # If async prompt creates errors due to a missing right prompt:
-    # set -U async_prompt_functions fish_prompt
+    fisher install IlanCosman/tide
 end
 
 ############################
@@ -24,6 +22,7 @@ alias duh="du -h -d1"
 alias ll="tree -C | less -r"
 alias mru="ls -t | head -5"
 alias p3="python3"
+alias gg="googler"
 
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
@@ -73,11 +72,6 @@ set fish_color_valid_path --underline
 
 set -g theme_newline_cursor yes
 set -g theme_newline_prompt '❯ '
-
-# Starship prompt
-if type -q starship
-    starship init fish | source
-end
 
 if test "$TERM_PROGRAM" = "iTerm.app"
     # Enable iTerm2 tmux integration
