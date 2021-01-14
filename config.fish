@@ -13,7 +13,7 @@ set -g theme_date_format "+%H:%M:%S"
 ############################
 #      Global Configs      #
 set -gx SHELL fish
-set -gx EDITOR vim
+set -gx EDITOR nvim
 
 ############################
 #       Alias Config       #
