@@ -36,6 +36,8 @@ alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin /usr/local/
 alias rg="rg --no-ignore-messages --max-columns=160 -S"
 alias ...="cd ../.."
 
+alias traceme="xcrun xctrace record --template 'Time Profiler' --launch"
+
 ############################
 #       Mac Specifics      #
 switch (uname)
