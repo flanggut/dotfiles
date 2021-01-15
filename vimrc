@@ -8,16 +8,7 @@ endif
 " ---------------------------------------------------------------------------
 " --------------------------------- vim-plug --------------------------------
 " ---------------------------------------------------------------------------
-"  Bootstrap
-let vimplug_exists=expand('~/.vim/autoload/plug.vim')
-if !filereadable(vimplug_exists)
-  echo "Installing Vim-Plug..."
-  echo ""
-  silent exec "!"curl_exists" -fLo " . shellescape(vimplug_exists) . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-  let g:not_finish_vimplug = "yes"
-
-  autocmd VimEnter * PlugInstall
-endif
+" https://github.com/junegunn/vim-plug
 " ---------------------------------------------------------------------------
 call plug#begin('~/.vim/plugged')
 " Some simple defaults
@@ -38,12 +29,12 @@ Plug 'mhinz/vim-startify'
 Plug 'majutsushi/tagbar'
 Plug 'mhinz/vim-sayonara'
 Plug 'vim-scripts/BufOnly.vim'
+Plug 'mcchrish/nnn.vim'
 
 " Moving around
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'haya14busa/vim-asterisk'
-Plug 'unblevable/quick-scope'
 Plug 'justinmk/vim-sneak'
 
 " General Editing
@@ -235,6 +226,9 @@ let g:vim_markdown_conceal = 0
 
 " --------------------------------------------------------------------
 " -------------------------- Package Configs -------------------------
+"  nnn
+let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }
+
 " Airline
 set laststatus=2
 let g:airline_powerline_fonts = 1
@@ -245,9 +239,6 @@ let g:airline_theme='minimalist'
 let g:neoterm_default_mod = 'botright'
 let g:neoterm_autoscroll = 1
 nnoremap <silent><leader>ter :T fish<cr>
-
-"  QuickScope
-let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
 "  vim-sneak
 let g:sneak#s_next = 0
