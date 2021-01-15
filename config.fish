@@ -7,13 +7,10 @@ if not functions -q fisher
 end
 
 ############################
-#        Setup Theme       #
-set -g theme_date_format "+%H:%M:%S"
-
-############################
 #      Global Configs      #
 set -gx SHELL fish
 set -gx EDITOR nvim
+set -gx LC_ALL en_US.UTF-8
 
 ############################
 #       Alias Config       #
@@ -71,9 +68,6 @@ set fish_color_search_match bryellow --background=brblack
 set fish_color_selection white --bold --background=brblack
 set fish_color_user brgreen
 set fish_color_valid_path --underline
-
-set -g theme_newline_cursor yes
-set -g theme_newline_prompt '❯ '
 
 if test "$TERM_PROGRAM" = "iTerm.app"
     # Enable iTerm2 tmux integration
