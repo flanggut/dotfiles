@@ -1,5 +1,15 @@
 set nocompatible
 set shell=/bin/bash
+
+" Detect OS
+if !exists("g:os")
+    if has("win64") || has("win32") || has("win16")
+        let g:os = "Windows"
+    else
+        let g:os = substitute(system('uname'), '\n', '', '')
+    endif
+endif
+
 " ------------- NeoVim specifics -----------------
 if has("nvim")
   set runtimepath^=~/.vim runtimepath+=~/.vim/after
@@ -15,6 +25,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-sensible'
 Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 Plug 'kassio/neoterm'
+Plug 'voldikss/vim-floaterm'
 
 " Visual
 Plug 'arcticicestudio/nord-vim'
@@ -24,7 +35,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " Buffers and Windows
-Plug 'scrooloose/nerdtree'
 Plug 'mhinz/vim-startify'
 Plug 'majutsushi/tagbar'
 Plug 'mhinz/vim-sayonara'
@@ -61,8 +71,7 @@ call plug#end()
 let mapleader = " "
 let maplocalleader = " "
 
-" Quickly edit/reload this configuration file
-nnoremap <leader>rce :e $MYVIMRC<cr>
+" Quickly reload this configuration file
 nnoremap <leader>rcl :so $MYVIMRC<cr>
 
 " Basic must haves
@@ -224,8 +233,23 @@ let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_folding_level = 2
 let g:vim_markdown_conceal = 0
 
-" --------------------------------------------------------------------
-" -------------------------- Package Configs -------------------------
+
+" ------------------------------------------------------------------------------
+" ------------------------------- Package Configs ------------------------------
+" ------------------------------------------------------------------------------
+
+" Floaterm
+if g:os == "Darwin"
+  let g:floaterm_shell='/usr/local/bin/fish'
+elseif g:os == "Linux"
+  let g:floaterm_shell='/bin/fish'
+endif
+let g:floaterm_height=0.7
+let g:floaterm_position='bottomright'
+nnoremap <silent> <leader>fm :FloatermNew! make<cr>
+nnoremap <silent> <c-s> :FloatermToggle<cr>
+tnoremap <silent> <c-s> <c-\><c-n>:FloatermToggle<cr>
+
 "  nnn
 let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }
 
@@ -263,27 +287,6 @@ omap T <Plug>Sneak_T
 nmap <expr> N sneak#is_sneaking() ? '<Plug>Sneak_,' : 'N'
 nmap <expr> n sneak#is_sneaking() ? '<Plug>Sneak_;' : 'n'
 highlight Sneak cterm=bold ctermbg=yellow ctermfg=black
-
-" NERDTree
-" If more than one window and previous buffer was NERDTree, go back to it.
-autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
-
-function! NerdTreeFindOrClose()
-  if exists("g:NERDTree") && g:NERDTree.IsOpen()
-    :NERDTreeToggle
-  else
-    :NERDTreeFind
-  endif
-endfunction
-map <C-n> :call NerdTreeFindOrClose()<cr>
-
-nnoremap <silent> <leader>nn :NERDTreeFind<cr>
-let g:NERDTreeWinSize=80
-let g:NERDTreeQuitOnOpen=1
-let g:NERDTreeMinimalUI = 1
-let g:NERDTreeDirArrows = 1
-let g:NERDTreeShowBookmarks=1
-let g:NERDTreeChDirMode=2
 
 " NERD Commenter
 let g:NERDDefaultAlign = 'left'
