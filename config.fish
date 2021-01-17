@@ -12,6 +12,9 @@ set -gx SHELL fish
 set -gx EDITOR nvim
 set -gx LC_ALL en_US.UTF-8
 
+set -g tide_cmd_duration_threshold 1000
+set -g tide_cmd_duration_decimals 1
+
 ############################
 #       Alias Config       #
 alias vim="nvim"
