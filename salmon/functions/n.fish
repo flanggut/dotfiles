@@ -12,9 +12,9 @@ function n --wraps nnn --description 'support nnn quit and change directory'
     #    set NNN_TMPFILE "$XDG_CONFIG_HOME/nnn/.lastd"
     # NOTE: NNN_TMPFILE is fixed, should not be modified
     if test -n "$XDG_CONFIG_HOME"
-        set -x NNN_TMPFILE "$XDG_CONFIG_HOME/nnn/.lastd"
+        set NNN_TMPFILE "$XDG_CONFIG_HOME/nnn/.lastd"
     else
-        set -x NNN_TMPFILE "$HOME/.config/nnn/.lastd"
+        set NNN_TMPFILE "$HOME/.config/nnn/.lastd"
     end
 
     # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
@@ -23,7 +23,7 @@ function n --wraps nnn --description 'support nnn quit and change directory'
     # stty lwrap undef
     # stty lnext undef
 
-    nnn -e $argv
+    nnn -e -A $argv
 
     if test -e $NNN_TMPFILE
         source $NNN_TMPFILE
