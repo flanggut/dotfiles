@@ -22,7 +22,6 @@ alias duh="du -h -d1"
 alias ll="tree -C | less -r"
 alias mru="ls -t | head -5"
 alias p3="python3"
-alias gg="googler"
 
 alias dff="hg diff --color=always | diff-so-fancy | less -R"
 alias show="hg diff -r .^ --color=always | diff-so-fancy | less -R"
