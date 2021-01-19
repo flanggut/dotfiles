@@ -249,6 +249,7 @@ let g:floaterm_position='bottomright'
 nnoremap <silent> <leader>fm :FloatermNew! make<cr>
 nnoremap <silent> <c-s> :FloatermToggle<cr>
 tnoremap <silent> <c-s> <c-\><c-n>:FloatermToggle<cr>
+autocmd FileType python nnoremap <silent> <leader>p :FloatermNew python3 %<cr>
 
 "  nnn
 let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }
@@ -301,7 +302,6 @@ vnoremap <silent> <leader>x :call NERDComment(0, "toggle")<cr>
 " Clangformat
 let g:clang_format#detect_style_file = 1
 " Use clangformat only on the current scope
-autocmd FileType c,cpp,objc vnoremap <buffer>ff :ClangFormat<cr>
 function! MyClangFormat()
     let s:pos = getpos( '. ')
     let s:view = winsaveview()
