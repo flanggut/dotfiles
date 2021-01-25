@@ -249,7 +249,7 @@ let g:floaterm_position='bottomright'
 nnoremap <silent> <leader>fm :FloatermNew! make<cr>
 nnoremap <silent> <c-s> :FloatermToggle<cr>
 tnoremap <silent> <c-s> <c-\><c-n>:FloatermToggle<cr>
-autocmd FileType python nnoremap <silent> <leader>p :FloatermNew python3 %<cr>
+autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>
 
 "  nnn
 let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }
