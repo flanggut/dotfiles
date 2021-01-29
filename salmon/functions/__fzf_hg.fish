@@ -12,7 +12,7 @@ function __fzf_hg
 
   # New version: also search for commit message
   FZF_DEFAULT_COMMAND="hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog && cat ~/.cache/fzf_hg_smartlog | sed -e 's/^[\|\/\ ╷│├╯╭─╯]*//' | egrep -A 1 '(^(o|\@))' | sed '/^--\$/d' | paste - - | cut -c 4-" fzf \
-  --ansi --no-sort --reverse --preview-window right:80% \
+  --ansi --no-sort --reverse --preview-window right:60% \
   --preview "rg -N --passthru --color=always (echo {} | cut -c -9) ~/.cache/fzf_hg_smartlog" \
   --bind "enter:execute(hg up (echo {} | cut -c -9) && hg fsl --color always 2>/dev/null)+abort" \
   --bind "ctrl-u:execute(hg up (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
