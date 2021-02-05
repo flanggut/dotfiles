@@ -4,6 +4,8 @@ if not functions -q fisher
     curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
     fisher install jethrokuan/z
     fisher install IlanCosman/tide
+# set -u tide_right_prompt_items status context jobs virtual_env time
+# set -u tide_left_prompt_items os pwd git cmd_duration newline prompt_char
 end
 
 ############################
