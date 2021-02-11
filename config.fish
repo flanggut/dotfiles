@@ -32,13 +32,15 @@ alias shows="hg show --stat"
 alias sshow="hg st -m"
 alias sl="hg fsl"
 alias histe="hg histedit"
+alias hgn="hg next"
+alias hgp="hg prev"
 
 alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin /usr/local/bin"
 
 alias rg="rg --no-ignore-messages --max-columns=160 -S"
 alias ...="cd ../.."
 
-alias traceme="xcrun xctrace record --template 'Time Profiler' --launch"
+alias xtrace="xcrun xctrace record --template 'Time Profiler' --launch --"
 
 ############################
 #       Mac Specifics      #
