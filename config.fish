@@ -34,6 +34,11 @@ alias sl="hg fsl"
 alias histe="hg histedit"
 alias hgn="hg next"
 alias hgp="hg prev"
+alias jfs="jf s"
+alias jfs2="jf s -r .^..."
+alias jfs3="jf s -r .^^..."
+alias jfs4="jf s -r .^^^..."
+alias jfs5="jf s -r .^^^^..."
 
 alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin /usr/local/bin"
 
