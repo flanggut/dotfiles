@@ -15,6 +15,61 @@ if has("nvim")
   set runtimepath^=~/.vim runtimepath+=~/.vim/after
   let &packpath=&runtimepath
 endif
+
+" ----------------- Full switch when running within vscode ------------------
+if exists('g:vscode')
+  call plug#begin('~/.vim/plugged')
+  Plug 'asvetliakov/vim-easymotion'
+  Plug 'haya14busa/incsearch.vim'
+  Plug 'haya14busa/incsearch-fuzzy.vim'
+  Plug 'haya14busa/incsearch-easymotion.vim'
+  call plug#end()
+
+  let mapleader = " "
+  let maplocalleader = " "
+
+  function! s:commentSelection()
+      let startLine = line("v")
+      let endLine = line(".")
+      call VSCodeNotifyRange("editor.action.commentLine", startLine, endLine, 1)
+  endfunction
+
+  function! s:searchAndReplace()
+      let startPos = getpos("v")
+      let endPos = getpos(".")
+      call VSCodeNotifyRangePos("editor.action.addSelectionToNextFindMatch", startPos[1], endPos[1], startPos[2], endPos[2], 1)
+      call VSCodeNotify('editor.action.startFindReplaceAction')
+  endfunction
+
+  nnoremap <silent> <leader>e <Cmd>call VSCodeNotify('editor.action.marker.next')<CR>
+  nnoremap <silent> <leader>f <Cmd>call VSCodeNotify('editor.action.formatDocument')<CR>
+  nnoremap <silent> <leader>rs <Cmd>call VSCodeNotify('editor.action.rename')<CR>
+  vnoremap <silent> <leader>sr <Cmd>call <SID>searchAndReplace()<CR>
+  nnoremap <silent> <leader>x <Cmd>call VSCodeNotify('editor.action.commentLine')<CR>
+  vnoremap <silent> <leader>x <Cmd>call <SID>commentSelection()<CR>
+  nnoremap <silent> <leader>q <Cmd>call VSCodeNotify('workbench.action.closeActiveEditor')<CR>
+
+  nnoremap <esc><esc> :<C-u>nohlsearch<CR>
+
+  function! s:config_easyfuzzymotion(...) abort
+    return extend(copy({
+    \   'converters': [incsearch#config#fuzzy#converter()],
+    \   'modules': [incsearch#config#easymotion#module()],
+    \   'keymap': {"\<CR>": '<Over>(easymotion)'},
+    \   'is_expr': 0,
+    \   'is_stay': 1
+    \ }), get(a:, 1, {}))
+  endfunction
+
+  let g:incsearch#auto_nohlsearch = 1
+  nnoremap <silent><expr> z/ incsearch#go(<SID>config_easyfuzzymotion())
+
+  nmap <leader>l <Plug>(easymotion-bd-jk)
+  nmap s <Plug>(easymotion-bd-f2)
+
+  finish
+end
+
 " ---------------------------------------------------------------------------
 " --------------------------------- vim-plug --------------------------------
 " ---------------------------------------------------------------------------
@@ -46,6 +101,10 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'haya14busa/vim-asterisk'
 Plug 'justinmk/vim-sneak'
+Plug 'asvetliakov/vim-easymotion'
+Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/incsearch-fuzzy.vim'
+Plug 'haya14busa/incsearch-easymotion.vim'
 
 " General Editing
 Plug 'jiangmiao/auto-pairs'
@@ -252,7 +311,7 @@ autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %
 
 "  nnn
 let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }
-nnoremap <silent> <c-n> :NnnPicker<cr>
+nnoremap <silent> <c-n> :NnnPicker %:p:h<cr>
 
 " Airline
 set laststatus=2
