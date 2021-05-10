@@ -33,6 +33,9 @@ require('packer').startup(function()
     'nvim-telescope/telescope.nvim',
     requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
   }
+  use 'nvim-telescope/telescope-z.nvim'
+
+  -- treesitter
   use {'nvim-treesitter/nvim-treesitter'}
 
   -- lualine
@@ -61,6 +64,9 @@ require('packer').startup(function()
 
   --  bufferline lua
   use {'akinsho/nvim-bufferline.lua', requires = 'kyazdani42/nvim-web-devicons'}
+
+  use 'junegunn/fzf'
+  use 'junegunn/fzf.vim'
 
   use 'arzg/vim-swift'
   use 'b3nj5m1n/kommentary'
@@ -146,12 +152,14 @@ require('telescope').setup{
     },
   }
 }
+require'telescope'.load_extension'z'
 map('n', '<C-k>', "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>")
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
 map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
-map('n', '<leader>f', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>jr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
+map('n', '<leader>z', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
+vim.api.nvim_set_keymap('n', '<leader>O', [[<cmd>lua require'telescope'.extensions.z.list{}<CR>]], {noremap=true, silent=true})
 
 -- nvim compe
 require'compe'.setup {
@@ -302,6 +310,12 @@ vim.cmd('nnoremap <silent> <c-s> :FloatermToggle<cr>')
 vim.cmd('tnoremap <silent> <c-s> <c-\\><c-n>:FloatermToggle<cr>')
 -- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
 
+-- fzf custom pickers
+if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"myles -n 100 --list {q}"', 'down': '30%' })]])
+  vim.api.nvim_set_keymap('n', '<leader>p', '<cmd>Files<CR>', {noremap=true})
+end
+
 -------------------- LSP SETUP ------------------------------
 local nvim_lsp = require ('lspconfig')
 local on_attach = function(client, bufnr)
@@ -335,38 +349,5 @@ end
 local servers = { "clangd" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach }
-end
-
---------------------- Custom Telescope Pickers ----------------
-local finders = require('telescope.finders')
-local make_entry = require('telescope.make_entry')
-local pickers = require('telescope.pickers')
-local conf = require('telescope.config').values
-
-if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-  function myles()
-    local opts = {}
-    opts.cwd = vim.loop.cwd()
-
-    local live_grepper = finders.new_job(function(prompt)
-        if not prompt or prompt == "" then
-          return nil
-        end
-
-        return {"myles", "--list", "-n", "25", prompt}
-      end,
-      make_entry.gen_from_string(opts),
-      50,
-      opts.cwd
-    )
-
-    pickers.new(opts, {
-      prompt_title = 'Live Grep',
-      finder = live_grepper,
-      previewer = conf.file_previewer(opts),
-      sorter = conf.file_sorter(opts),
-    }):find()
-  end
-  vim.api.nvim_set_keymap('n', '<leader>p', '<cmd>lua myles() <CR>', {noremap=true})
 end
 
