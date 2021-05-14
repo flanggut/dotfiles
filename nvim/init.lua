@@ -74,8 +74,9 @@ require('packer').startup(function()
   use 'mcchrish/nnn.vim'
   use 'mhinz/vim-startify'
   use 'mhinz/vim-signify'
+  use 'mhinz/vim-sayonara'
   use 'ntpeters/vim-better-whitespace'
-  use 'ojroques/nvim-bufdel'
+  use 'psliwka/vim-smoothie'
   use 'sainnhe/gruvbox-material'
   use 'RRethy/nvim-base16'
   use 'RRethy/vim-illuminate'
@@ -232,16 +233,13 @@ vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_accept()", {expr = true})
 -- nvim tree
 map('n', '<leader>n', '<cmd>NvimTreeFindFile<CR>')
 map('n', '<leader>N', '<cmd>NvimTreeToggle<CR>')
-map('n', '<leader>r', '<cmd>NvimTreeRefresh<CR>')
-vim.g.nvim_tree_width = 40
-vim.g.nvim_tree_auto_open = 1
+vim.g.nvim_tree_width = 42
 vim.g.nvim_tree_auto_close = 1
-vim.g.nvim_tree_auto_ignore_ft = { 'startify', 'dashboard' }
 vim.g.nvim_tree_follow = 1
 vim.g.nvim_tree_lsp_diagnostics = 1
 
--- buffdel
-map('n', '<leader>q', '<cmd>BufDel<CR>')
+-- sayonara
+map('n', '<leader>q', '<cmd>Sayonara<CR>')
 
 -- kommentary
 require('kommentary.config').configure_language("default", {
@@ -288,14 +286,15 @@ vim.g.strip_whitelines_at_eof = 1
 vim.g.better_whitespace_filetypes_blacklist= { 'packer' }
 
 -- illuminate
-vim.api.nvim_set_keymap('n', '<a-n>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', {noremap=true})
-vim.api.nvim_set_keymap('n', '<a-p>', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', {noremap=true})
-vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify'}
+map('n', '<a-n>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>')
+map('n', '<a-p>', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>')
+vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
 
 -- nnn
 cmd([[let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }]])
 cmd([[let g:nnn#set_default_mappings = 0]])
-cmd([[nnoremap <silent> <c-n> :NnnPicker %:p:h<cr>]])
+cmd([[let g:nnn#command = 'nnn -A']])
+map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
 -- floatterm
 if vim.fn.has('mac') == 1 then
@@ -303,16 +302,18 @@ if vim.fn.has('mac') == 1 then
 else
   vim.g.floatterm_shell = '/bin/fish'
 end
-vim.g.floaterm_height=0.8
-vim.g.floaterm_width=0.8
-vim.g.floaterm_position='bottomright'
-vim.cmd('nnoremap <silent> <c-s> :FloatermToggle<cr>')
-vim.cmd('tnoremap <silent> <c-s> <c-\\><c-n>:FloatermToggle<cr>')
+vim.g.floaterm_autoclose = 1
+vim.g.floaterm_height = 0.8
+vim.g.floaterm_width = 0.8
+vim.g.floaterm_position = 'bottomright'
+map('n', '<c-s>', '<cmd>FloatermToggle<cr>', {silent = true})
+map('t', '<c-s>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
+map('n', '<leader>ca', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
 -- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
 
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"myles -n 100 --list {q}"', 'down': '30%' })]])
+cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
   vim.api.nvim_set_keymap('n', '<leader>p', '<cmd>Files<CR>', {noremap=true})
 end
 
@@ -349,5 +350,11 @@ end
 local servers = { "clangd" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach }
+end
+
+-------------- Load local nvimrc --------------
+local local_vimrc = vim.fn.getcwd()..'/.nvimrc'
+if vim.loop.fs_stat(local_vimrc) then
+  vim.cmd('source '..local_vimrc)
 end
 
