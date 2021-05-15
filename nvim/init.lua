@@ -352,9 +352,24 @@ for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach }
 end
 
--------------- Load local nvimrc --------------
-local local_vimrc = vim.fn.getcwd()..'/.nvimrc'
-if vim.loop.fs_stat(local_vimrc) then
-  vim.cmd('source '..local_vimrc)
-end
+--------------------- Custom functions -----------------
+function CodeLink()
+  vim.api.nvim_exec(
+    [[
+        let file = expand( "%:f" )
+        let path = substitute(file, ".*/fbsource/", "", "")
+        let line = line('.')
 
+        let g = "https://www.internalfb.com/code/fbsource/\[master\]/" . path . "?lines=". line
+        echom g
+        silent exec "!open \'". g ."'"
+    ]],
+    true)
+end
+map('n', '<leader>op', '<cmd>lua CodeLink()<CR>')
+
+-------------- Load local nvimrc --------------
+-- local local_vimrc = vim.fn.getcwd()..'/.nvimrc'
+-- if vim.loop.fs_stat(local_vimrc) then
+--   vim.cmd('source '..local_vimrc)
+-- end
