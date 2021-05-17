@@ -82,6 +82,7 @@ require('packer').startup(function()
   use 'RRethy/vim-illuminate'
   use 'voldikss/vim-floaterm'
   use 'Yggdroot/indentLine'
+  use 'christoomey/vim-tmux-navigator'
 
 end)
 
@@ -316,6 +317,15 @@ if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
 cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
   vim.api.nvim_set_keymap('n', '<leader>p', '<cmd>Files<CR>', {noremap=true})
 end
+
+------------------- Navigation + tmux -----------------
+vim.g.tmux_navigator_no_mappings = 1
+map('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {silent = true})
+map('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {silent = true})
+map('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {silent = true})
+map('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {silent = true})
+map('n', '<A-,>', '<cmd>split<cr>', {silent = true})
+map('n', '<A-.>', '<cmd>vsplit<cr>', {silent = true})
 
 -------------------- LSP SETUP ------------------------------
 local nvim_lsp = require ('lspconfig')
