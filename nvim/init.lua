@@ -41,16 +41,7 @@ require('packer').startup(function()
   -- lualine
   use {
     'hoob3rt/lualine.nvim',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true},
-    config = function()
-      require('lualine').setup{
-        options = {
-          theme = 'gruvbox_material',
-          disabled_filetypes = {},
-          icons_enabled = true,
-        },
-      }
-    end
+    requires = {'kyazdani42/nvim-web-devicons', opt = true}
   }
 
   -- nvim-tree
@@ -83,6 +74,8 @@ require('packer').startup(function()
   use 'voldikss/vim-floaterm'
   use 'Yggdroot/indentLine'
   use 'christoomey/vim-tmux-navigator'
+  use 'hrsh7th/vim-vsnip'
+  use 'hrsh7th/vim-vsnip-integ'
 
 end)
 
@@ -157,11 +150,19 @@ require('telescope').setup{
 require'telescope'.load_extension'z'
 map('n', '<C-k>', "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>")
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
-map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
+if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
+  map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
+end
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
+map('n', '<leader>m', "<cmd>lua require('telescope.builtin').oldfiles()<cr>")
 map('n', '<leader>jr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
-map('n', '<leader>z', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-vim.api.nvim_set_keymap('n', '<leader>O', [[<cmd>lua require'telescope'.extensions.z.list{}<CR>]], {noremap=true, silent=true})
+map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
+map('n', '<leader>fp', "<cmd>lua require'telescope'.extensions.z.list{}<CR>", {noremap=true, silent=true})
+-- fzf custom pickers
+if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
+  vim.api.nvim_set_keymap('n', '<C-p>', '<cmd>Files<CR>', {noremap=true})
+end
 
 -- nvim compe
 require'compe'.setup {
@@ -173,7 +174,7 @@ require'compe'.setup {
     calc = true;
     nvim_lsp = true;
     nvim_lua = true;
-    vsnip = false;
+    vsnip = true;
     omni = false;
   };
 }
@@ -216,20 +217,39 @@ _G.ck_complete = function()
     return t "<C-k>"
   end
 end
-_G.tab_accept = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-y>"
-  else
-    return t "<Tab>"
-  end
-end
-
 vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.cj_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.cj_complete()", {expr = true})
 vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.ck_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.ck_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_accept()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_accept()", {expr = true})
+
+-- Use (s-)tab to:
+--- move to prev/next item in completion menuone
+--- jump to prev/next snippet's placeholder
+_G.tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-n>"
+  elseif vim.fn.call("vsnip#available", {1}) == 1 then
+    return t "<Plug>(vsnip-expand-or-jump)"
+  elseif check_back_space() then
+    return t "<Tab>"
+  else
+    return vim.fn['compe#complete']()
+  end
+end
+_G.s_tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-p>"
+  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
+    return t "<Plug>(vsnip-jump-prev)"
+  else
+    return t "<S-Tab>"
+  end
+end
+vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+
 
 -- nvim tree
 map('n', '<leader>n', '<cmd>NvimTreeFindFile<CR>')
@@ -307,16 +327,52 @@ vim.g.floaterm_autoclose = 1
 vim.g.floaterm_height = 0.8
 vim.g.floaterm_width = 0.8
 vim.g.floaterm_position = 'bottomright'
-map('n', '<c-s>', '<cmd>FloatermToggle<cr>', {silent = true})
-map('t', '<c-s>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
-map('n', '<leader>ca', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
+map('n', '<c-f>', '<cmd>FloatermToggle<cr>', {silent = true})
+map('t', '<c-f>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
+map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
 -- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
 
--- fzf custom pickers
-if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
-  vim.api.nvim_set_keymap('n', '<leader>p', '<cmd>Files<CR>', {noremap=true})
-end
+-- lualine
+require'lualine'.setup{
+  options = {
+    theme = 'gruvbox_material',
+    disabled_filetypes = {},
+    icons_enabled = true,
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch'},
+    lualine_c = {'filename'},
+    lualine_x = {
+      {
+        function()
+          local msg = 'none'
+          local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+          local clients = vim.lsp.get_active_clients()
+          if next(clients) == nil then return msg end
+          for _, client in ipairs(clients) do
+            local filetypes = client.config.filetypes
+            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+              return client.name
+            end
+          end
+          return msg
+        end,
+        icon = ' LSP:',
+      },
+      {
+        'diagnostics',
+        sources = {'nvim_lsp'},
+        symbols = {error = ' ', warn = ' ', info = ' '},
+        color_error = '#ea6962',
+        color_warn = '#d8a657',
+        color_info = '#89b482'
+      },
+      'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  }
+}
 
 ------------------- Navigation + tmux -----------------
 vim.g.tmux_navigator_no_mappings = 1
