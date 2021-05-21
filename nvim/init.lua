@@ -155,9 +155,9 @@ if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.fin
 end
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>m', "<cmd>lua require('telescope.builtin').oldfiles()<cr>")
+map('n', '<leader>p', "<cmd>lua require'telescope'.extensions.z.list{}<CR>", {noremap=true, silent=true})
 map('n', '<leader>jr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
 map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-map('n', '<leader>fp', "<cmd>lua require'telescope'.extensions.z.list{}<CR>", {noremap=true, silent=true})
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
 cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
@@ -327,8 +327,8 @@ vim.g.floaterm_autoclose = 1
 vim.g.floaterm_height = 0.8
 vim.g.floaterm_width = 0.8
 vim.g.floaterm_position = 'bottomright'
-map('n', '<c-f>', '<cmd>FloatermToggle<cr>', {silent = true})
-map('t', '<c-f>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
+map('n', '<c-s>', '<cmd>FloatermToggle<cr>', {silent = true})
+map('t', '<c-s>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
 map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
 -- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
 
