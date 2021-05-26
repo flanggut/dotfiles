@@ -1,4 +1,4 @@
--------------------- HELPERS -------------------------------
+
 local cmd = vim.cmd  -- to execute Vim commands e.g. cmd('pwd')
 local fn = vim.fn    -- to call Vim functions e.g. fn.bufnr()
 
@@ -62,6 +62,7 @@ require('packer').startup(function()
   use 'arzg/vim-swift'
   use 'b3nj5m1n/kommentary'
   use 'justinmk/vim-sneak'
+  use 'haya14busa/vim-asterisk'
   use 'mcchrish/nnn.vim'
   use 'mhinz/vim-startify'
   use 'mhinz/vim-signify'
@@ -82,7 +83,6 @@ end)
 -------------------- Basic Keybinds ------------------------
 vim.g.mapleader = ' '
 map('n', '<esc><esc>', '<cmd>nohlsearch<CR>')
-cmd('nnoremap <tab> <C-w>w')
 map('n', '<esc>l', "<C-^>")
 map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
@@ -149,14 +149,15 @@ require('telescope').setup{
 }
 require'telescope'.load_extension'z'
 map('n', '<C-k>', "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>")
-map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
+map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_lastused=true})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
 end
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
-map('n', '<leader>m', "<cmd>lua require('telescope.builtin').oldfiles()<cr>")
+map('n', '<leader>m', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=false,cwd_only=true})<cr>")
 map('n', '<leader>p', "<cmd>lua require'telescope'.extensions.z.list{}<CR>", {noremap=true, silent=true})
 map('n', '<leader>jr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
+map('n', '<leader>js', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
@@ -254,7 +255,7 @@ vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 -- nvim tree
 map('n', '<leader>n', '<cmd>NvimTreeFindFile<CR>')
 map('n', '<leader>N', '<cmd>NvimTreeToggle<CR>')
-vim.g.nvim_tree_width = 42
+vim.g.nvim_tree_width = 50
 vim.g.nvim_tree_auto_close = 1
 vim.g.nvim_tree_follow = 1
 vim.g.nvim_tree_lsp_diagnostics = 1
@@ -281,6 +282,13 @@ map('o', 'f', '<Plug>Sneak_f', {noremap = false})
 map('o', 'F', '<Plug>Sneak_F', {noremap = false})
 cmd("nmap <expr> N sneak#is_sneaking() ? '<Plug>Sneak_,' : 'N'")
 cmd("nmap <expr> n sneak#is_sneaking() ? '<Plug>Sneak_;' : 'n'")
+cmd('let g:sneak#use_ic_scs=1')
+
+-- vim-asterisk
+vim.cmd([[map *  <Plug>(asterisk-z*))]])
+vim.cmd([[map #  <Plug>(asterisk-z#)]])
+vim.cmd([[map g* <Plug>(asterisk-gz*)]])
+vim.cmd([[map g# <Plug>(asterisk-gz#)]])
 
 -- startify
 map('n', '<leader>S', '<cmd>Startify<CR>')
@@ -297,6 +305,7 @@ require'bufferline'.setup{}
 vim.g.indentLine_char = '│'
 vim.g.indentLine_first_char = '│'
 vim.g.indentLine_showFirstIndentLevel = 1
+vim.g.indentLine_bufTypeExclude = {'help', 'terminal'}
 
 -- better whitespace
 map('n', '<leader>sw', '<cmd>StripWhitespace<CR>')
@@ -394,9 +403,9 @@ local on_attach = function(client, bufnr)
   -- Mappings.
   local opts = { noremap=true, silent=true }
   buf_set_keymap('n', '<C-j>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  -- buf_set_keymap('i', '<C-j>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('i', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
