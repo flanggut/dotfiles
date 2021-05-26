@@ -37,6 +37,7 @@ require('packer').startup(function()
 
   -- treesitter
   use {'nvim-treesitter/nvim-treesitter'}
+  use {'nvim-treesitter/nvim-treesitter-refactor'}
 
   -- lualine
   use {
@@ -131,8 +132,31 @@ vim.o.smartcase = true
 
 -------------------- PLUGIN SETUP --------------------------
 -- treesitter
-local ts = require 'nvim-treesitter.configs'
-ts.setup {ensure_installed = 'maintained', highlight = {enable = true}}
+local tsconf = require 'nvim-treesitter.configs'
+tsconf.setup {
+  ensure_installed = 'maintained',
+  highlight = {enable = true},
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = '<leader>vv',
+      node_incremental = '<c-k>',
+      node_decremental = '<c-j>',
+      scope_incremental = '<c-l>'
+    }
+  },
+  indent = {
+    enable = true
+  },
+  refactor = {
+    smart_rename = {
+      enable = true,
+      keymaps = {
+        smart_rename = "<leader>sr",
+      },
+    },
+  },
+}
 
 -- telescope
 local actions = require('telescope.actions')
