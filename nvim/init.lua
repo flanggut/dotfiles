@@ -27,6 +27,7 @@ require('packer').startup(function()
 
   -- nvim-lspconfig
   use 'neovim/nvim-lspconfig'
+  use 'glepnir/lspsaga.nvim'
 
   -- telescope
   use {
@@ -57,12 +58,22 @@ require('packer').startup(function()
   --  bufferline lua
   use {'akinsho/nvim-bufferline.lua', requires = 'kyazdani42/nvim-web-devicons'}
 
+  -- hop
+  use {
+    'phaazon/hop.nvim',
+    as = 'hop',
+    config = function()
+      -- you can configure Hop the way you like here; see :h hop-config
+      require'hop'.setup { keys = 'asdghklqwertyuiopzxcvbnmfj' }
+    end
+  }
+
   use 'junegunn/fzf'
   use 'junegunn/fzf.vim'
 
   use 'arzg/vim-swift'
   use 'b3nj5m1n/kommentary'
-  use 'justinmk/vim-sneak'
+  -- use 'justinmk/vim-sneak'
   use 'haya14busa/vim-asterisk'
   use 'mcchrish/nnn.vim'
   use 'mhinz/vim-startify'
@@ -88,6 +99,7 @@ map('n', '<esc>l', "<C-^>")
 map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
+map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
 
 -------------------- Options -------------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -152,7 +164,7 @@ tsconf.setup {
     smart_rename = {
       enable = true,
       keymaps = {
-        smart_rename = "<leader>sr",
+        smart_rename = "<leader>rr",
       },
     },
   },
@@ -169,6 +181,22 @@ require('telescope').setup{
         ["<C-k>"] = actions.move_selection_previous,
       },
     },
+    sorting_strategy = "ascending",
+
+    preview_title = "",
+
+    layout_strategy = "bottom_pane",
+    layout_config = {
+      height = 25,
+    },
+
+    border = true,
+    borderchars = {
+      "z",
+      prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
+      results = { " " },
+      preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰"},
+    },
   }
 }
 require'telescope'.load_extension'z'
@@ -177,12 +205,12 @@ map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_lastused=
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
 end
-map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
-map('n', '<leader>m', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=false,cwd_only=true})<cr>")
-map('n', '<leader>p', "<cmd>lua require'telescope'.extensions.z.list{}<CR>", {noremap=true, silent=true})
-map('n', '<leader>jr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
-map('n', '<leader>js', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
+map('n', '<leader>fh', "<cmd>lua require('telescope.builtin').command_history()<cr>")
+map('n', '<leader>fl', "<cmd>lua require'telescope'.extensions.z.list{}<CR>", {noremap=true, silent=true})
+map('n', '<leader>fo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=false,cwd_only=true})<cr>")
+map('n', '<leader>fr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
+map('n', '<leader>fs', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
 cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
@@ -282,7 +310,6 @@ map('n', '<leader>N', '<cmd>NvimTreeToggle<CR>')
 vim.g.nvim_tree_width = 50
 vim.g.nvim_tree_auto_close = 1
 vim.g.nvim_tree_follow = 1
-vim.g.nvim_tree_lsp_diagnostics = 1
 
 -- sayonara
 map('n', '<leader>q', '<cmd>Sayonara<CR>')
@@ -295,18 +322,18 @@ vim.api.nvim_set_keymap("n", "<leader>x", "<Plug>kommentary_line_default", {})
 vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
 
 -- sneak
-vim.api.nvim_set_var('sneak#s_next', 1)
-vim.api.nvim_set_var('sneak#f_reset', 1)
-vim.api.nvim_set_var('sneak#t_reset', 1)
-vim.api.nvim_set_var('sneak#prompt', '> ')
-vim.api.nvim_set_var('sneak#absolute_dir', 0)
-map('n', 'f', '<Plug>Sneak_f', {noremap = false})
-map('n', 'F', '<Plug>Sneak_F', {noremap = false})
-map('o', 'f', '<Plug>Sneak_f', {noremap = false})
-map('o', 'F', '<Plug>Sneak_F', {noremap = false})
-cmd("nmap <expr> N sneak#is_sneaking() ? '<Plug>Sneak_,' : 'N'")
-cmd("nmap <expr> n sneak#is_sneaking() ? '<Plug>Sneak_;' : 'n'")
-cmd('let g:sneak#use_ic_scs=1')
+-- vim.api.nvim_set_var('sneak#s_next', 1)
+-- vim.api.nvim_set_var('sneak#f_reset', 1)
+-- vim.api.nvim_set_var('sneak#t_reset', 1)
+-- vim.api.nvim_set_var('sneak#prompt', '> ')
+-- vim.api.nvim_set_var('sneak#absolute_dir', 0)
+-- map('n', 'f', '<Plug>Sneak_f', {noremap = false})
+-- map('n', 'F', '<Plug>Sneak_F', {noremap = false})
+-- map('o', 'f', '<Plug>Sneak_f', {noremap = false})
+-- map('o', 'F', '<Plug>Sneak_F', {noremap = false})
+-- cmd("nmap <expr> N sneak#is_sneaking() ? '<Plug>Sneak_,' : 'N'")
+-- cmd("nmap <expr> n sneak#is_sneaking() ? '<Plug>Sneak_;' : 'n'")
+-- cmd('let g:sneak#use_ic_scs=1')
 
 -- vim-asterisk
 vim.cmd([[map *  <Plug>(asterisk-z*))]])
@@ -326,10 +353,12 @@ cmd("let g:startify_custom_indices = map(range(1,100), 'string(v:val)')")
 require'bufferline'.setup{}
 
 -- indentline
+vim.g.indentLine_enabled = 1
 vim.g.indentLine_char = '│'
 vim.g.indentLine_first_char = '│'
 vim.g.indentLine_showFirstIndentLevel = 1
 vim.g.indentLine_bufTypeExclude = {'help', 'terminal'}
+vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
 
 -- better whitespace
 map('n', '<leader>sw', '<cmd>StripWhitespace<CR>')
@@ -407,6 +436,12 @@ require'lualine'.setup{
   }
 }
 
+-- hop
+vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char1()<cr>", {})
+vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require'hop'.hint_char2()<cr>", {})
+vim.api.nvim_set_keymap('n', 'H', "<cmd>lua require'hop'.hint_words()<cr>", {})
+vim.api.nvim_set_keymap('n', 'L', "<cmd>lua require'hop'.hint_lines()<cr>", {})
+
 ------------------- Navigation + tmux -----------------
 vim.g.tmux_navigator_no_mappings = 1
 map('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {silent = true})
@@ -428,9 +463,17 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
   buf_set_keymap('n', '<C-j>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   -- buf_set_keymap('i', '<C-j>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  -- buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  -- buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', 'K', "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
+  buf_set_keymap('n', '<leader>e', "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>", opts)
+  buf_set_keymap('n', '<leader>sa', "<cmd>lua require'lspsaga.codeaction'.code_action()<CR>", opts)
+  buf_set_keymap('n', '<leader>sf', "<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>", opts)
+  buf_set_keymap('n', '<leader>sr', "<cmd>lua require'lspsaga.rename'.rename()<CR>", opts)
+  buf_set_keymap('n', '<C-f>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
+  buf_set_keymap('n', '<C-b>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
+  buf_set_keymap('i', '<C-h>', "<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>", opts)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
@@ -442,6 +485,17 @@ local on_attach = function(client, bufnr)
 
   cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
   require 'illuminate'.on_attach(client)
+
+  -- lspsaga
+  local saga = require 'lspsaga'
+
+  cmd("highlight LspSagaFinderSelection guifg='#A89984' gui='bold'")
+  cmd("highlight LspSagaCodeActionContent guifg='#A89984' gui='bold'")
+  cmd("highlight LspSagaRenameBorder guifg='#A89984'")
+  cmd("highlight LspSagaHoverBorder guifg='#A89984'")
+  cmd("highlight LspSagaSignatureHelpBorder guifg='#A89984'")
+  cmd("highlight LspSagaCodeActionBorder guifg='#A89984'")
+  cmd("highlight LspSagaDefPreviewBorder guifg='#A89984'")
 end
 
 -- Use a loop to conveniently both setup defined servers
