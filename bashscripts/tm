@@ -106,14 +106,29 @@ __tm() {
 		if $(which fzf &>/dev/null); then
 			attach=$(tmux ls -F '#S'|fzf +m --cycle -1 --height=8 --layout=reverse-list --prompt="Choose session> ")
 			if [[ -n $attach ]]; then
-				$tmux_cmd attach -t $attach
+				declare -a windows=( $(tmux list-windows -t $attach -F '#W') )
+				if [[ ${#windows} > 1 ]]; then
+					window=$(printf '%s\n' ${windows[@]}|fzf +m --cycle -1 --height=8 --layout=reverse-list --prompt="Choose window> ")
+					$tmux_cmd attach -t $attach:$window
+				else
+					$tmux_cmd attach -t $attach
+				fi
 			fi
 		else
 			options=($($tmux_cmd ls -F '#S'))
 			if [[ ${#options[@]} -gt 1 ]]; then
 				attach=$(__menu "Select session: " "${options[@]}")
 				if [[ "$attach" != "CANCEL" ]]; then
-					$tmux_cmd attach -t $attach
+					options=($($tmux_cmd list-windows -t $attach -F '#W'))
+					if [[ ${#options[@]} -gt 1 ]]; then
+						window=$(__menu "Select window: " "${options[@]}")
+						if [[ $window == "CANCEL" ]]; then
+							return 0
+						fi
+					else
+						window=${options[0]}
+					fi
+					$tmux_cmd attach -t $attach:$window
 				fi
 			else
 				$tmux_cmd attach -t ${options[0]}
