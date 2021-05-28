@@ -73,7 +73,6 @@ require('packer').startup(function()
 
   use 'arzg/vim-swift'
   use 'b3nj5m1n/kommentary'
-  -- use 'justinmk/vim-sneak'
   use 'haya14busa/vim-asterisk'
   use 'mcchrish/nnn.vim'
   use 'mhinz/vim-startify'
@@ -142,8 +141,8 @@ vim.o.incsearch = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
--------------------- PLUGIN SETUP --------------------------
--- treesitter
+-------------------- Plugin Setup --------------------------
+-- TREESITTER
 local tsconf = require 'nvim-treesitter.configs'
 tsconf.setup {
   ensure_installed = 'maintained',
@@ -170,7 +169,7 @@ tsconf.setup {
   },
 }
 
--- telescope
+-- TELESCOPE
 local actions = require('telescope.actions')
 require('telescope').setup{
   defaults = {
@@ -217,7 +216,7 @@ cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find 
   vim.api.nvim_set_keymap('n', '<C-p>', '<cmd>Files<CR>', {noremap=true})
 end
 
--- nvim compe
+-- NVIM COMPE
 require'compe'.setup {
   preselect = 'always';
 
@@ -304,24 +303,24 @@ vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
 
--- nvim tree
+-- NVIMTREE
 map('n', '<leader>n', '<cmd>NvimTreeFindFile<CR>')
 map('n', '<leader>N', '<cmd>NvimTreeToggle<CR>')
 vim.g.nvim_tree_width = 50
 vim.g.nvim_tree_auto_close = 1
 vim.g.nvim_tree_follow = 1
 
--- sayonara
+-- SAYONARA
 map('n', '<leader>q', '<cmd>Sayonara<CR>')
 
--- kommentary
+-- KOMMENTARY
 require('kommentary.config').configure_language("default", {
     prefer_single_line_comments = true,
 })
 vim.api.nvim_set_keymap("n", "<leader>x", "<Plug>kommentary_line_default", {})
 vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
 
--- sneak
+-- SNEAK
 -- vim.api.nvim_set_var('sneak#s_next', 1)
 -- vim.api.nvim_set_var('sneak#f_reset', 1)
 -- vim.api.nvim_set_var('sneak#t_reset', 1)
@@ -335,13 +334,13 @@ vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
 -- cmd("nmap <expr> n sneak#is_sneaking() ? '<Plug>Sneak_;' : 'n'")
 -- cmd('let g:sneak#use_ic_scs=1')
 
--- vim-asterisk
+-- VIM-ASTERISK
 vim.cmd([[map *  <Plug>(asterisk-z*))]])
 vim.cmd([[map #  <Plug>(asterisk-z#)]])
 vim.cmd([[map g* <Plug>(asterisk-gz*)]])
 vim.cmd([[map g# <Plug>(asterisk-gz#)]])
 
--- startify
+-- STARTIFY
 map('n', '<leader>S', '<cmd>Startify<CR>')
 vim.g.startify_change_to_dir =  0
 vim.g.startify_files_number = 20
@@ -349,10 +348,10 @@ vim.g.startify_enable_special = 0
 vim.g.startify_bookmarks = {{ c = '~/.config/nvim/init.lua'}}
 cmd("let g:startify_custom_indices = map(range(1,100), 'string(v:val)')")
 
--- bufferline
+-- BUFFERLINE
 require'bufferline'.setup{}
 
--- indentline
+-- INDENTLINE
 vim.g.indentLine_enabled = 1
 vim.g.indentLine_char = '│'
 vim.g.indentLine_first_char = '│'
@@ -360,7 +359,7 @@ vim.g.indentLine_showFirstIndentLevel = 1
 vim.g.indentLine_bufTypeExclude = {'help', 'terminal'}
 vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
 
--- better whitespace
+-- BETTER WHITESPACE
 map('n', '<leader>sw', '<cmd>StripWhitespace<CR>')
 vim.g.better_whitespace_enabled = 1
 vim.g.strip_whitespace_on_save = 0
@@ -368,18 +367,18 @@ vim.g.strip_max_file_size = 10000
 vim.g.strip_whitelines_at_eof = 1
 vim.g.better_whitespace_filetypes_blacklist= { 'packer' }
 
--- illuminate
+-- ILLUMINATE
 map('n', '<a-n>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>')
 map('n', '<a-p>', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>')
 vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
 
--- nnn
+-- NNN
 cmd([[let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }]])
 cmd([[let g:nnn#set_default_mappings = 0]])
 cmd([[let g:nnn#command = 'nnn -A']])
 map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
--- floatterm
+-- FLOATTERM
 if vim.fn.has('mac') == 1 then
   vim.g.floatterm_shell = '/usr/local/bin/fish'
 else
@@ -394,7 +393,7 @@ map('t', '<c-s>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
 map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
 -- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
 
--- lualine
+-- LUALINE
 require'lualine'.setup{
   options = {
     theme = 'gruvbox_material',
@@ -420,7 +419,7 @@ require'lualine'.setup{
           end
           return msg
         end,
-        icon = ' LSP:',
+        icon = ' :',
       },
       {
         'diagnostics',
@@ -436,13 +435,13 @@ require'lualine'.setup{
   }
 }
 
--- hop
+-- HOP
 vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char1()<cr>", {})
 vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require'hop'.hint_char2()<cr>", {})
 vim.api.nvim_set_keymap('n', 'H', "<cmd>lua require'hop'.hint_words()<cr>", {})
 vim.api.nvim_set_keymap('n', 'L', "<cmd>lua require'hop'.hint_lines()<cr>", {})
 
-------------------- Navigation + tmux -----------------
+------------------- Navigation + TMUX -----------------
 vim.g.tmux_navigator_no_mappings = 1
 map('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {silent = true})
 map('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {silent = true})
@@ -451,7 +450,7 @@ map('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {silent = true})
 map('n', '<A-,>', '<cmd>split<cr>', {silent = true})
 map('n', '<A-.>', '<cmd>vsplit<cr>', {silent = true})
 
--------------------- LSP SETUP ------------------------------
+-------------------- LSP Setup ------------------------------
 local nvim_lsp = require ('lspconfig')
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -486,7 +485,7 @@ local on_attach = function(client, bufnr)
   cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
   require 'illuminate'.on_attach(client)
 
-  -- lspsaga
+  -- LSPSAGA
   local saga = require 'lspsaga'
 
   cmd("highlight LspSagaFinderSelection guifg='#A89984' gui='bold'")
