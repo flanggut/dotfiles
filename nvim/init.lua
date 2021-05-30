@@ -88,6 +88,7 @@ require('packer').startup(function()
   use 'christoomey/vim-tmux-navigator'
   use 'hrsh7th/vim-vsnip'
   use 'hrsh7th/vim-vsnip-integ'
+  use 'ray-x/lsp_signature.nvim'
 
 end)
 
@@ -155,9 +156,6 @@ tsconf.setup {
       node_decremental = '<c-j>',
       scope_incremental = '<c-l>'
     }
-  },
-  indent = {
-    enable = true
   },
   refactor = {
     smart_rename = {
@@ -311,7 +309,7 @@ vim.g.nvim_tree_auto_close = 1
 vim.g.nvim_tree_follow = 1
 
 -- SAYONARA
-map('n', '<leader>q', '<cmd>Sayonara<CR>')
+map('n', '<leader>q', '<cmd>Sayonara!<CR>')
 
 -- KOMMENTARY
 require('kommentary.config').configure_language("default", {
@@ -436,8 +434,8 @@ require'lualine'.setup{
 }
 
 -- HOP
-vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char1()<cr>", {})
-vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require'hop'.hint_char2()<cr>", {})
+vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require'hop'.hint_char1()<cr>", {})
+vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char2()<cr>", {})
 vim.api.nvim_set_keymap('n', 'H', "<cmd>lua require'hop'.hint_words()<cr>", {})
 vim.api.nvim_set_keymap('n', 'L', "<cmd>lua require'hop'.hint_lines()<cr>", {})
 
@@ -483,7 +481,7 @@ local on_attach = function(client, bufnr)
   end
 
   cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
-  require 'illuminate'.on_attach(client)
+  require 'lsp_signature'.on_attach({bind = true, floating_window = false, hint_prefix = '  '})
 
   -- LSPSAGA
   local saga = require 'lspsaga'
@@ -497,12 +495,13 @@ local on_attach = function(client, bufnr)
   cmd("highlight LspSagaDefPreviewBorder guifg='#A89984'")
 end
 
--- Use a loop to conveniently both setup defined servers
--- and map buffer local keybindings when the language server attaches
-local servers = { "clangd" }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup { on_attach = on_attach }
-end
+nvim_lsp['clangd'].setup {
+  on_attach = on_attach,
+  cmd = {
+    "clangd", "--background-index", "--completion-style=detailed",
+    "--header-insertion=never"
+  }
+}
 
 --------------------- Custom functions -----------------
 function CodeLink()
