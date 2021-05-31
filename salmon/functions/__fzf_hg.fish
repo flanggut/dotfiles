@@ -15,13 +15,15 @@ function __fzf_hg
   --ansi --no-sort --reverse --preview-window right:60% \
   --preview "rg -N --passthru --color=always (echo {} | cut -c -9) ~/.cache/fzf_hg_smartlog" \
   --bind "enter:execute(hg up (echo {} | cut -c -9) && hg fsl --color always 2>/dev/null)+abort" \
+  --bind "ctrl-e:execute(hg up master)+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-u:execute(hg up (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-g:execute(hg graft (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-r:execute(hg rebase -s (echo {} | cut -c -9) -d master )+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-h:execute(hg rebase -s (echo {} | cut -c -9) -d . )+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-p:execute(hg pull)+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-s:execute(hg show --color always (echo {} | cut -c -9) | less -R)" \
-  --bind "ctrl-y:execute(printf (echo {} | cut -c -9) | pbcopy)+abort"
+  --bind "ctrl-t:execute(hg rebase -s (echo {} | cut -c -9) -d (pbpaste) )+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
+  --bind "ctrl-y:execute(printf (echo {} | cut -c -9) | pbcopy)"
 
   # Reprint the command line
   commandline ""
