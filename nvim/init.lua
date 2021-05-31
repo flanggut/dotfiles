@@ -30,42 +30,48 @@ require('packer').startup(function()
   use 'glepnir/lspsaga.nvim'
 
   -- telescope
-  use {
-    'nvim-telescope/telescope.nvim',
+  use {'nvim-telescope/telescope.nvim',
     requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
   }
   use 'nvim-telescope/telescope-z.nvim'
 
   -- treesitter
-  use {'nvim-treesitter/nvim-treesitter'}
-  use {'nvim-treesitter/nvim-treesitter-refactor'}
+  use {'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate'
+  }
+  use 'nvim-treesitter/nvim-treesitter-refactor'
 
   -- lualine
-  use {
-    'hoob3rt/lualine.nvim',
+  use {'hoob3rt/lualine.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true}
   }
 
   -- nvim-tree
-  use {
-    'kyazdani42/nvim-tree.lua',
+  use {'kyazdani42/nvim-tree.lua',
     requires = {'kyazdani42/nvim-web-devicons', opt = true},
   }
 
   -- nvim-compe
-  use 'hrsh7th/nvim-compe'
+  use {'hrsh7th/nvim-compe',
+    requires = {{'hrsh7th/vim-vsnip', opt = true}, {'hrsh7th/vim-vsnip-integ', opt = true}}
+  }
 
   --  bufferline lua
-  use {'akinsho/nvim-bufferline.lua', requires = 'kyazdani42/nvim-web-devicons'}
+  use {'akinsho/nvim-bufferline.lua',
+    requires = {'kyazdani42/nvim-web-devicons', opt = true},
+  }
 
   -- hop
-  use {
-    'phaazon/hop.nvim',
+  use {'phaazon/hop.nvim',
     as = 'hop',
     config = function()
       -- you can configure Hop the way you like here; see :h hop-config
       require'hop'.setup { keys = 'asdghklqwertyuiopzxcvbnmfj' }
     end
+  }
+
+  use {'lukas-reineke/indent-blankline.nvim',
+    branch = 'lua'
   }
 
   use 'junegunn/fzf'
@@ -84,10 +90,7 @@ require('packer').startup(function()
   use 'RRethy/nvim-base16'
   use 'RRethy/vim-illuminate'
   use 'voldikss/vim-floaterm'
-  use 'Yggdroot/indentLine'
   use 'christoomey/vim-tmux-navigator'
-  use 'hrsh7th/vim-vsnip'
-  use 'hrsh7th/vim-vsnip-integ'
   use 'ray-x/lsp_signature.nvim'
 
 end)
@@ -352,9 +355,6 @@ require'bufferline'.setup{}
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
 vim.g.indentLine_char = '│'
-vim.g.indentLine_first_char = '│'
-vim.g.indentLine_showFirstIndentLevel = 1
-vim.g.indentLine_bufTypeExclude = {'help', 'terminal'}
 vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
 
 -- BETTER WHITESPACE
@@ -495,12 +495,23 @@ local on_attach = function(client, bufnr)
   cmd("highlight LspSagaDefPreviewBorder guifg='#A89984'")
 end
 
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.textDocument.completion.completionItem.resolveSupport = {
+  properties = {
+    'documentation',
+    'detail',
+    'additionalTextEdits',
+  }
+}
+
 nvim_lsp['clangd'].setup {
-  on_attach = on_attach,
+  capabilities = capabilities,
   cmd = {
     "clangd", "--background-index", "--completion-style=detailed",
-    "--header-insertion=never"
-  }
+    "--header-insertion=never", "-j=8"
+  },
+  on_attach = on_attach
 }
 
 --------------------- Custom functions -----------------
