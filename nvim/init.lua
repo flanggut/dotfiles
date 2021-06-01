@@ -109,6 +109,12 @@ vim.o.background = "dark" -- or "light" for light mode
 if vim.fn.has('termguicolors') == 1 then
    vim.o.termguicolors = true
 end
+vim.api.nvim_command([[
+  augroup MyColors
+    autocmd ColorScheme gruvbox-material highlight link TSError Normal
+  augroup END
+]])
+
 cmd 'colorscheme gruvbox-material'
 
 -- Basic must haves
@@ -312,7 +318,8 @@ vim.g.nvim_tree_auto_close = 1
 vim.g.nvim_tree_follow = 1
 
 -- SAYONARA
-map('n', '<leader>q', '<cmd>Sayonara!<CR>')
+map('n', '<leader>q', '<cmd>Sayonara<CR>')
+map('n', '<leader>w', '<cmd>Sayonara!<CR>')
 
 -- KOMMENTARY
 require('kommentary.config').configure_language("default", {
