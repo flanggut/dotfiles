@@ -53,7 +53,7 @@ require('packer').startup(function()
 
   -- nvim-compe
   use {'hrsh7th/nvim-compe',
-    requires = {{'hrsh7th/vim-vsnip', opt = true}, {'hrsh7th/vim-vsnip-integ', opt = true}}
+    requires = {{'hrsh7th/vim-vsnip'}, {'hrsh7th/vim-vsnip-integ'}}
   }
 
   --  bufferline lua
@@ -76,7 +76,7 @@ require('packer').startup(function()
 
   use 'junegunn/fzf'
   use 'junegunn/fzf.vim'
-
+  use 'windwp/nvim-autopairs'
   use 'arzg/vim-swift'
   use 'b3nj5m1n/kommentary'
   use 'haya14busa/vim-asterisk'
@@ -92,6 +92,8 @@ require('packer').startup(function()
   use 'voldikss/vim-floaterm'
   use 'christoomey/vim-tmux-navigator'
   use 'ray-x/lsp_signature.nvim'
+  use 'famiu/nvim-reload'
+  use 'tversteeg/registers.nvim'
 
 end)
 
@@ -103,6 +105,9 @@ map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
 map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
+map('n', 'gh', "<cmd>bprev<CR>")
+map('n', 'gl', "<cmd>bnext<CR>")
+map('n', 'F', "za", {noremap=false})
 
 -------------------- Options -------------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -175,6 +180,10 @@ tsconf.setup {
     },
   },
 }
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.wo.foldnestmax = 2
+cmd([[autocmd BufEnter * normal zR]])
 
 -- TELESCOPE
 local actions = require('telescope.actions')
@@ -206,8 +215,7 @@ require('telescope').setup{
   }
 }
 require'telescope'.load_extension'z'
-map('n', '<C-k>', "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>")
-map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_lastused=true})<cr>")
+map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
 end
@@ -216,6 +224,7 @@ map('n', '<leader>fh', "<cmd>lua require('telescope.builtin').command_history()<
 map('n', '<leader>fl', "<cmd>lua require'telescope'.extensions.z.list{}<CR>", {noremap=true, silent=true})
 map('n', '<leader>fo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=false,cwd_only=true})<cr>")
 map('n', '<leader>fr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
+map('n', '<leader>fk', "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>")
 map('n', '<leader>fs', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
@@ -327,6 +336,9 @@ require('kommentary.config').configure_language("default", {
 })
 vim.api.nvim_set_keymap("n", "<leader>x", "<Plug>kommentary_line_default", {})
 vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
+
+-- AUTOPAIRS
+require('nvim-autopairs').setup()
 
 -- SNEAK
 -- vim.api.nvim_set_var('sneak#s_next', 1)
@@ -470,13 +482,13 @@ local on_attach = function(client, bufnr)
   -- buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   -- buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', 'K', "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
   buf_set_keymap('n', '<leader>e', "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>", opts)
   buf_set_keymap('n', '<leader>sa', "<cmd>lua require'lspsaga.codeaction'.code_action()<CR>", opts)
   buf_set_keymap('n', '<leader>sf', "<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>", opts)
   buf_set_keymap('n', '<leader>sr', "<cmd>lua require'lspsaga.rename'.rename()<CR>", opts)
   buf_set_keymap('n', '<C-f>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
   buf_set_keymap('n', '<C-b>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
+  buf_set_keymap('n', '<C-k>', "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
   buf_set_keymap('i', '<C-h>', "<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>", opts)
 
   -- Set some keybinds conditional on server capabilities
