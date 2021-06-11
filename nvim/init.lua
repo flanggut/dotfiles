@@ -156,6 +156,11 @@ vim.o.incsearch = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
+-- highlight text on yank
+cmd([[
+  au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}
+]])
+
 -------------------- Plugin Setup --------------------------
 -- TREESITTER
 local tsconf = require 'nvim-treesitter.configs'
@@ -165,7 +170,7 @@ tsconf.setup {
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = '<leader>vv',
+      init_selection = '<leader>v',
       node_incremental = '<c-k>',
       node_decremental = '<c-j>',
       scope_incremental = '<c-l>'
@@ -180,9 +185,9 @@ tsconf.setup {
     },
   },
 }
-vim.wo.foldmethod = 'expr'
-vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-vim.wo.foldnestmax = 2
+vim.wo.foldmethod = 'indent'
+-- vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.wo.foldnestmax = 1
 cmd([[autocmd BufEnter * normal zR]])
 
 -- TELESCOPE
@@ -221,11 +226,12 @@ if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.fin
 end
 map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>fh', "<cmd>lua require('telescope.builtin').command_history()<cr>")
-map('n', '<leader>fl', "<cmd>lua require'telescope'.extensions.z.list{}<CR>", {noremap=true, silent=true})
+map('n', '<leader>fl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
 map('n', '<leader>fo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=false,cwd_only=true})<cr>")
 map('n', '<leader>fr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
 map('n', '<leader>fk', "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>")
 map('n', '<leader>fs', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
+map('n', '<leader>fq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
 cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
