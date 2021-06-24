@@ -8,10 +8,6 @@ local function map(mode, lhs, rhs, opts) -- map keybind
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
-local function t(str) -- replace termcode
-    return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
 -------------------- PLUGINS -------------------------------
 
 -- Auto install packer.nvim if not exists
@@ -25,21 +21,23 @@ require('packer').startup(function()
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- nvim-lspconfig
+  -- treesitter
+  use {'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate'
+  }
+  use 'nvim-treesitter/nvim-treesitter-refactor'
+  use 'RRethy/nvim-treesitter-textsubjects'
+
+  -- nvim-lsp
   use 'neovim/nvim-lspconfig'
   use 'glepnir/lspsaga.nvim'
+  use 'ray-x/lsp_signature.nvim'
 
   -- telescope
   use {'nvim-telescope/telescope.nvim',
     requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
   }
   use 'nvim-telescope/telescope-z.nvim'
-
-  -- treesitter
-  use {'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate'
-  }
-  use 'nvim-treesitter/nvim-treesitter-refactor'
 
   -- lualine
   use {'hoob3rt/lualine.nvim',
@@ -56,44 +54,38 @@ require('packer').startup(function()
     requires = {{'hrsh7th/vim-vsnip'}, {'hrsh7th/vim-vsnip-integ'}}
   }
 
-  --  bufferline lua
-  use {'akinsho/nvim-bufferline.lua',
+  -- barbar
+  use {'romgrk/barbar.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true},
   }
 
-  -- hop
-  use {'phaazon/hop.nvim',
-    as = 'hop',
-    config = function()
-      -- you can configure Hop the way you like here; see :h hop-config
-      require'hop'.setup { keys = 'asdghklqwertyuiopzxcvbnmfj' }
-    end
-  }
 
+  -- indent line
   use {'lukas-reineke/indent-blankline.nvim',
     branch = 'lua'
   }
 
-  use 'junegunn/fzf'
-  use 'junegunn/fzf.vim'
-  use 'windwp/nvim-autopairs'
-  use 'arzg/vim-swift'
-  use 'b3nj5m1n/kommentary'
-  use 'haya14busa/vim-asterisk'
-  use 'mcchrish/nnn.vim'
-  use 'mhinz/vim-startify'
-  use 'mhinz/vim-signify'
-  use 'mhinz/vim-sayonara'
+  -- the usual
+  use {'junegunn/fzf', 'junegunn/fzf.vim'}
+  use {'tpope/vim-repeat', 'tpope/vim-surround'}
+  use {'mhinz/vim-startify', 'mhinz/vim-signify'}
+
+  use 'sainnhe/gruvbox-material' -- color scheme of choice
+  use 'ggandor/lightspeed.nvim' -- the new sneak
+  use 'windwp/nvim-autopairs' -- insert pairs automatically
+  use 'psliwka/vim-smoothie' -- smooth scrolling
+  use 'b3nj5m1n/kommentary' -- comments
+  use 'haya14busa/vim-asterisk' -- better search commands
+  use 'mcchrish/nnn.vim' -- best file browser
   use 'ntpeters/vim-better-whitespace'
-  use 'psliwka/vim-smoothie'
-  use 'sainnhe/gruvbox-material'
-  use 'RRethy/nvim-base16'
   use 'RRethy/vim-illuminate'
   use 'voldikss/vim-floaterm'
   use 'christoomey/vim-tmux-navigator'
-  use 'ray-x/lsp_signature.nvim'
   use 'famiu/nvim-reload'
   use 'tversteeg/registers.nvim'
+  use 'mizlan/iswap.nvim'
+  use 'matbme/JABS.nvim'
+  use 'arzg/vim-swift' -- swift language support
 
 end)
 
@@ -105,9 +97,7 @@ map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
 map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
-map('n', 'gh', "<cmd>bprev<CR>")
-map('n', 'gl', "<cmd>bnext<CR>")
-map('n', 'F', "za", {noremap=false})
+map('n', '<leader>F', "za", {noremap=false})
 
 -------------------- Options -------------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -136,6 +126,9 @@ vim.o.laststatus = 2
 vim.o.splitbelow = true
 vim.o.completeopt='menuone,noselect'
 vim.wo.number = true                -- line numbers
+vim.wo.foldmethod = 'indent'
+vim.wo.foldnestmax = 1
+vim.o.foldlevelstart = 1
 cmd('set diffopt+=vertical')
 cmd('set signcolumn=yes')
 -- cmd([[autocmd BufEnter * if expand("%:p:h") !~ '^/tmp' | silent! lcd %:p:h | endif]])
@@ -167,15 +160,15 @@ local tsconf = require 'nvim-treesitter.configs'
 tsconf.setup {
   ensure_installed = 'maintained',
   highlight = {enable = true},
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = '<leader>v',
-      node_incremental = '<c-k>',
-      node_decremental = '<c-j>',
-      scope_incremental = '<c-l>'
-    }
-  },
+  -- incremental_selection = {
+  --   enable = true,
+  --   keymaps = {
+  --     init_selection = '<leader>v',
+  --     node_incremental = '<c-k>',
+  --     node_decremental = '<c-j>',
+  --     scope_incremental = '<c-l>'
+  --   }
+  -- },
   refactor = {
     smart_rename = {
       enable = true,
@@ -184,11 +177,14 @@ tsconf.setup {
       },
     },
   },
+  textsubjects = {
+        enable = true,
+        keymaps = {
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-big',
+        }
+  },
 }
-vim.wo.foldmethod = 'indent'
--- vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-vim.wo.foldnestmax = 1
-cmd([[autocmd BufEnter * normal zR]])
 
 -- TELESCOPE
 local actions = require('telescope.actions')
@@ -224,14 +220,12 @@ map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
 end
-map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-map('n', '<leader>fh', "<cmd>lua require('telescope.builtin').command_history()<cr>")
-map('n', '<leader>fl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
-map('n', '<leader>fo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=false,cwd_only=true})<cr>")
-map('n', '<leader>fr', "<cmd>lua require('telescope.builtin').lsp_references()<cr>")
-map('n', '<leader>fk', "<cmd>lua require('telescope.builtin').lsp_document_symbols()<cr>")
-map('n', '<leader>fs', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
-map('n', '<leader>fq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
+map('n', '<leader>ef', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
+map('n', '<leader>eh', "<cmd>lua require('telescope.builtin').command_history()<cr>")
+map('n', '<leader>el', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
+map('n', '<leader>eo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
+map('n', '<leader>es', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
+map('n', '<leader>eq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
 cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
@@ -326,15 +320,30 @@ vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
 
 -- NVIMTREE
-map('n', '<leader>n', '<cmd>NvimTreeFindFile<CR>')
-map('n', '<leader>N', '<cmd>NvimTreeToggle<CR>')
-vim.g.nvim_tree_width = 50
-vim.g.nvim_tree_auto_close = 1
-vim.g.nvim_tree_follow = 1
+tree = {}
+tree.open = function ()
+   require'bufferline.state'.set_offset(51, '')
+   require'nvim-tree'.find_file(true)
+end
 
--- SAYONARA
-map('n', '<leader>q', '<cmd>Sayonara<CR>')
-map('n', '<leader>w', '<cmd>Sayonara!<CR>')
+tree.close = function ()
+   require'bufferline.state'.set_offset(0)
+   require'nvim-tree'.close()
+end
+
+map('n', '<leader>n', '<cmd>lua tree.open()<CR>zz')
+map('n', '<leader>m', '<cmd>lua tree.close()<CR>')
+vim.g.nvim_tree_width = 50
+vim.g.nvim_tree_follow = 1
+vim.g.nvim_tree_auto_close = 1
+
+-- BARBAR
+map('n', 'gh', "<cmd>BufferPrevious<CR>")
+map('n', 'gl', "<cmd>BufferNext<CR>")
+map('n', '<leader>j', "<cmd>BufferPick<CR>")
+map('n', '<leader>bo', "<cmd>BufferCloseAllButCurrent<CR>")
+map('n', '<leader>bd', "<cmd>BufferOrderByDirectory<CR>")
+map('n', '<leader>q', "<cmd>BufferClose<CR>")
 
 -- KOMMENTARY
 require('kommentary.config').configure_language("default", {
@@ -345,20 +354,6 @@ vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
 
 -- AUTOPAIRS
 require('nvim-autopairs').setup()
-
--- SNEAK
--- vim.api.nvim_set_var('sneak#s_next', 1)
--- vim.api.nvim_set_var('sneak#f_reset', 1)
--- vim.api.nvim_set_var('sneak#t_reset', 1)
--- vim.api.nvim_set_var('sneak#prompt', '> ')
--- vim.api.nvim_set_var('sneak#absolute_dir', 0)
--- map('n', 'f', '<Plug>Sneak_f', {noremap = false})
--- map('n', 'F', '<Plug>Sneak_F', {noremap = false})
--- map('o', 'f', '<Plug>Sneak_f', {noremap = false})
--- map('o', 'F', '<Plug>Sneak_F', {noremap = false})
--- cmd("nmap <expr> N sneak#is_sneaking() ? '<Plug>Sneak_,' : 'N'")
--- cmd("nmap <expr> n sneak#is_sneaking() ? '<Plug>Sneak_;' : 'n'")
--- cmd('let g:sneak#use_ic_scs=1')
 
 -- VIM-ASTERISK
 vim.cmd([[map *  <Plug>(asterisk-z*))]])
@@ -374,9 +369,6 @@ vim.g.startify_enable_special = 0
 vim.g.startify_bookmarks = {{ c = '~/.config/nvim/init.lua'}}
 cmd("let g:startify_custom_indices = map(range(1,100), 'string(v:val)')")
 
--- BUFFERLINE
-require'bufferline'.setup{}
-
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
 vim.g.indentLine_char = '│'
@@ -388,7 +380,7 @@ vim.g.better_whitespace_enabled = 1
 vim.g.strip_whitespace_on_save = 0
 vim.g.strip_max_file_size = 10000
 vim.g.strip_whitelines_at_eof = 1
-vim.g.better_whitespace_filetypes_blacklist= { 'packer' }
+vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'lspsaga' }
 
 -- ILLUMINATE
 map('n', '<a-n>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>')
@@ -459,10 +451,12 @@ require'lualine'.setup{
 }
 
 -- HOP
-vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require'hop'.hint_char1()<cr>", {})
-vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char2()<cr>", {})
-vim.api.nvim_set_keymap('n', 'H', "<cmd>lua require'hop'.hint_words()<cr>", {})
-vim.api.nvim_set_keymap('n', 'L', "<cmd>lua require'hop'.hint_lines()<cr>", {})
+-- vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require'hop'.hint_char1()<cr>", {})
+-- vim.api.nvim_set_keymap('v', 'f', "<cmd>lua require'hop'.hint_char1()<cr>", {})
+-- vim.api.nvim_set_keymap('n', 'L', "<cmd>lua require'hop'.hint_lines()<cr>", {})
+-- vim.api.nvim_set_keymap('v', 'L', "<cmd>lua require'hop'.hint_lines()<cr>", {})
+-- vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char2()<cr>", {})
+-- vim.api.nvim_set_keymap('n', 'H', "<cmd>lua require'hop'.hint_words()<cr>", {})
 
 ------------------- Navigation + TMUX -----------------
 vim.g.tmux_navigator_no_mappings = 1
@@ -484,18 +478,21 @@ local on_attach = function(client, bufnr)
   -- Mappings.
   local opts = { noremap=true, silent=true }
   buf_set_keymap('n', '<C-j>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  -- buf_set_keymap('i', '<C-j>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  -- buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  -- buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<leader>e', "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>", opts)
+  buf_set_keymap('i', '<C-h>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<leader>ea', "<cmd>lua require'telescope.builtin'.lsp_code_actions()<CR>", opts)
+  buf_set_keymap('n', '<leader>ei', "<cmd>lua require'telescope.builtin'.lsp_implementations()<CR>", opts)
+  buf_set_keymap('n', '<leader>er', "<cmd>lua require'telescope.builtin'.lsp_references()<cr>", opts)
+  buf_set_keymap('n', '<leader>es', "<cmd>lua require'telescope.builtin'.lsp_document_symbols()<cr>", opts)
+  -- buf_set_keymap('n', '<leader>e', "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>", opts)
+  buf_set_keymap('n', '<leader>sr', "<cmd>lua require'lspsaga.rename'.rename()<CR>", opts)
   buf_set_keymap('n', '<leader>sa', "<cmd>lua require'lspsaga.codeaction'.code_action()<CR>", opts)
   buf_set_keymap('n', '<leader>sf', "<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>", opts)
-  buf_set_keymap('n', '<leader>sr', "<cmd>lua require'lspsaga.rename'.rename()<CR>", opts)
+  buf_set_keymap('n', '<C-k>', "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
+  -- buf_set_keymap('i', '<C-h>', "<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>", opts)
   buf_set_keymap('n', '<C-f>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
   buf_set_keymap('n', '<C-b>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
-  buf_set_keymap('n', '<C-k>', "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
-  buf_set_keymap('i', '<C-h>', "<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>", opts)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
@@ -510,6 +507,12 @@ local on_attach = function(client, bufnr)
 
   -- LSPSAGA
   local saga = require 'lspsaga'
+  saga.init_lsp_saga {
+    max_preview_lines = 15,
+    finder_action_keys = {
+      open = '<CR>', vsplit = 's',split = 'i',quit = 'q',scroll_down = '<C-f>', scroll_up = '<C-b>' -- quit can be a table
+    },
+  }
 
   cmd("highlight LspSagaFinderSelection guifg='#A89984' gui='bold'")
   cmd("highlight LspSagaCodeActionContent guifg='#A89984' gui='bold'")
