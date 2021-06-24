@@ -22,7 +22,7 @@ function __fzf_hg
   --bind "ctrl-r:execute(hg rebase -s (echo {} | cut -c -9) -d . )+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-p:execute(hg pull)+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-s:execute(hg show --color always (echo {} | cut -c -9) | less -R)" \
-  --bind "ctrl-t:execute(hg rebase -s (echo {} | cut -c -9) -d (pbpaste) )+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
+  --bind "ctrl-t:execute(hg rebase -s (pbpaste) -d (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
   --bind "ctrl-y:execute(printf (echo {} | cut -c -9) | pbcopy)"
 
   # Reprint the command line
