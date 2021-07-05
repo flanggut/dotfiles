@@ -49,7 +49,7 @@ require('packer').startup(function()
     requires = {'kyazdani42/nvim-web-devicons', opt = true},
   }
 
-  -- nvim-compe
+  -- nvim-compe and vsnip
   use {'hrsh7th/nvim-compe',
     requires = {{'hrsh7th/vim-vsnip'}, {'hrsh7th/vim-vsnip-integ'}}
   }
@@ -59,23 +59,17 @@ require('packer').startup(function()
     requires = {'kyazdani42/nvim-web-devicons', opt = true},
   }
 
-
-  -- indent line
-  use {'lukas-reineke/indent-blankline.nvim',
-    branch = 'lua'
-  }
-
   -- the usual
   use {'junegunn/fzf', 'junegunn/fzf.vim'}
   use {'tpope/vim-repeat', 'tpope/vim-surround'}
   use {'mhinz/vim-startify', 'mhinz/vim-signify'}
 
+  use 'lukas-reineke/indent-blankline.nvim' -- indent line
   use 'sainnhe/gruvbox-material' -- color scheme of choice
   use 'ggandor/lightspeed.nvim' -- the new sneak
   use 'windwp/nvim-autopairs' -- insert pairs automatically
   use 'psliwka/vim-smoothie' -- smooth scrolling
   use 'b3nj5m1n/kommentary' -- comments
-  use 'haya14busa/vim-asterisk' -- better search commands
   use 'mcchrish/nnn.vim' -- best file browser
   use 'ntpeters/vim-better-whitespace'
   use 'RRethy/vim-illuminate'
@@ -86,6 +80,7 @@ require('packer').startup(function()
   use 'mizlan/iswap.nvim'
   use 'matbme/JABS.nvim'
   use 'arzg/vim-swift' -- swift language support
+  use 'kristijanhusak/orgmode.nvim'
 
 end)
 
@@ -98,6 +93,7 @@ map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
 map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
 map('n', '<leader>F', "za", {noremap=false})
+map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false})
 
 -------------------- Options -------------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -160,15 +156,13 @@ local tsconf = require 'nvim-treesitter.configs'
 tsconf.setup {
   ensure_installed = 'maintained',
   highlight = {enable = true},
-  -- incremental_selection = {
-  --   enable = true,
-  --   keymaps = {
-  --     init_selection = '<leader>v',
-  --     node_incremental = '<c-k>',
-  --     node_decremental = '<c-j>',
-  --     scope_incremental = '<c-l>'
-  --   }
-  -- },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      node_incremental = ',',
+      node_decremental = 'm',
+    }
+  },
   refactor = {
     smart_rename = {
       enable = true,
@@ -178,11 +172,11 @@ tsconf.setup {
     },
   },
   textsubjects = {
-        enable = true,
-        keymaps = {
-            ['.'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-big',
-        }
+    enable = true,
+    keymaps = {
+      ['.'] = 'textsubjects-smart',
+      [';'] = 'textsubjects-big',
+    },
   },
 }
 
@@ -216,15 +210,16 @@ require('telescope').setup{
   }
 }
 require'telescope'.load_extension'z'
-map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
+-- map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
+map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
 end
 map('n', '<leader>ef', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>eh', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>el', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
-map('n', '<leader>eo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
-map('n', '<leader>es', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
+-- map('n', '<leader>eo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
+map('n', '<leader>ee', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>eq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
@@ -355,12 +350,6 @@ vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
 -- AUTOPAIRS
 require('nvim-autopairs').setup()
 
--- VIM-ASTERISK
-vim.cmd([[map *  <Plug>(asterisk-z*))]])
-vim.cmd([[map #  <Plug>(asterisk-z#)]])
-vim.cmd([[map g* <Plug>(asterisk-gz*)]])
-vim.cmd([[map g# <Plug>(asterisk-gz#)]])
-
 -- STARTIFY
 map('n', '<leader>S', '<cmd>Startify<CR>')
 vim.g.startify_change_to_dir =  0
@@ -390,7 +379,7 @@ vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
 -- NNN
 cmd([[let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }]])
 cmd([[let g:nnn#set_default_mappings = 0]])
-cmd([[let g:nnn#command = 'nnn -A']])
+cmd([[let g:nnn#command = 'nnn -A -n']])
 map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
 -- FLOATTERM
