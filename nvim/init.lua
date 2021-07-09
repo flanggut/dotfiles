@@ -215,12 +215,12 @@ map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_curre
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
 end
-map('n', '<leader>ef', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-map('n', '<leader>eh', "<cmd>lua require('telescope.builtin').command_history()<cr>")
-map('n', '<leader>el', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
+map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
+map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
+map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
 -- map('n', '<leader>eo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
-map('n', '<leader>ee', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
-map('n', '<leader>eq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
+map('n', '<leader>se', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
+map('n', '<leader>sq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
 -- fzf custom pickers
 if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
 cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
