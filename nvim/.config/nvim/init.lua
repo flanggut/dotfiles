@@ -30,7 +30,6 @@ require('packer').startup(function()
 
   -- nvim-lsp
   use 'neovim/nvim-lspconfig'
-  use 'glepnir/lspsaga.nvim'
   use 'ray-x/lsp_signature.nvim'
 
   -- telescope
@@ -76,7 +75,6 @@ require('packer').startup(function()
   use 'RRethy/vim-illuminate'
   use 'voldikss/vim-floaterm'
   use 'christoomey/vim-tmux-navigator'
-  use 'famiu/nvim-reload'
   use 'tversteeg/registers.nvim'
   use 'mizlan/iswap.nvim'
   use 'matbme/JABS.nvim'
@@ -219,7 +217,6 @@ require('telescope').setup{
   }
 }
 require'telescope'.load_extension'z'
--- map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
@@ -227,7 +224,6 @@ end
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
--- map('n', '<leader>eo', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
 map('n', '<leader>se', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>sq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
 -- fzf custom pickers
@@ -378,7 +374,7 @@ vim.g.better_whitespace_enabled = 1
 vim.g.strip_whitespace_on_save = 0
 vim.g.strip_max_file_size = 10000
 vim.g.strip_whitelines_at_eof = 1
-vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'lspsaga' }
+vim.g.better_whitespace_filetypes_blacklist= { 'packer' }
 
 -- ILLUMINATE
 map('n', '<a-n>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>')
@@ -448,14 +444,6 @@ require'lualine'.setup{
   }
 }
 
--- HOP
--- vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require'hop'.hint_char1()<cr>", {})
--- vim.api.nvim_set_keymap('v', 'f', "<cmd>lua require'hop'.hint_char1()<cr>", {})
--- vim.api.nvim_set_keymap('n', 'L', "<cmd>lua require'hop'.hint_lines()<cr>", {})
--- vim.api.nvim_set_keymap('v', 'L', "<cmd>lua require'hop'.hint_lines()<cr>", {})
--- vim.api.nvim_set_keymap('n', 's', "<cmd>lua require'hop'.hint_char2()<cr>", {})
--- vim.api.nvim_set_keymap('n', 'H', "<cmd>lua require'hop'.hint_words()<cr>", {})
-
 ------------------- Navigation + TMUX -----------------
 vim.g.tmux_navigator_no_mappings = 1
 map('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {silent = true})
@@ -477,20 +465,12 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
   buf_set_keymap('n', '<C-j>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('i', '<C-h>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', '<C-h>', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<leader>ea', "<cmd>lua require'telescope.builtin'.lsp_code_actions()<CR>", opts)
-  buf_set_keymap('n', '<leader>ei', "<cmd>lua require'telescope.builtin'.lsp_implementations()<CR>", opts)
-  buf_set_keymap('n', '<leader>er', "<cmd>lua require'telescope.builtin'.lsp_references()<cr>", opts)
-  buf_set_keymap('n', '<leader>es', "<cmd>lua require'telescope.builtin'.lsp_document_symbols()<cr>", opts)
-  -- buf_set_keymap('n', '<leader>e', "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>", opts)
-  buf_set_keymap('n', '<leader>sr', "<cmd>lua require'lspsaga.rename'.rename()<CR>", opts)
-  buf_set_keymap('n', '<leader>sa', "<cmd>lua require'lspsaga.codeaction'.code_action()<CR>", opts)
-  buf_set_keymap('n', '<leader>sf', "<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>", opts)
-  buf_set_keymap('n', '<C-k>', "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
-  -- buf_set_keymap('i', '<C-h>', "<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>", opts)
-  buf_set_keymap('n', '<C-f>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
-  buf_set_keymap('n', '<C-b>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
+  buf_set_keymap('n', '<leader>sr', "<cmd>lua require'telescope.builtin'.lsp_references()<cr>", opts)
+  buf_set_keymap('n', '<leader>sy', "<cmd>lua require'telescope.builtin'.lsp_document_symbols()<cr>", opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
@@ -502,23 +482,6 @@ local on_attach = function(client, bufnr)
 
   cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
   require 'lsp_signature'.on_attach({bind = true, floating_window = false, hint_prefix = '  '})
-
-  -- LSPSAGA
-  local saga = require 'lspsaga'
-  saga.init_lsp_saga {
-    max_preview_lines = 15,
-    finder_action_keys = {
-      open = '<CR>', vsplit = 's',split = 'i',quit = 'q',scroll_down = '<C-f>', scroll_up = '<C-b>' -- quit can be a table
-    },
-  }
-
-  cmd("highlight LspSagaFinderSelection guifg='#A89984' gui='bold'")
-  cmd("highlight LspSagaCodeActionContent guifg='#A89984' gui='bold'")
-  cmd("highlight LspSagaRenameBorder guifg='#A89984'")
-  cmd("highlight LspSagaHoverBorder guifg='#A89984'")
-  cmd("highlight LspSagaSignatureHelpBorder guifg='#A89984'")
-  cmd("highlight LspSagaCodeActionBorder guifg='#A89984'")
-  cmd("highlight LspSagaDefPreviewBorder guifg='#A89984'")
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -534,7 +497,7 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 nvim_lsp['clangd'].setup {
   capabilities = capabilities,
   cmd = {
-    "clangd", "--background-index", "--completion-style=detailed",
+    "clangd", "--background-index", "--completion-style=detailed", "--suggest-missing-includes",
     "--header-insertion=never", "-j=8"
   },
   on_attach = on_attach
@@ -556,8 +519,3 @@ function CodeLink()
 end
 map('n', '<leader>op', '<cmd>lua CodeLink()<CR>')
 
--------------- Load local nvimrc --------------
--- local local_vimrc = vim.fn.getcwd()..'/.nvimrc'
--- if vim.loop.fs_stat(local_vimrc) then
---   vim.cmd('source '..local_vimrc)
--- end
