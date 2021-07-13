@@ -66,6 +66,7 @@ require('packer').startup(function()
 
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
   use 'sainnhe/gruvbox-material' -- color scheme of choice
+  use 'projekt0n/github-nvim-theme' -- alternate if primary scheme becomes boring
   use 'ggandor/lightspeed.nvim' -- the new sneak
   use 'windwp/nvim-autopairs' -- insert pairs automatically
   use 'psliwka/vim-smoothie' -- smooth scrolling
