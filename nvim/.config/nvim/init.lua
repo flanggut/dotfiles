@@ -222,7 +222,7 @@ require'telescope'.load_extension'z'
 -- map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers()<cr>")
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
-  map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files()<cr>")
+  map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
 end
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
