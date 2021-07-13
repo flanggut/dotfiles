@@ -94,6 +94,9 @@ map('v', '<leader>y', [["+y]])
 map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
 map('n', '<leader>F', "za", {noremap=false})
 map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false})
+-- Unmap common typos
+map('n', 'q:', "<nop>", {noremap=true})
+map('n', 'Q', "<nop>", {noremap=true})
 
 -------------------- Options -------------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -146,8 +149,13 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- highlight text on yank
-cmd([[
+vim.cmd([[
   au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}
+]])
+
+-- set correct filetype for fish
+vim.cmd([[
+  au BufNewFile,BufRead *.fish set filetype=fish
 ]])
 
 -------------------- Plugin Setup --------------------------
