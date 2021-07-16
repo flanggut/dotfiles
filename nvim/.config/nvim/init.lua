@@ -1,6 +1,4 @@
-
 local cmd = vim.cmd  -- to execute Vim commands e.g. cmd('pwd')
-local fn = vim.fn    -- to call Vim functions e.g. fn.bufnr()
 
 local function map(mode, lhs, rhs, opts) -- map keybind
   local options = {noremap = true}
@@ -11,12 +9,14 @@ end
 -------------------- PLUGINS -------------------------------
 
 -- Auto install packer.nvim if not exists
-local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-if fn.empty(fn.glob(install_path)) > 0 then
-  fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
+local packer_install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+local packer_init_required = vim.fn.isdirectory(packer_install_path) == 0
+if packer_init_required then
+  vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', packer_install_path})
   vim.api.nvim_command 'packadd packer.nvim'
 end
 
+-- Start up packer, sync packages afterwards if required
 require('packer').startup(function()
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
@@ -63,9 +63,10 @@ require('packer').startup(function()
   use {'tpope/vim-repeat', 'tpope/vim-surround'}
   use {'mhinz/vim-startify', 'mhinz/vim-signify'}
 
+  -- theme
+  use 'sainnhe/gruvbox-material'
+
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
-  use 'sainnhe/gruvbox-material' -- color scheme of choice
-  use 'projekt0n/github-nvim-theme' -- alternate if primary scheme becomes boring
   use 'ggandor/lightspeed.nvim' -- the new sneak
   use 'windwp/nvim-autopairs' -- insert pairs automatically
   use 'psliwka/vim-smoothie' -- smooth scrolling
@@ -82,6 +83,9 @@ require('packer').startup(function()
   use 'kristijanhusak/orgmode.nvim'
 
 end)
+if packer_init_required then
+ require'packer'.sync()
+end
 
 -------------------- Basic Keybinds ------------------------
 vim.g.mapleader = ' '
@@ -90,6 +94,7 @@ map('n', '<esc>l', "<C-^>")
 map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
+map('n', '<leader>cc', [[<cmd>let @c=@+<CR>]])
 map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
 map('n', '<leader>F', "za", {noremap=false})
 map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false})
@@ -108,7 +113,7 @@ vim.api.nvim_command([[
   augroup END
 ]])
 
-cmd 'colorscheme gruvbox-material'
+vim.cmd 'colorscheme gruvbox-material'
 
 -- Basic must haves
 vim.o.compatible = false
@@ -201,6 +206,21 @@ require('telescope').setup{
     sorting_strategy = "ascending",
 
     preview_title = "",
+    path_display = function(opts, path)
+      local Path = require('plenary.path')
+      local tail = require("telescope.utils").path_tail(path)
+      tail = tail .. string.rep(" ", 40 - #tail)
+      local cwd
+      if opts.cwd then
+        cwd = opts.cwd
+        if not vim.in_fast_event() then
+          cwd = vim.fn.expand(opts.cwd)
+        end
+      else
+        cwd = vim.loop.cwd();
+      end
+      return string.format("%s  %s", tail, Path:new(path):make_relative(cwd))
+    end,
 
     layout_strategy = "bottom_pane",
     layout_config = {
@@ -247,7 +267,8 @@ require'compe'.setup {
   };
 }
 cmd('inoremap <silent><expr> <C-Space> compe#complete()')
-cmd("inoremap <silent><expr> <CR>      compe#confirm('<CR>')")
+cmd([[inoremap <silent><expr> <CR> compe#confirm(luaeval("require 'nvim-autopairs'.autopairs_cr()"))]])
+cmd([[inoremap <silent><expr> <C-e> compe#close('<C-e>')]])
 
 local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -343,7 +364,7 @@ map('n', 'gl', "<cmd>BufferNext<CR>")
 map('n', '<leader>j', "<cmd>BufferPick<CR>")
 map('n', '<leader>bo', "<cmd>BufferCloseAllButCurrent<CR>")
 map('n', '<leader>bd', "<cmd>BufferOrderByDirectory<CR>")
-map('n', '<leader>q', "<cmd>BufferClose<CR>")
+map('n', '<leader>q', "<cmd>BufferClose!<CR>")
 
 -- KOMMENTARY
 require('kommentary.config').configure_language("default", {
@@ -354,6 +375,10 @@ vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
 
 -- AUTOPAIRS
 require('nvim-autopairs').setup()
+require("nvim-autopairs.completion.compe").setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true -- it will auto insert `(` after select function or method item
+})
 
 -- STARTIFY
 map('n', '<leader>S', '<cmd>Startify<CR>')
@@ -409,6 +434,7 @@ require'lualine'.setup{
     disabled_filetypes = {},
     icons_enabled = true,
   },
+  extensions = {'nvim-tree'},
   sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch'},
@@ -469,7 +495,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<leader>ea', "<cmd>lua require'telescope.builtin'.lsp_code_actions()<CR>", opts)
   buf_set_keymap('n', '<leader>sr', "<cmd>lua require'telescope.builtin'.lsp_references()<cr>", opts)
-  buf_set_keymap('n', '<leader>sy', "<cmd>lua require'telescope.builtin'.lsp_document_symbols()<cr>", opts)
+  buf_set_keymap('n', '<leader>sy', "<cmd>lua require'telescope.builtin'.lsp_document_symbols({symbol_width = 50, symbol_type_width = 12})<cr>", opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
@@ -485,7 +511,6 @@ local on_attach = function(client, bufnr)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.resolveSupport = {
   properties = {
     'documentation',
@@ -518,4 +543,3 @@ function CodeLink()
     true)
 end
 map('n', '<leader>op', '<cmd>lua CodeLink()<CR>')
-
