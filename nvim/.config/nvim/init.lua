@@ -358,6 +358,21 @@ vim.g.nvim_tree_width = 50
 vim.g.nvim_tree_follow = 1
 vim.g.nvim_tree_auto_close = 1
 
+-- LIGHTSPEED
+vim.api.nvim_set_keymap("n", "f", "<Plug>Lightspeed_s", {})
+vim.api.nvim_set_keymap("n", "F", "<Plug>Lightspeed_S", {})
+vim.api.nvim_set_keymap("n", "s", "<Plug>Lightspeed_f", {})
+vim.api.nvim_set_keymap("n", "S", "<Plug>Lightspeed_F", {})
+function repeat_ft(reverse)
+  local ls = require'lightspeed'
+  ls.ft['instant-repeat?'] = true
+  ls.ft:to(reverse, ls.ft['prev-t-like?'])
+end
+vim.api.nvim_set_keymap('n', ';', '<cmd>lua repeat_ft(false)<cr>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('x', ';', '<cmd>lua repeat_ft(false)<cr>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', ',', '<cmd>lua repeat_ft(true)<cr>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('x', ',', '<cmd>lua repeat_ft(true)<cr>', {noremap = true, silent = true})
+
 -- BARBAR
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
 map('n', 'gl', "<cmd>BufferNext<CR>")
@@ -399,7 +414,7 @@ vim.g.better_whitespace_enabled = 1
 vim.g.strip_whitespace_on_save = 0
 vim.g.strip_max_file_size = 10000
 vim.g.strip_whitelines_at_eof = 1
-vim.g.better_whitespace_filetypes_blacklist= { 'packer' }
+vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'diff', 'gitcommit', 'unite', 'qf', 'help' }
 
 -- ILLUMINATE
 map('n', '<a-n>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>')
