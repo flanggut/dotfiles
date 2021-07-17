@@ -193,23 +193,22 @@ tsconf.setup {
 }
 
 -- TELESCOPE
-local actions = require('telescope.actions')
 require('telescope').setup{
   defaults = {
     mappings = {
       i = {
-        ["<esc>"] = actions.close,
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
+        ["<esc>"] = require('telescope.actions').close,
+        ["<C-j>"] = require('telescope.actions').move_selection_next,
+        ["<C-k>"] = require('telescope.actions').move_selection_previous,
       },
     },
-    sorting_strategy = "ascending",
-
     preview_title = "",
     path_display = function(opts, path)
       local Path = require('plenary.path')
+      local strings = require('plenary.strings')
       local tail = require("telescope.utils").path_tail(path)
-      tail = tail .. string.rep(" ", 40 - #tail)
+      local filename = strings.truncate(tail, 45)
+      filename = filename .. string.rep(" ", 45 - #tail)
       local cwd
       if opts.cwd then
         cwd = opts.cwd
@@ -219,14 +218,16 @@ require('telescope').setup{
       else
         cwd = vim.loop.cwd();
       end
-      return string.format("%s  %s", tail, Path:new(path):make_relative(cwd))
+      local relative = Path:new(path):make_relative(cwd)
+      relative = strings.truncate(relative, #relative - #tail + 1)
+      return string.format("%s  %s", filename, relative)
     end,
 
+    sorting_strategy = "ascending",
     layout_strategy = "bottom_pane",
     layout_config = {
       height = 25,
     },
-
     border = true,
     borderchars = {
       "z",
@@ -237,18 +238,17 @@ require('telescope').setup{
   }
 }
 require'telescope'.load_extension'z'
-map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true})<cr>")
-if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") and not string.find(vim.fn.expand(vim.loop.cwd()), "ovrsource")  then
-  map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
-end
+map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true,previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
-map('n', '<leader>se', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
+map('n', '<leader>sz', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
+map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>sq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
+if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+  map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
+else
 -- fzf custom pickers
-if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
+  cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
   vim.api.nvim_set_keymap('n', '<C-p>', '<cmd>Files<CR>', {noremap=true})
 end
 
@@ -493,7 +493,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('i', '<C-h>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<C-h>', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<leader>ea', "<cmd>lua require'telescope.builtin'.lsp_code_actions()<CR>", opts)
+  buf_set_keymap('n', '<leader>sa', "<cmd>lua require'telescope.builtin'.lsp_code_actions(require'telescope.themes'.get_cursor())<CR>", opts)
   buf_set_keymap('n', '<leader>sr', "<cmd>lua require'telescope.builtin'.lsp_references()<cr>", opts)
   buf_set_keymap('n', '<leader>sy', "<cmd>lua require'telescope.builtin'.lsp_document_symbols({symbol_width = 50, symbol_type_width = 12})<cr>", opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
