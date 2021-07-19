@@ -238,12 +238,13 @@ require('telescope').setup{
   }
 }
 require'telescope'.load_extension'z'
-map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true,previewer=false})<cr>")
+map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sz', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>sq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
+map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true,previewer=false})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
 else
