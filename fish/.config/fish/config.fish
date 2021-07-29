@@ -26,6 +26,13 @@ alias ll="tree -C | less -r"
 alias mru="ls -t | head -5"
 alias p3="python3"
 alias j="z"
+function zp
+  if test "$history[1]" != "zp"
+    eval $history[1]
+  else
+    eval $history[2]
+  end
+end
 
 alias dff="hg diff | delta | less -r"
 alias show="hg diff -r .^ | delta | less -r"
