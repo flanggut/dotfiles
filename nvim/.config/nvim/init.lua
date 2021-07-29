@@ -37,6 +37,7 @@ require('packer').startup(function()
     requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
   }
   use 'nvim-telescope/telescope-z.nvim'
+  use 'nvim-telescope/telescope-symbols.nvim'
 
   -- lualine
   use {'hoob3rt/lualine.nvim',
@@ -66,6 +67,8 @@ require('packer').startup(function()
   -- theme
   use 'sainnhe/gruvbox-material'
 
+  use {'folke/zen-mode.nvim', config = function() require("zen-mode").setup {} end }
+
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
   use 'ggandor/lightspeed.nvim' -- the new sneak
   use 'windwp/nvim-autopairs' -- insert pairs automatically
@@ -78,9 +81,7 @@ require('packer').startup(function()
   use 'christoomey/vim-tmux-navigator'
   use 'tversteeg/registers.nvim'
   use 'mizlan/iswap.nvim'
-  use 'matbme/JABS.nvim'
   use 'arzg/vim-swift' -- swift language support
-  use 'kristijanhusak/orgmode.nvim'
 
 end)
 if packer_init_required then
@@ -107,11 +108,11 @@ vim.o.background = "dark" -- or "light" for light mode
 if vim.fn.has('termguicolors') == 1 then
    vim.o.termguicolors = true
 end
-vim.api.nvim_command([[
-  augroup MyColors
-    autocmd ColorScheme gruvbox-material highlight link TSError Normal
-  augroup END
-]])
+-- vim.api.nvim_command([[
+--   augroup MyColors
+--     autocmd ColorScheme gruvbox-material highlight link TSError Normal
+--   augroup END
+-- ]])
 
 vim.cmd 'colorscheme gruvbox-material'
 
@@ -187,7 +188,6 @@ tsconf.setup {
     enable = true,
     keymaps = {
       ['.'] = 'textsubjects-smart',
-      [';'] = 'textsubjects-big',
     },
   },
 }
@@ -238,13 +238,13 @@ require('telescope').setup{
   }
 }
 require'telescope'.load_extension'z'
-map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true})<cr>")
+map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sz', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>sq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
-map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true,cwd_only=true,previewer=false})<cr>")
+map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
 else
@@ -360,6 +360,7 @@ vim.g.nvim_tree_follow = 1
 vim.g.nvim_tree_auto_close = 1
 
 -- LIGHTSPEED
+require'lightspeed'.setup {}
 vim.api.nvim_set_keymap("n", "f", "<Plug>Lightspeed_s", {})
 vim.api.nvim_set_keymap("n", "F", "<Plug>Lightspeed_S", {})
 vim.api.nvim_set_keymap("n", "s", "<Plug>Lightspeed_f", {})
@@ -415,11 +416,10 @@ vim.g.better_whitespace_enabled = 1
 vim.g.strip_whitespace_on_save = 0
 vim.g.strip_max_file_size = 10000
 vim.g.strip_whitelines_at_eof = 1
-vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'diff', 'gitcommit', 'unite', 'qf', 'help' }
+vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'diff', 'gitcommit', 'unite',
+    'qf', 'help', 'TelescopePrompt', 'hgcommit' }
 
 -- ILLUMINATE
-map('n', '<a-n>', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>')
-map('n', '<a-p>', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>')
 vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
 
 -- NNN
@@ -523,7 +523,9 @@ local on_attach = function(client, bufnr)
   end
 
   cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
+
   require 'lsp_signature'.on_attach({bind = true, floating_window = false, hint_prefix = '  '})
+  require 'illuminate'.on_attach(client)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
