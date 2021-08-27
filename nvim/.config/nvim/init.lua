@@ -32,6 +32,10 @@ require('packer').startup(function()
   use 'neovim/nvim-lspconfig'
   use 'ray-x/lsp_signature.nvim'
 
+  use { 'folke/trouble.nvim',
+    requires = "kyazdani42/nvim-web-devicons",
+  }
+
   -- telescope
   use {'nvim-telescope/telescope.nvim',
     requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
@@ -50,8 +54,16 @@ require('packer').startup(function()
   }
 
   -- nvim-compe and vsnip
-  use {'hrsh7th/nvim-compe',
-    requires = {{'hrsh7th/vim-vsnip'}, {'hrsh7th/vim-vsnip-integ'}}
+  use {'hrsh7th/nvim-cmp',
+    requires = {
+      {'hrsh7th/cmp-calc'},
+      {'hrsh7th/cmp-buffer'},
+      {'hrsh7th/cmp-nvim-lsp'},
+      {'hrsh7th/cmp-path'},
+      {'hrsh7th/cmp-vsnip'},
+      {'hrsh7th/vim-vsnip'},
+      {'hrsh7th/vim-vsnip-integ'},
+    }
   }
 
   -- barbar
@@ -66,9 +78,12 @@ require('packer').startup(function()
 
   -- theme
   use 'sainnhe/gruvbox-material'
+  use 'sainnhe/edge'
 
-  use {'folke/zen-mode.nvim', config = function() require("zen-mode").setup {} end }
+  use {'folke/zen-mode.nvim', config = function() require('zen-mode').setup {} end }
+  use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
 
+  use 'danymat/neogen'
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
   use 'ggandor/lightspeed.nvim' -- the new sneak
   use 'windwp/nvim-autopairs' -- insert pairs automatically
@@ -96,9 +111,24 @@ map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
 map('n', '<leader>cc', [[<cmd>let @c=@+<CR>]])
+-- search and replace visual selection
 map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
+-- toggle fold
 map('n', '<leader>F', "za", {noremap=false})
+-- better star search
 map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false})
+-- centered cursor on jump
+map('n', 'n', 'nzzzv', {noremap = true})
+map('n', 'N', 'Nzzzv', {noremap = true})
+-- move visual selection up or down
+map('v', '<C-j>', [[:m '>+1<CR>gv=gv]], {noremap = true})
+map('v', '<C-k>', [[:m '<-2<CR>gv=gv]], {noremap = true})
+-- undo breakpoints
+map('i', ',', ',<c-g>u', {noremap = true})
+map('i', '.', '.<c-g>u', {noremap = true})
+map('i', '(', '(<c-g>u', {noremap = true})
+map('i', '<', '<<c-g>u', {noremap = true})
+
 -- Unmap common typos
 map('n', 'q:', "<nop>", {noremap=true})
 map('n', 'Q', "<nop>", {noremap=true})
@@ -108,11 +138,6 @@ vim.o.background = "dark" -- or "light" for light mode
 if vim.fn.has('termguicolors') == 1 then
    vim.o.termguicolors = true
 end
--- vim.api.nvim_command([[
---   augroup MyColors
---     autocmd ColorScheme gruvbox-material highlight link TSError Normal
---   augroup END
--- ]])
 
 vim.cmd 'colorscheme gruvbox-material'
 
@@ -241,7 +266,7 @@ require'telescope'.load_extension'z'
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-map('n', '<leader>sz', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
+map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>sq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
 map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
@@ -253,93 +278,83 @@ else
   vim.api.nvim_set_keymap('n', '<C-p>', '<cmd>Files<CR>', {noremap=true})
 end
 
--- NVIM COMPE
-require'compe'.setup {
-  preselect = 'always';
-
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
-    omni = false;
-  };
-}
-cmd('inoremap <silent><expr> <C-Space> compe#complete()')
-cmd([[inoremap <silent><expr> <CR> compe#confirm(luaeval("require 'nvim-autopairs'.autopairs_cr()"))]])
-cmd([[inoremap <silent><expr> <C-e> compe#close('<C-e>')]])
-
+-- NVIM CMP
 local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
 local check_back_space = function()
     local col = vim.fn.col('.') - 1
-    if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
-        return true
-    else
-        return false
+    return col == 0 or vim.fn.getline('.'):sub(col, col):match '%s' ~= nil
+end
+
+require'cmp'.setup {
+  snippet = {
+    expand = function(args)
+      vim.fn['vsnip#anonymous'](args.body)
     end
-end
-
--- Use c-j/k to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.cj_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
-  elseif vim.fn.call("vsnip#available", {1}) == 1 then
-    return t "<Plug>(vsnip-expand-or-jump)"
-  elseif check_back_space() then
-    return t "<C-j>"
-  else
-    return vim.fn['compe#complete']()
-  end
-end
-_G.ck_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-    return t "<Plug>(vsnip-jump-prev)"
-  else
-    return t "<C-k>"
-  end
-end
-vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.cj_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.cj_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.ck_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.ck_complete()", {expr = true})
-
--- Use (s-)tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
-  elseif vim.fn.call("vsnip#available", {1}) == 1 then
-    return t "<Plug>(vsnip-expand-or-jump)"
-  elseif check_back_space() then
-    return t "<Tab>"
-  else
-    return vim.fn['compe#complete']()
-  end
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-    return t "<Plug>(vsnip-jump-prev)"
-  else
-    return t "<S-Tab>"
-  end
-end
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-
+  },
+  sources = {
+    { name = 'calc'},
+    { name = 'buffer'},
+    { name = 'path'},
+    { name = 'nvim_lsp'},
+    { name = 'vsnip'},
+  },
+  formatting = {
+    format = function(entry, vim_item)
+      local lspkind = require('lspkind').presets.default[vim_item.kind]
+      vim_item.abbr = string.format("%s %s", lspkind, vim_item.abbr)
+      return vim_item
+    end
+  },
+  mapping = {
+    ["<C-j>"] = function(fallback)
+      if vim.fn.pumvisible() == 1 then
+        vim.fn.feedkeys(t("<C-n>"), "n")
+      elseif vim.fn.call("vsnip#available", {1}) == 1 then
+        vim.fn.feedkeys(t("<Plug>(vsnip-expand-or-jump)"), "")
+      elseif check_back_space() then
+        vim.fn.feedkeys(t("<C-j>"), "n")
+      else
+        fallback()
+      end
+    end,
+    ["<C-k>"] = function(fallback)
+      if vim.fn.pumvisible() == 1 then
+        vim.fn.feedkeys(t("<C-p>"), "n")
+      elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
+        vim.fn.feedkeys(t("<Plug>(vsnip-jump-prev)"), "")
+      elseif check_back_space() then
+        vim.fn.feedkeys(t("<C-k>"), "n")
+      else
+        fallback()
+      end
+    end,
+    ["<Tab>"] = function(fallback)
+      if vim.fn.pumvisible() == 1 then
+        vim.fn.feedkeys(t("<C-n>"), "n")
+      elseif vim.fn.call("vsnip#available", {1}) == 1 then
+        vim.fn.feedkeys(t("<Plug>(vsnip-expand-or-jump)"), "")
+      elseif check_back_space() then
+        vim.fn.feedkeys(t("<Tab>"), "n")
+      else
+        fallback()
+      end
+    end,
+    ["<S-Tab>"] = function(fallback)
+      if vim.fn.pumvisible() == 1 then
+        vim.fn.feedkeys(t("<C-p>"), "n")
+      elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
+        vim.fn.feedkeys(t("<Plug>(vsnip-jump-prev)"), "")
+      elseif check_back_space() then
+        vim.fn.feedkeys(t("<S-Tab>"), "n")
+      else
+        fallback()
+      end
+    end,
+  },
+}
 
 -- NVIMTREE
 tree = {}
@@ -392,7 +407,7 @@ vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
 
 -- AUTOPAIRS
 require('nvim-autopairs').setup()
-require("nvim-autopairs.completion.compe").setup({
+require("nvim-autopairs.completion.cmp").setup({
   map_cr = true, --  map <CR> on insert mode
   map_complete = true -- it will auto insert `(` after select function or method item
 })
@@ -425,7 +440,7 @@ vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
 -- NNN
 cmd([[let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }]])
 cmd([[let g:nnn#set_default_mappings = 0]])
-cmd([[let g:nnn#command = 'nnn -A -n']])
+cmd([[let g:nnn#command = 'nnn -A']])
 map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
 -- FLOATTERM
@@ -495,6 +510,12 @@ map('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {silent = true})
 map('n', '<A-,>', '<cmd>split<cr>', {silent = true})
 map('n', '<A-.>', '<cmd>vsplit<cr>', {silent = true})
 
+-------------------  TROUBLE
+require("trouble").setup {
+  auto_close = true,
+}
+vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>", {silent = true, noremap = true})
+
 -------------------- LSP Setup ------------------------------
 local nvim_lsp = require ('lspconfig')
 local on_attach = function(client, bufnr)
@@ -507,7 +528,7 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
   buf_set_keymap('n', '<C-j>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('i', '<C-h>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<C-h>', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<leader>sa', "<cmd>lua require'telescope.builtin'.lsp_code_actions(require'telescope.themes'.get_cursor())<CR>", opts)
   buf_set_keymap('n', '<leader>sr', "<cmd>lua require'telescope.builtin'.lsp_references()<cr>", opts)
