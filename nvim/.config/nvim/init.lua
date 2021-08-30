@@ -42,6 +42,9 @@ require('packer').startup(function()
   }
   use 'nvim-telescope/telescope-z.nvim'
   use 'nvim-telescope/telescope-symbols.nvim'
+  use { 'nvim-telescope/telescope-frecency.nvim',
+    requires = {"tami5/sql.nvim"}
+  }
 
   -- lualine
   use {'hoob3rt/lualine.nvim',
@@ -53,13 +56,15 @@ require('packer').startup(function()
     requires = {'kyazdani42/nvim-web-devicons', opt = true},
   }
 
-  -- nvim-compe and vsnip
+  -- nvim-cmp and snippets
+  use {'L3MON4D3/LuaSnip'}
   use {'hrsh7th/nvim-cmp',
     requires = {
-      {'hrsh7th/cmp-calc'},
       {'hrsh7th/cmp-buffer'},
-      {'hrsh7th/cmp-nvim-lsp'},
       {'hrsh7th/cmp-path'},
+      {'hrsh7th/cmp-nvim-lsp'},
+      {'hrsh7th/cmp-nvim-lua'},
+      {'saadparwaiz1/cmp_luasnip'},
       {'hrsh7th/cmp-vsnip'},
       {'hrsh7th/vim-vsnip'},
       {'hrsh7th/vim-vsnip-integ'},
@@ -247,29 +252,30 @@ require('telescope').setup{
       relative = strings.truncate(relative, #relative - #tail + 1)
       return string.format("%s  %s", filename, relative)
     end,
+    winblend = 0,
 
-    sorting_strategy = "ascending",
-    layout_strategy = "bottom_pane",
+    layout_strategy = "horizontal",
     layout_config = {
-      height = 25,
+      prompt_position = "top",
     },
-    border = true,
-    borderchars = {
-      "z",
-      prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
-      results = { " " },
-      preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰"},
-    },
+
+    selection_strategy = "reset",
+    sorting_strategy = "ascending",
+    scroll_strategy = "cycle",
+    color_devicons = true,
   }
 }
 require'telescope'.load_extension'z'
+require'telescope'.load_extension'frecency'
+
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 map('n', '<leader>sq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
-map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
+-- map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
+map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
 else
@@ -279,27 +285,28 @@ else
 end
 
 -- NVIM CMP
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    return col == 0 or vim.fn.getline('.'):sub(col, col):match '%s' ~= nil
-end
-
-require'cmp'.setup {
+local cmp = require'cmp'
+cmp.setup {
   snippet = {
     expand = function(args)
-      vim.fn['vsnip#anonymous'](args.body)
+      require'luasnip'.lsp_expand(args.body)
     end
   },
   sources = {
-    { name = 'calc'},
     { name = 'buffer'},
     { name = 'path'},
+    { name = 'nvim_lua'},
     { name = 'nvim_lsp'},
-    { name = 'vsnip'},
+    { name = 'luasnip'},
+  },
+  mapping = {
+    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-e>"] = cmp.mapping.close(),
+    ["<C-y>"] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Insert,
+      select = true,
+    },
   },
   formatting = {
     format = function(entry, vim_item)
@@ -308,53 +315,74 @@ require'cmp'.setup {
       return vim_item
     end
   },
-  mapping = {
-    ["<C-j>"] = function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-n>"), "n")
-      elseif vim.fn.call("vsnip#available", {1}) == 1 then
-        vim.fn.feedkeys(t("<Plug>(vsnip-expand-or-jump)"), "")
-      elseif check_back_space() then
-        vim.fn.feedkeys(t("<C-j>"), "n")
-      else
-        fallback()
-      end
-    end,
-    ["<C-k>"] = function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-p>"), "n")
-      elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-        vim.fn.feedkeys(t("<Plug>(vsnip-jump-prev)"), "")
-      elseif check_back_space() then
-        vim.fn.feedkeys(t("<C-k>"), "n")
-      else
-        fallback()
-      end
-    end,
-    ["<Tab>"] = function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-n>"), "n")
-      elseif vim.fn.call("vsnip#available", {1}) == 1 then
-        vim.fn.feedkeys(t("<Plug>(vsnip-expand-or-jump)"), "")
-      elseif check_back_space() then
-        vim.fn.feedkeys(t("<Tab>"), "n")
-      else
-        fallback()
-      end
-    end,
-    ["<S-Tab>"] = function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(t("<C-p>"), "n")
-      elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-        vim.fn.feedkeys(t("<Plug>(vsnip-jump-prev)"), "")
-      elseif check_back_space() then
-        vim.fn.feedkeys(t("<S-Tab>"), "n")
-      else
-        fallback()
-      end
-    end,
-  },
 }
+
+local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+    local col = vim.fn.col('.') - 1
+    local test = vim.fn.getline('.'):sub(col, col):match '%s' ~= nil
+    print(vim.inspect(test))
+    return col == 0 or test
+end
+
+-- Use c-j/k to:
+--- move to prev/next item in completion menuone
+--- jump to prev/next snippet's placeholder
+_G.cj_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-n>"
+  elseif luasnip and luasnip.expand_or_jumpable() then
+    return t "<Plug>luasnip-expand-or-jump"
+  elseif check_back_space() then
+    return t "<C-j>"
+  else
+    return vim.fn['cmp#complete']()
+  end
+end
+_G.ck_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-p>"
+  elseif luasnip and luasnip.jumpable(-1) then
+    return t "<Plug>luasnip-jump-prev"
+  else
+    return t "<C-k>"
+  end
+end
+vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.cj_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.cj_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.ck_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.ck_complete()", {expr = true})
+
+-- Use (s-)tab to:
+--- move to prev/next item in completion menuone
+--- jump to prev/next snippet's placeholder
+_G.tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-n>"
+  elseif luasnip and luasnip.expand_or_jumpable() then
+    return t "<Plug>luasnip-expand-or-jump"
+  elseif check_back_space() then
+    return t "<Tab>"
+  else
+    return vim.fn['cmp#complete']()
+  end
+end
+_G.s_tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-p>"
+  elseif luasnip and luasnip.jumpable(-1) then
+    return t "<Plug>luasnip-jump-prev"
+  else
+    return t "<S-Tab>"
+  end
+end
+vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
 -- NVIMTREE
 tree = {}
@@ -438,9 +466,9 @@ vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'diff', 'gitcommit', 'u
 vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
 
 -- NNN
-cmd([[let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }]])
-cmd([[let g:nnn#set_default_mappings = 0]])
-cmd([[let g:nnn#command = 'nnn -A']])
+cmd("let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }")
+cmd("let g:nnn#set_default_mappings = 0")
+cmd("let g:nnn#command = 'nnn -A'")
 map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
 -- FLOATTERM
@@ -566,6 +594,22 @@ nvim_lsp['clangd'].setup {
   },
   on_attach = on_attach
 }
+
+------------------------- LUASNIP ----------------------------
+local ls = require("luasnip")
+ls.snippets = {
+	cpp = {
+		-- Trigger is co.
+		ls.snippet("co", {
+			-- Simple static text.
+			ls.text_node('std::cout << "\\U0001F98A " << '),
+			-- Insert node.
+			ls.insert_node(0),
+			ls.text_node(' << std::endl;'),
+		}),
+  },
+}
+
 
 --------------------- Custom functions -----------------
 function CodeLink()
