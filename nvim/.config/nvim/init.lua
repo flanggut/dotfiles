@@ -1,5 +1,3 @@
-local cmd = vim.cmd  -- to execute Vim commands e.g. cmd('pwd')
-
 local function map(mode, lhs, rhs, opts) -- map keybind
   local options = {noremap = true}
   if opts then options = vim.tbl_extend('force', options, opts) end
@@ -18,6 +16,8 @@ end
 
 -- Start up packer, sync packages afterwards if required
 require('packer').startup(function()
+  local use = require('packer').use
+
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
@@ -31,6 +31,7 @@ require('packer').startup(function()
   -- nvim-lsp
   use 'neovim/nvim-lspconfig'
   use 'ray-x/lsp_signature.nvim'
+  use 'kabouzeid/nvim-lspinstall'
 
   use { 'folke/trouble.nvim',
     requires = "kyazdani42/nvim-web-devicons",
@@ -163,9 +164,9 @@ vim.wo.number = true                -- line numbers
 vim.wo.foldmethod = 'indent'
 vim.wo.foldnestmax = 1
 vim.o.foldlevelstart = 1
-cmd('set diffopt+=vertical')
-cmd('set signcolumn=yes')
--- cmd([[autocmd BufEnter * if expand("%:p:h") !~ '^/tmp' | silent! lcd %:p:h | endif]])
+
+vim.cmd('set diffopt+=vertical')
+vim.cmd('set signcolumn=yes')
 
 -- Indentation
 vim.o.expandtab = true              -- Always use spaces instead of tabs
@@ -256,6 +257,7 @@ require('telescope').setup{
 
     layout_strategy = "horizontal",
     layout_config = {
+      height = 0.7,
       prompt_position = "top",
     },
 
@@ -270,17 +272,18 @@ require'telescope'.load_extension'frecency'
 
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
+map('n', '<leader>sc', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
+map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
-map('n', '<leader>sq', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
 -- map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
 else
 -- fzf custom pickers
-  cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
+  vim.cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
   vim.api.nvim_set_keymap('n', '<C-p>', '<cmd>Files<CR>', {noremap=true})
 end
 
@@ -309,7 +312,7 @@ cmp.setup {
     },
   },
   formatting = {
-    format = function(entry, vim_item)
+    format = function(_, vim_item)
       local lspkind = require('lspkind').presets.default[vim_item.kind]
       vim_item.abbr = string.format("%s %s", lspkind, vim_item.abbr)
       return vim_item
@@ -331,6 +334,7 @@ end
 -- Use c-j/k to:
 --- move to prev/next item in completion menuone
 --- jump to prev/next snippet's placeholder
+local luasnip = require("luasnip")
 _G.cj_complete = function()
   if vim.fn.pumvisible() == 1 then
     return t "<C-n>"
@@ -356,9 +360,6 @@ vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.cj_complete()", {expr = true})
 vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.ck_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.ck_complete()", {expr = true})
 
--- Use (s-)tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
 _G.tab_complete = function()
   if vim.fn.pumvisible() == 1 then
     return t "<C-n>"
@@ -385,19 +386,17 @@ vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
 -- NVIMTREE
-tree = {}
-tree.open = function ()
+Tree = {}
+Tree.open = function ()
    require'bufferline.state'.set_offset(51, '')
    require'nvim-tree'.find_file(true)
 end
-
-tree.close = function ()
+Tree.close = function ()
    require'bufferline.state'.set_offset(0)
    require'nvim-tree'.close()
 end
-
-map('n', '<leader>n', '<cmd>lua tree.open()<CR>zz')
-map('n', '<leader>m', '<cmd>lua tree.close()<CR>')
+map('n', '<leader>n', '<cmd>lua Tree.open()<CR>zz')
+map('n', '<leader>m', '<cmd>lua Tree.close()<CR>')
 vim.g.nvim_tree_width = 50
 vim.g.nvim_tree_follow = 1
 vim.g.nvim_tree_auto_close = 1
@@ -408,15 +407,15 @@ vim.api.nvim_set_keymap("n", "f", "<Plug>Lightspeed_s", {})
 vim.api.nvim_set_keymap("n", "F", "<Plug>Lightspeed_S", {})
 vim.api.nvim_set_keymap("n", "s", "<Plug>Lightspeed_f", {})
 vim.api.nvim_set_keymap("n", "S", "<Plug>Lightspeed_F", {})
-function repeat_ft(reverse)
+function Repeat_ft(reverse)
   local ls = require'lightspeed'
   ls.ft['instant-repeat?'] = true
   ls.ft:to(reverse, ls.ft['prev-t-like?'])
 end
-vim.api.nvim_set_keymap('n', ';', '<cmd>lua repeat_ft(false)<cr>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('x', ';', '<cmd>lua repeat_ft(false)<cr>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', ',', '<cmd>lua repeat_ft(true)<cr>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('x', ',', '<cmd>lua repeat_ft(true)<cr>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', ';', '<cmd>lua Repeat_ft(false)<cr>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('x', ';', '<cmd>lua Repeat_ft(false)<cr>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', ',', '<cmd>lua Repeat_ft(true)<cr>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('x', ',', '<cmd>lua Repeat_ft(true)<cr>', {noremap = true, silent = true})
 
 -- BARBAR
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
@@ -446,7 +445,7 @@ vim.g.startify_change_to_dir =  0
 vim.g.startify_files_number = 20
 vim.g.startify_enable_special = 0
 vim.g.startify_bookmarks = {{ c = '~/.config/nvim/init.lua'}}
-cmd("let g:startify_custom_indices = map(range(1,100), 'string(v:val)')")
+vim.cmd("let g:startify_custom_indices = map(range(1,100), 'string(v:val)')")
 
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
@@ -466,9 +465,9 @@ vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'diff', 'gitcommit', 'u
 vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
 
 -- NNN
-cmd("let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }")
-cmd("let g:nnn#set_default_mappings = 0")
-cmd("let g:nnn#command = 'nnn -A'")
+vim.cmd("let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }")
+vim.cmd("let g:nnn#set_default_mappings = 0")
+vim.cmd("let g:nnn#command = 'nnn -A'")
 map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
 -- FLOATTERM
@@ -571,7 +570,7 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("v", "<leader>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
   end
 
-  cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
+  vim.cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
 
   require 'lsp_signature'.on_attach({bind = true, floating_window = false, hint_prefix = '  '})
   require 'illuminate'.on_attach(client)
@@ -595,6 +594,42 @@ nvim_lsp['clangd'].setup {
   on_attach = on_attach
 }
 
+-- Configure lua language server for neovim development
+local lua_settings = {
+  Lua = {
+    runtime = {
+      -- LuaJIT in the case of Neovim
+      version = 'LuaJIT',
+      path = vim.split(package.path, ';'),
+    },
+    diagnostics = {
+      -- Get the language server to recognize the `vim` global
+      globals = {'vim'},
+    },
+    workspace = {
+      -- Make the server aware of Neovim runtime files
+      library = {
+        [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+        [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+      },
+    },
+  }
+}
+
+-- Setup LSPINSTALL servers
+require'lspinstall'.setup()
+local servers = require'lspinstall'.installed_servers()
+for _, server in pairs(servers) do
+  local config = {
+    capabilities = capabilities,
+    on_attach = on_attach
+  }
+  if server == "lua" then
+    config.settings = lua_settings
+  end
+  require'lspconfig'[server].setup(config)
+end
+
 ------------------------- LUASNIP ----------------------------
 local ls = require("luasnip")
 ls.snippets = {
@@ -609,7 +644,6 @@ ls.snippets = {
 		}),
   },
 }
-
 
 --------------------- Custom functions -----------------
 function CodeLink()
