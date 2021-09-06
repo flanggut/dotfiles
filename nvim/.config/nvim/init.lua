@@ -10,7 +10,7 @@ end
 local packer_install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 local packer_init_required = vim.fn.isdirectory(packer_install_path) == 0
 if packer_init_required then
-  vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', packer_install_path})
+  vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', packer_install_path})
   vim.api.nvim_command 'packadd packer.nvim'
 end
 
@@ -77,6 +77,15 @@ require('packer').startup(function()
     requires = {'kyazdani42/nvim-web-devicons', opt = true},
   }
 
+  -- Smooth Scrolling
+  use {'karb94/neoscroll.nvim',
+    keys = { "<C-u>", "<C-d>", "gg", "G" },
+    config = function()
+      require('neoscroll').setup({easing_function = 'circular',})
+    end,
+  }
+  use 'edluffy/specs.nvim' -- show jumps
+
   -- the usual
   use {'junegunn/fzf', 'junegunn/fzf.vim'}
   use {'tpope/vim-repeat', 'tpope/vim-surround'}
@@ -93,7 +102,6 @@ require('packer').startup(function()
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
   use 'ggandor/lightspeed.nvim' -- the new sneak
   use 'windwp/nvim-autopairs' -- insert pairs automatically
-  use 'psliwka/vim-smoothie' -- smooth scrolling
   use 'b3nj5m1n/kommentary' -- comments
   use 'mcchrish/nnn.vim' -- best file browser
   use 'ntpeters/vim-better-whitespace'
@@ -296,11 +304,11 @@ cmp.setup {
     end
   },
   sources = {
-    { name = 'buffer'},
-    { name = 'path'},
     { name = 'nvim_lua'},
     { name = 'nvim_lsp'},
     { name = 'luasnip'},
+    { name = 'buffer'},
+    { name = 'path'},
   },
   mapping = {
     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -402,20 +410,9 @@ vim.g.nvim_tree_follow = 1
 vim.g.nvim_tree_auto_close = 1
 
 -- LIGHTSPEED
-require'lightspeed'.setup {}
-vim.api.nvim_set_keymap("n", "f", "<Plug>Lightspeed_s", {})
-vim.api.nvim_set_keymap("n", "F", "<Plug>Lightspeed_S", {})
-vim.api.nvim_set_keymap("n", "s", "<Plug>Lightspeed_f", {})
-vim.api.nvim_set_keymap("n", "S", "<Plug>Lightspeed_F", {})
-function Repeat_ft(reverse)
-  local ls = require'lightspeed'
-  ls.ft['instant-repeat?'] = true
-  ls.ft:to(reverse, ls.ft['prev-t-like?'])
-end
-vim.api.nvim_set_keymap('n', ';', '<cmd>lua Repeat_ft(false)<cr>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('x', ';', '<cmd>lua Repeat_ft(false)<cr>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', ',', '<cmd>lua Repeat_ft(true)<cr>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('x', ',', '<cmd>lua Repeat_ft(true)<cr>', {noremap = true, silent = true})
+require'lightspeed'.setup {
+  limit_ft_matches = 0,
+}
 
 -- BARBAR
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
@@ -542,6 +539,23 @@ require("trouble").setup {
   auto_close = true,
 }
 vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>", {silent = true, noremap = true})
+
+-------------------  SPECS
+require("specs").setup {
+  show_jumps = true,
+  min_jump = 5,
+  popup = {
+    delay_ms = 0, -- delay before popup displays
+    inc_ms = 20, -- time increments used for fade/resize effects
+    blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+    width = 20,
+    winhl = "PMenu",
+    fader = require("specs").linear_fader,
+    resizer = require("specs").shrink_resizer,
+  },
+  ignore_filetypes = {},
+  ignore_buftypes = { nofile = true },
+}
 
 -------------------- LSP Setup ------------------------------
 local nvim_lsp = require ('lspconfig')
