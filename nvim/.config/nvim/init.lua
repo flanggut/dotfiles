@@ -273,6 +273,12 @@ require('telescope').setup{
     sorting_strategy = "ascending",
     scroll_strategy = "cycle",
     color_devicons = true,
+  },
+  extensions = {
+    frecency = {
+      db_safe_mode = true,
+      auto_validate = false
+    }
   }
 }
 require'telescope'.load_extension'z'
@@ -286,7 +292,7 @@ map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 -- map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
-map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false})<cr>")
+map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false, sorter = require('telescope.sorters').get_fzy_sorter()})<cr>")
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
 else
@@ -298,6 +304,9 @@ end
 -- NVIM CMP
 local cmp = require'cmp'
 cmp.setup {
+  completion = {
+    completeopt = 'menu,menuone,noinsert',
+  },
   snippet = {
     expand = function(args)
       require'luasnip'.lsp_expand(args.body)
@@ -591,13 +600,7 @@ local on_attach = function(client, bufnr)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.resolveSupport = {
-  properties = {
-    'documentation',
-    'detail',
-    'additionalTextEdits',
-  }
-}
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 nvim_lsp['clangd'].setup {
   capabilities = capabilities,
