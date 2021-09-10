@@ -44,7 +44,7 @@ require('packer').startup(function()
   use 'nvim-telescope/telescope-z.nvim'
   use 'nvim-telescope/telescope-symbols.nvim'
   use { 'nvim-telescope/telescope-frecency.nvim',
-    requires = {"tami5/sql.nvim"}
+    requires = {'tami5/sqlite.lua'}
   }
 
   -- lualine
@@ -86,10 +86,33 @@ require('packer').startup(function()
   }
   use 'edluffy/specs.nvim' -- show jumps
 
+  -- persistence
+  use { 'folke/persistence.nvim',
+    event = 'BufReadPre', -- this will only start session saving when an actual file was opened
+    module = 'persistence',
+    config = function()
+      require('persistence').setup()
+    end,
+  }
+
+  -- alpha startscreen
+  use { 'goolord/alpha-nvim',
+    requires = { 'kyazdani42/nvim-web-devicons' },
+    config = function ()
+      local alpha = require'alpha'
+      local startify = require'alpha.themes.startify'
+      startify.section.bottom_buttons.val = {
+        startify.button( "c", "  Edit config" , ":e ~/.config/nvim/init.lua<CR>"),
+        startify.button( "q", "  Quit neovim" , ":qa<CR>"),
+      }
+      alpha.setup(startify.opts)
+    end
+  }
+
   -- the usual
   use {'junegunn/fzf', 'junegunn/fzf.vim'}
   use {'tpope/vim-repeat', 'tpope/vim-surround'}
-  use {'mhinz/vim-startify', 'mhinz/vim-signify'}
+  use {'mhinz/vim-signify'}
 
   -- theme
   use 'sainnhe/gruvbox-material'
@@ -131,9 +154,6 @@ map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
 map('n', '<leader>F', "za", {noremap=false})
 -- better star search
 map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false})
--- centered cursor on jump
-map('n', 'n', 'nzzzv', {noremap = true})
-map('n', 'N', 'Nzzzv', {noremap = true})
 -- move visual selection up or down
 map('v', '<C-j>', [[:m '>+1<CR>gv=gv]], {noremap = true})
 map('v', '<C-k>', [[:m '<-2<CR>gv=gv]], {noremap = true})
@@ -147,13 +167,17 @@ map('i', '<', '<<c-g>u', {noremap = true})
 map('n', 'q:', "<nop>", {noremap=true})
 map('n', 'Q', "<nop>", {noremap=true})
 
+-- restore the last session
+map('n', '<leader>pl', [[<cmd>lua require('persistence').load({ last = true })<cr>]])
+
+
 -------------------- Options -------------------------------
 vim.o.background = "dark" -- or "light" for light mode
 if vim.fn.has('termguicolors') == 1 then
    vim.o.termguicolors = true
 end
 
-vim.cmd 'colorscheme gruvbox-material'
+vim.cmd [[colorscheme gruvbox-material]]
 
 -- Basic must haves
 vim.o.compatible = false
@@ -445,13 +469,13 @@ require("nvim-autopairs.completion.cmp").setup({
   map_complete = true -- it will auto insert `(` after select function or method item
 })
 
--- STARTIFY
-map('n', '<leader>S', '<cmd>Startify<CR>')
-vim.g.startify_change_to_dir =  0
-vim.g.startify_files_number = 20
-vim.g.startify_enable_special = 0
-vim.g.startify_bookmarks = {{ c = '~/.config/nvim/init.lua'}}
-vim.cmd("let g:startify_custom_indices = map(range(1,100), 'string(v:val)')")
+-- ALPHA
+map('n', '<leader>S', '<cmd>Alpha<CR>')
+-- vim.g.startify_change_to_dir =  0
+-- vim.g.startify_files_number = 20
+-- vim.g.startify_enable_special = 0
+-- vim.g.startify_bookmarks = {{ c = '~/.config/nvim/init.lua'}}
+-- vim.cmd("let g:startify_custom_indices = map(range(1,100), 'string(v:val)')")
 
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
