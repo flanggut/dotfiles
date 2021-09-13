@@ -109,8 +109,16 @@ require('packer').startup(function()
     end
   }
 
+  use { 'tpope/vim-scriptease',
+    cmd = {
+      "Messages", --view messages in quickfix list
+      "Verbose", -- view verbose output in preview window.
+      "Time", -- measure how long it takes to run some stuff.
+    },
+  }
+
   -- the usual
-  use {'junegunn/fzf', 'junegunn/fzf.vim'}
+  -- use {'junegunn/fzf', 'junegunn/fzf.vim'}
   use {'tpope/vim-repeat', 'tpope/vim-surround'}
   use {'mhinz/vim-signify'}
 
@@ -147,7 +155,7 @@ map('n', '<esc>l', "<C-^>")
 map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
-map('n', '<leader>cc', [[<cmd>let @c=@+<CR>]])
+map('n', '<leader>cc', [[<cmd>cclose<CR>]])
 -- search and replace visual selection
 map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
 -- toggle fold
@@ -320,9 +328,28 @@ map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency
 if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
   map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
 else
--- fzf custom pickers
-  vim.cmd([[command! -bang -nargs=? -complete=dir Files call fzf#run({'source': "find . -maxdepth 1 -type f", 'sink': 'e', 'options': '--bind=change:reload:"arc myles -n 100 --list {q}"', 'down': '30%' })]])
-  vim.api.nvim_set_keymap('n', '<C-p>', '<cmd>Files<CR>', {noremap=true})
+  _G.myles = function(opts)
+    opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
+
+    local myles_search = require 'telescope.finders'.new_async_job {
+      command_generator = function(prompt)
+          if not prompt or prompt == "" then
+            return nil
+          end
+
+          return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
+        end,
+      entry_maker = opts.entry_maker or require 'telescope.make_entry'.gen_from_file(opts),
+      cwd = opts.cwd
+    }
+    require 'telescope.pickers'.new(opts, {
+      prompt_title = "Myles",
+      finder = myles_search,
+      previewer = false,
+      sorter = false,
+    }):find()
+  end
+  vim.api.nvim_set_keymap("n", "<C-p>", ":lua myles({})<CR>", {noremap = true, silent = true})
 end
 
 -- NVIM CMP
