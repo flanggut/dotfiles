@@ -22,9 +22,7 @@ require('packer').startup(function()
   use 'wbthomason/packer.nvim'
 
   -- treesitter
-  use {'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate'
-  }
+  use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-refactor'
   use 'RRethy/nvim-treesitter-textsubjects'
 
@@ -33,29 +31,19 @@ require('packer').startup(function()
   use 'ray-x/lsp_signature.nvim'
   use 'kabouzeid/nvim-lspinstall'
 
-  use { 'folke/trouble.nvim',
-    requires = "kyazdani42/nvim-web-devicons",
-  }
+  use { 'folke/trouble.nvim', requires = 'kyazdani42/nvim-web-devicons' }
 
   -- telescope
-  use {'nvim-telescope/telescope.nvim',
-    requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
-  }
+  use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
   use 'nvim-telescope/telescope-z.nvim'
   use 'nvim-telescope/telescope-symbols.nvim'
-  use { 'nvim-telescope/telescope-frecency.nvim',
-    requires = {'tami5/sqlite.lua'}
-  }
+  use {'nvim-telescope/telescope-frecency.nvim', requires = {'tami5/sqlite.lua'} }
 
   -- lualine
-  use {'hoob3rt/lualine.nvim',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true}
-  }
+  use {'hoob3rt/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
 
   -- nvim-tree
-  use {'kyazdani42/nvim-tree.lua',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true},
-  }
+  use {'kyazdani42/nvim-tree.lua', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
 
   -- nvim-cmp and snippets
   use {'L3MON4D3/LuaSnip'}
@@ -73,9 +61,7 @@ require('packer').startup(function()
   }
 
   -- barbar
-  use {'romgrk/barbar.nvim',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true},
-  }
+  use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
 
   -- Smooth Scrolling
   use {'karb94/neoscroll.nvim',
@@ -118,9 +104,9 @@ require('packer').startup(function()
   }
 
   -- the usual
-  -- use {'junegunn/fzf', 'junegunn/fzf.vim'}
   use {'tpope/vim-repeat', 'tpope/vim-surround'}
-  use {'mhinz/vim-signify'}
+  use 'mhinz/vim-signify'
+  use 'kevinhwang91/nvim-bqf'
 
   -- theme
   use 'sainnhe/gruvbox-material'
@@ -155,6 +141,7 @@ map('n', '<esc>l', "<C-^>")
 map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
+map('n', '<leader>co', [[<cmd>copen<CR>]])
 map('n', '<leader>cc', [[<cmd>cclose<CR>]])
 -- search and replace visual selection
 map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
@@ -177,7 +164,6 @@ map('n', 'Q', "<nop>", {noremap=true})
 
 -- restore the last session
 map('n', '<leader>pl', [[<cmd>lua require('persistence').load({ last = true })<cr>]])
-
 
 -------------------- Options -------------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -318,7 +304,7 @@ require'telescope'.load_extension'frecency'
 
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
-map('n', '<leader>sc', "<cmd>cclose<cr><cmd>lua require('telescope.builtin').quickfix()<cr>")
+map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
@@ -498,11 +484,6 @@ require("nvim-autopairs.completion.cmp").setup({
 
 -- ALPHA
 map('n', '<leader>S', '<cmd>Alpha<CR>')
--- vim.g.startify_change_to_dir =  0
--- vim.g.startify_files_number = 20
--- vim.g.startify_enable_special = 0
--- vim.g.startify_bookmarks = {{ c = '~/.config/nvim/init.lua'}}
--- vim.cmd("let g:startify_custom_indices = map(range(1,100), 'string(v:val)')")
 
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
@@ -702,8 +683,7 @@ end
 local ls = require("luasnip")
 ls.snippets = {
 	cpp = {
-		-- Trigger is co.
-		ls.snippet("co", {
+		ls.snippet("co", { -- Trigger is co.
 			-- Simple static text.
 			ls.text_node('std::cout << "\\U0001F98A " << '),
 			-- Insert node.
