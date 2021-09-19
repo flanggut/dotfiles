@@ -111,6 +111,7 @@ require('packer').startup(function()
   -- theme
   use 'sainnhe/gruvbox-material'
   use 'sainnhe/edge'
+  use('rose-pine/neovim')
 
   use {'folke/zen-mode.nvim', config = function() require('zen-mode').setup {} end }
   use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
@@ -317,17 +318,15 @@ else
   _G.myles = function(opts)
     opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
 
-    local myles_search = require 'telescope.finders'.new_async_job {
-      command_generator = function(prompt)
-          if not prompt or prompt == "" then
-            return nil
-          end
-
-          return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
-        end,
-      entry_maker = opts.entry_maker or require 'telescope.make_entry'.gen_from_file(opts),
-      cwd = opts.cwd
-    }
+    local myles_search = require 'telescope.finders'.new_job(
+      function(prompt)
+        if not prompt or prompt == "" then
+          return nil
+        end
+        return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
+      end,
+      opts.entry_maker or require 'telescope.make_entry'.gen_from_file(opts), 25, opts.cwd
+    )
     require 'telescope.pickers'.new(opts, {
       prompt_title = "Myles",
       finder = myles_search,
