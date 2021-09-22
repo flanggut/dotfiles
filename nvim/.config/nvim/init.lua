@@ -35,9 +35,14 @@ require('packer').startup(function()
 
   -- telescope
   use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
-  use 'nvim-telescope/telescope-z.nvim'
   use 'nvim-telescope/telescope-symbols.nvim'
-  use {'nvim-telescope/telescope-frecency.nvim', requires = {'tami5/sqlite.lua'} }
+  use {'nvim-telescope/telescope-z.nvim',
+    config = function() require'telescope'.load_extension('z') end,
+  }
+  use {'nvim-telescope/telescope-frecency.nvim',
+    config = function() require'telescope'.load_extension('frecency') end,
+    requires = {'tami5/sqlite.lua'}
+  }
 
   -- lualine
   use {'hoob3rt/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
@@ -122,7 +127,6 @@ require('packer').startup(function()
   use 'windwp/nvim-autopairs' -- insert pairs automatically
   use 'b3nj5m1n/kommentary' -- comments
   use 'mcchrish/nnn.vim' -- best file browser
-  use 'ntpeters/vim-better-whitespace'
   use 'RRethy/vim-illuminate'
   use 'voldikss/vim-floaterm'
   use 'christoomey/vim-tmux-navigator'
@@ -164,7 +168,7 @@ map('n', 'q:', "<nop>", {noremap=true})
 map('n', 'Q', "<nop>", {noremap=true})
 
 -- restore the last session
-map('n', '<leader>pl', [[<cmd>lua require('persistence').load({ last = true })<cr>]])
+map('n', '<leader>pl', [[<cmd>lua require('persistence').load()<cr>]])
 
 -------------------- Options -------------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -300,8 +304,6 @@ require('telescope').setup{
     }
   }
 }
-require'telescope'.load_extension'z'
-require'telescope'.load_extension'frecency'
 
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
@@ -458,6 +460,8 @@ vim.g.nvim_tree_auto_close = 1
 require'lightspeed'.setup {
   limit_ft_matches = 0,
 }
+vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {})
+vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {})
 
 -- BARBAR
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
@@ -490,13 +494,13 @@ vim.g.indentLine_char = '│'
 vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
 
 -- BETTER WHITESPACE
-map('n', '<leader>sw', '<cmd>StripWhitespace<CR>')
-vim.g.better_whitespace_enabled = 1
-vim.g.strip_whitespace_on_save = 0
-vim.g.strip_max_file_size = 10000
-vim.g.strip_whitelines_at_eof = 1
-vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'diff', 'gitcommit', 'unite',
-    'qf', 'help', 'TelescopePrompt', 'hgcommit' }
+-- map('n', '<leader>sw', '<cmd>StripWhitespace<CR>')
+-- vim.g.better_whitespace_enabled = 1
+-- vim.g.strip_whitespace_on_save = 0
+-- vim.g.strip_max_file_size = 10000
+-- vim.g.strip_whitelines_at_eof = 1
+-- vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'diff', 'gitcommit', 'unite',
+--     'qf', 'help', 'TelescopePrompt', 'hgcommit' }
 
 -- ILLUMINATE
 vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
@@ -578,7 +582,10 @@ map('n', '<A-.>', '<cmd>vsplit<cr>', {silent = true})
 require("trouble").setup {
   auto_close = true,
 }
-vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>", {silent = true, noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>oo", "<cmd>TroubleToggle<cr>", {silent = true, noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>od", "<cmd>TroubleToggle lsp_workspace_diagnostics<cr>", {silent = true, noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>ow", "<cmd>TroubleToggle lsp_document_diagnostics<cr>", {silent = true, noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>oq", "<cmd>TroubleToggle quickfix<cr>", {silent = true, noremap = true})
 
 -------------------  SPECS
 require("specs").setup {
@@ -688,6 +695,12 @@ ls.snippets = {
 			-- Insert node.
 			ls.insert_node(0),
 			ls.text_node(' << std::endl;'),
+		}),
+  },
+  hgcommit = {
+		ls.snippet("vo", {
+			ls.text_node('[vogon] '),
+			ls.insert_node(0),
 		}),
   },
 }
