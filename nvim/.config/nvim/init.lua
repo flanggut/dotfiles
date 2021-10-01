@@ -15,7 +15,7 @@ if packer_init_required then
 end
 
 -- Start up packer, sync packages afterwards if required
-require('packer').startup(function()
+require('packer').startup({function()
   local use = require('packer').use
 
   -- Packer can manage itself
@@ -35,14 +35,10 @@ require('packer').startup(function()
 
   -- telescope
   use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'nvim-telescope/telescope-symbols.nvim'
-  use {'nvim-telescope/telescope-z.nvim',
-    config = function() require'telescope'.load_extension('z') end,
-  }
-  use {'nvim-telescope/telescope-frecency.nvim',
-    config = function() require'telescope'.load_extension('frecency') end,
-    requires = {'tami5/sqlite.lua'}
-  }
+  use 'nvim-telescope/telescope-z.nvim'
+  use {'nvim-telescope/telescope-frecency.nvim', requires = {'tami5/sqlite.lua'} }
 
   -- lualine
   use {'hoob3rt/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
@@ -59,9 +55,6 @@ require('packer').startup(function()
       {'hrsh7th/cmp-nvim-lsp'},
       {'hrsh7th/cmp-nvim-lua'},
       {'saadparwaiz1/cmp_luasnip'},
-      {'hrsh7th/cmp-vsnip'},
-      {'hrsh7th/vim-vsnip'},
-      {'hrsh7th/vim-vsnip-integ'},
     }
   }
 
@@ -134,7 +127,13 @@ require('packer').startup(function()
   use 'mizlan/iswap.nvim'
   use 'arzg/vim-swift' -- swift language support
 
-end)
+end,
+config = {
+  profile = {
+    enable = false,
+    threshold = 0, -- integer in milliseconds, plugins which load faster than this won't be shown in profile output
+  }
+}})
 if packer_init_required then
  require'packer'.sync()
 end
@@ -153,7 +152,7 @@ map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
 -- toggle fold
 map('n', '<leader>F', "za", {noremap=false})
 -- better star search
-map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false})
+map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false, silent=true})
 -- move visual selection up or down
 map('v', '<C-j>', [[:m '>+1<CR>gv=gv]], {noremap = true})
 map('v', '<C-k>', [[:m '<-2<CR>gv=gv]], {noremap = true})
@@ -227,8 +226,8 @@ vim.cmd([[
 
 -------------------- Plugin Setup --------------------------
 -- TREESITTER
-local tsconf = require 'nvim-treesitter.configs'
-tsconf.setup {
+local treesitter_config = require 'nvim-treesitter.configs'
+treesitter_config.setup {
   ensure_installed = 'maintained',
   highlight = {enable = true},
   incremental_selection = {
@@ -304,20 +303,25 @@ require('telescope').setup{
     }
   }
 }
+require'telescope'.load_extension('fzf')
+require'telescope'.load_extension('frecency')
+require'telescope'.load_extension('z')
 
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
+map('n', '<leader>sd', "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
-map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require('telescope.sorters').get_fzy_sorter()})<CR>", {silent=true})
+map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require'telescope.sorters'.get_fuzzy_file()})<CR>", {silent=true})
+map('n', '<leader>sp', "<cmd>lua require('telescope.builtin').registers()<cr>")
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 -- map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
-map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false, sorter = require('telescope.sorters').get_fzy_sorter()})<cr>")
-if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-  map('n', '<C-p>', "<cmd>lua require('telescope.builtin').find_files({hidden=true})<cr>")
-else
-  _G.myles = function(opts)
+map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false, sorter = require'telescope.sorters'.get_fuzzy_file()})<cr>")
+_G.myfiles = function(opts)
+  if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+    require('telescope.builtin').find_files({hidden=true})
+  else
     opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
 
     local myles_search = require 'telescope.finders'.new_job(
@@ -336,8 +340,8 @@ else
       sorter = false,
     }):find()
   end
-  vim.api.nvim_set_keymap("n", "<C-p>", ":lua myles({})<CR>", {noremap = true, silent = true})
 end
+vim.api.nvim_set_keymap("n", "<C-p>", ":lua myfiles({})<CR>", {noremap = true, silent = true})
 
 -- NVIM CMP
 local cmp = require'cmp'
@@ -375,7 +379,7 @@ cmp.setup {
   },
 }
 
-local t = function(str)
+local replace_termcodes = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
@@ -392,22 +396,22 @@ end
 local luasnip = require("luasnip")
 _G.cj_complete = function()
   if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
+    return replace_termcodes "<C-n>"
   elseif luasnip and luasnip.expand_or_jumpable() then
-    return t "<Plug>luasnip-expand-or-jump"
+    return replace_termcodes "<Plug>luasnip-expand-or-jump"
   elseif check_back_space() then
-    return t "<C-j>"
+    return replace_termcodes "<C-j>"
   else
     return vim.fn['cmp#complete']()
   end
 end
 _G.ck_complete = function()
   if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
+    return replace_termcodes "<C-p>"
   elseif luasnip and luasnip.jumpable(-1) then
-    return t "<Plug>luasnip-jump-prev"
+    return replace_termcodes "<Plug>luasnip-jump-prev"
   else
-    return t "<C-k>"
+    return replace_termcodes "<C-k>"
   end
 end
 vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.cj_complete()", {expr = true})
@@ -417,22 +421,22 @@ vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.ck_complete()", {expr = true})
 
 _G.tab_complete = function()
   if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
+    return replace_termcodes "<C-n>"
   elseif luasnip and luasnip.expand_or_jumpable() then
-    return t "<Plug>luasnip-expand-or-jump"
+    return replace_termcodes "<Plug>luasnip-expand-or-jump"
   elseif check_back_space() then
-    return t "<Tab>"
+    return replace_termcodes "<Tab>"
   else
     return vim.fn['cmp#complete']()
   end
 end
 _G.s_tab_complete = function()
   if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
+    return replace_termcodes "<C-p>"
   elseif luasnip and luasnip.jumpable(-1) then
-    return t "<Plug>luasnip-jump-prev"
+    return replace_termcodes "<Plug>luasnip-jump-prev"
   else
-    return t "<S-Tab>"
+    return replace_termcodes "<S-Tab>"
   end
 end
 vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
@@ -441,20 +445,20 @@ vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
 -- NVIMTREE
-Tree = {}
-Tree.open = function ()
-   require'bufferline.state'.set_offset(51, '')
-   require'nvim-tree'.find_file(true)
-end
-Tree.close = function ()
-   require'bufferline.state'.set_offset(0)
-   require'nvim-tree'.close()
-end
-map('n', '<leader>n', '<cmd>lua Tree.open()<CR>zz')
-map('n', '<leader>m', '<cmd>lua Tree.close()<CR>')
-vim.g.nvim_tree_width = 50
-vim.g.nvim_tree_follow = 1
-vim.g.nvim_tree_auto_close = 1
+vim.g.nvim_tree_quit_on_open = 1
+require'nvim-tree'.setup {
+  auto_close = true,
+  highjack_cursor = true,
+  quit_on_open = true,
+  update_focused_file = {
+    enable = true,
+  },
+  view = {
+    width = 50,
+  }
+}
+map('n', '<leader>n', '<cmd>lua require"nvim-tree".find_file(true)<CR>')
+map('n', '<leader>m', '<cmd>lua require"nvim-tree".close()<CR>')
 
 -- LIGHTSPEED
 require'lightspeed'.setup {
@@ -462,6 +466,8 @@ require'lightspeed'.setup {
 }
 vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {})
 vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {})
+vim.api.nvim_set_keymap('v', 'f', '<Plug>Lightspeed_s', {})
+vim.api.nvim_set_keymap('v', 'F', '<Plug>Lightspeed_S', {})
 
 -- BARBAR
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
@@ -686,24 +692,7 @@ for _, server in pairs(servers) do
 end
 
 ------------------------- LUASNIP ----------------------------
-local ls = require("luasnip")
-ls.snippets = {
-	cpp = {
-		ls.snippet("co", { -- Trigger is co.
-			-- Simple static text.
-			ls.text_node('std::cout << "\\U0001F98A " << '),
-			-- Insert node.
-			ls.insert_node(0),
-			ls.text_node(' << std::endl;'),
-		}),
-  },
-  hgcommit = {
-		ls.snippet("vo", {
-			ls.text_node('[vogon] '),
-			ls.insert_node(0),
-		}),
-  },
-}
+require("luasnip").snippets = require('fl.snippets').snippets
 
 --------------------- Custom functions -----------------
 function CodeLink()
