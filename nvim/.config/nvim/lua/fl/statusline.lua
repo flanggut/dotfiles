@@ -1,11 +1,11 @@
 local windline = require('windline')
 local helper = require('windline.helpers')
-local b_components = require('windline.components.basic')
-local vim_components = require('windline.components.vim')
 local state = _G.WindLine.state
 
+local b_components = require('windline.components.basic')
 local lsp_comps = require('windline.components.lsp')
 local git_comps = require('windline.components.git')
+-- local vim_components = require('windline.components.vim')
 
 local hl_list = {
     Black = { 'white', 'black' },
@@ -25,11 +25,11 @@ local colors_mode = {
     -- Visual = { 'yellow', 'NormalBg' },
     -- Replace = { 'blue_light', 'NormalBg' },
     -- Command = { 'magenta', 'NormalBg' },
-    Normal = { 'NormalBg', 'red' },
+    Normal = { 'NormalBg', 'NormalFg' },
     Insert = { 'NormalBg', 'green' },
-    Visual = { 'NormalBg', 'yellow' },
+    Visual = { 'NormalBg', 'red' },
     Replace = { 'NormalBg', 'blue_light' },
-    Command = { 'NormalBg', 'magenta' },
+    Command = { 'NormalBg', 'yellow' },
 }
 
 basic.vi_mode = {
@@ -159,7 +159,8 @@ basic.lsp_status = {
       end
       local status = {}
       for _, msg in pairs(messages) do
-        table.insert(status, (msg.percentage or 0) .. "%% " .. (msg.title or ""))
+        -- table.insert(status, (msg.percentage or 0) .. "%% " .. (msg.title or ""))
+        table.insert(status, (msg.percentage or 0) .. "%%")
       end
       local spinners = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
       local ms = vim.loop.hrtime() / 1000000
@@ -212,7 +213,6 @@ local default = {
         { ' ', {'white', 'NormalBg'} },
         basic.file,
         basic.divider,
-        { vim_components.search_count(), { 'cyan', 'NormalBg' } },
         basic.file_right,
         basic.lsp_diagnos,
         { ' ', {'white', 'NormalBg'} },
