@@ -24,24 +24,24 @@ require('packer').startup({function()
   -- treesitter
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-refactor'
+  use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'RRethy/nvim-treesitter-textsubjects'
 
   -- nvim-lsp
   use 'neovim/nvim-lspconfig'
   use 'ray-x/lsp_signature.nvim'
   use 'kabouzeid/nvim-lspinstall'
-
   use { 'folke/trouble.nvim', requires = 'kyazdani42/nvim-web-devicons' }
 
   -- telescope
   use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use 'nvim-telescope/telescope-fzy-native.nvim'
   use 'nvim-telescope/telescope-symbols.nvim'
   use 'nvim-telescope/telescope-z.nvim'
   use {'nvim-telescope/telescope-frecency.nvim', requires = {'tami5/sqlite.lua'} }
 
   -- lualine
-  use {'hoob3rt/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
+  use {'windwp/windline.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
 
   -- nvim-tree
   use {'kyazdani42/nvim-tree.lua', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
@@ -55,6 +55,7 @@ require('packer').startup({function()
       {'hrsh7th/cmp-nvim-lsp'},
       {'hrsh7th/cmp-nvim-lua'},
       {'saadparwaiz1/cmp_luasnip'},
+      {'ray-x/cmp-treesitter'},
     }
   }
 
@@ -102,7 +103,7 @@ require('packer').startup({function()
   }
 
   -- the usual
-  use {'tpope/vim-repeat', 'tpope/vim-surround'}
+  use 'tpope/vim-repeat'
   use 'mhinz/vim-signify'
   use 'kevinhwang91/nvim-bqf'
 
@@ -124,8 +125,6 @@ require('packer').startup({function()
   use 'voldikss/vim-floaterm'
   use 'christoomey/vim-tmux-navigator'
   use 'tversteeg/registers.nvim'
-  use 'mizlan/iswap.nvim'
-  use 'arzg/vim-swift' -- swift language support
 
 end,
 config = {
@@ -138,91 +137,14 @@ if packer_init_required then
  require'packer'.sync()
 end
 
--------------------- Basic Keybinds ------------------------
-vim.g.mapleader = ' '
-map('n', '<esc><esc>', '<cmd>nohlsearch<CR>')
-map('n', '<esc>l', "<C-^>")
-map('n', '<leader>l', "<C-^>")
-map('n', '<leader>y', [["+y]])
-map('v', '<leader>y', [["+y]])
-map('n', '<leader>co', [[<cmd>copen<CR>]])
-map('n', '<leader>cc', [[<cmd>cclose<CR>]])
--- search and replace visual selection
-map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
--- toggle fold
-map('n', '<leader>F', "za", {noremap=false})
--- better star search
-map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false, silent=true})
--- move visual selection up or down
-map('v', '<C-j>', [[:m '>+1<CR>gv=gv]], {noremap = true})
-map('v', '<C-k>', [[:m '<-2<CR>gv=gv]], {noremap = true})
--- undo breakpoints
-map('i', ',', ',<c-g>u', {noremap = true})
-map('i', '.', '.<c-g>u', {noremap = true})
-map('i', '(', '(<c-g>u', {noremap = true})
-map('i', '<', '<<c-g>u', {noremap = true})
-
--- Unmap common typos
-map('n', 'q:', "<nop>", {noremap=true})
-map('n', 'Q', "<nop>", {noremap=true})
-
--- restore the last session
-map('n', '<leader>pl', [[<cmd>lua require('persistence').load()<cr>]])
-
--------------------- Options -------------------------------
+-------------------- Theme Setup --------------------------
 vim.o.background = "dark" -- or "light" for light mode
 if vim.fn.has('termguicolors') == 1 then
    vim.o.termguicolors = true
 end
 
-vim.cmd [[colorscheme gruvbox-material]]
-
--- Basic must haves
-vim.o.compatible = false
-vim.o.hidden = true                -- hide buffers instead of closing them
-vim.o.wildmode = 'longest,list'    -- bash like completion in cmndln
-vim.o.wildmenu = true
-vim.o.showmode = false             -- no mode in cmdln
-vim.o.cmdheight = 2
-vim.o.updatetime = 100
-vim.o.ttimeoutlen = 5
-vim.o.linespace = 3
-vim.o.laststatus = 2
-vim.o.splitbelow = true
-vim.o.completeopt='menuone,noselect'
-vim.wo.number = true                -- line numbers
-vim.wo.foldmethod = 'indent'
-vim.wo.foldnestmax = 1
-vim.o.foldlevelstart = 1
-
-vim.cmd('set diffopt+=vertical')
-vim.cmd('set signcolumn=yes')
-
--- Indentation
-vim.o.expandtab = true              -- Always use spaces instead of tabs
-vim.o.smarttab = true               -- Better tabs
-vim.o.smartindent = true            -- Inserts new level of indentation
-vim.o.autoindent = true             -- Copy indentation from previous line
-vim.o.tabstop = 2                   -- Columns a tab counts for
-vim.o.softtabstop = 2               -- Columns a tab inserts in insert mode
-vim.o.shiftwidth = 2                -- Columns inserted with the reindent operations
-vim.o.shiftround = true             -- Always indent by multiple of shiftwidth
-
--- Search
-vim.o.hlsearch = true
-vim.o.incsearch = true
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
--- highlight text on yank
-vim.cmd([[
-  au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}
-]])
-
--- set correct filetype for fish
-vim.cmd([[
-  au BufNewFile,BufRead *.fish set filetype=fish
-]])
+-------------------- Core Setup --------------------------
+require'fl.core'
 
 -------------------- Plugin Setup --------------------------
 -- TREESITTER
@@ -249,6 +171,30 @@ treesitter_config.setup {
     enable = true,
     keymaps = {
       ['.'] = 'textsubjects-smart',
+    },
+  },
+  textobjects = {
+    select = {
+      enable = true,
+      lookahead = true,
+      keymaps = {
+        ["if"] = "@function.outer",
+        ["im"] = "@block.outer",
+      },
+    },
+    move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        [")"] = "@function.outer",
+      },
+      goto_next_end = {
+        ["}"] = "@block.outer",
+      },
+      goto_previous_start = {
+        ["("] = "@function.outer",
+        ["{"] = "@block.outer",
+      },
     },
   },
 }
@@ -303,7 +249,7 @@ require('telescope').setup{
     }
   }
 }
-require'telescope'.load_extension('fzf')
+require'telescope'.load_extension('fzy_native')
 require'telescope'.load_extension('frecency')
 require'telescope'.load_extension('z')
 
@@ -342,6 +288,49 @@ _G.myfiles = function(opts)
   end
 end
 vim.api.nvim_set_keymap("n", "<C-p>", ":lua myfiles({})<CR>", {noremap = true, silent = true})
+_G.mygrep = function(opts)
+  local make_entry = require "telescope.make_entry"
+  local pickers = require "telescope.pickers"
+  local finders = require "telescope.finders"
+  local conf = require("telescope.config").values
+  local escape_chars = function(string)
+    return string.gsub(string, "[%(|%)|\\|%[|%]|%-|%{%}|%?|%+|%*|%^|%$]", {
+      ["\\"] = "\\\\",
+      ["-"] = "\\-",
+      ["("] = "\\(",
+      [")"] = "\\)",
+      ["["] = "\\[",
+      ["]"] = "\\]",
+      ["{"] = "\\{",
+      ["}"] = "\\}",
+      ["?"] = "\\?",
+      ["+"] = "\\+",
+      ["*"] = "\\*",
+      ["^"] = "\\^",
+      ["$"] = "\\$",
+    })
+  end
+
+  if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+    local word = escape_chars(vim.fn.expand "<cword>")
+    local args = {"xbgs", "-is", word }
+    local sorter = conf.generic_sorter(opts)
+    opts.entry_maker = make_entry.gen_from_vimgrep(opts)
+    if opts.list_files_only then
+      opts.entry_maker = make_entry.gen_from_file(opts)
+      args = {"xbgs", "-isl", word }
+      sorter = conf.file_sorter(opts)
+    end
+    pickers.new(opts, {
+      prompt_title = "Find Word (" .. word .. ")",
+      finder = finders.new_oneshot_job(args, opts),
+      previewer = false,
+      sorter = sorter,
+    }):find()
+  end
+end
+vim.api.nvim_set_keymap("n", "<leader>mg", ":lua mygrep({list_files_only=false})<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap("n", "<leader>ml", ":lua mygrep({list_files_only=true})<CR>", {noremap = true, silent = true})
 
 -- NVIM CMP
 local cmp = require'cmp'
@@ -358,6 +347,7 @@ cmp.setup {
     { name = 'nvim_lua'},
     { name = 'nvim_lsp'},
     { name = 'luasnip'},
+    { name = 'treesitter'},
     { name = 'buffer'},
     { name = 'path'},
   },
@@ -372,7 +362,9 @@ cmp.setup {
   },
   formatting = {
     format = function(_, vim_item)
+      local strings = require('plenary.strings')
       local lspkind = require('lspkind').presets.default[vim_item.kind]
+      vim_item.abbr = strings.truncate(vim_item.abbr, 60)
       vim_item.abbr = string.format("%s %s", lspkind, vim_item.abbr)
       return vim_item
     end
@@ -458,7 +450,6 @@ require'nvim-tree'.setup {
   }
 }
 map('n', '<leader>n', '<cmd>lua require"nvim-tree".find_file(true)<CR>')
-map('n', '<leader>m', '<cmd>lua require"nvim-tree".close()<CR>')
 
 -- LIGHTSPEED
 require'lightspeed'.setup {
@@ -466,8 +457,6 @@ require'lightspeed'.setup {
 }
 vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {})
 vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {})
-vim.api.nvim_set_keymap('v', 'f', '<Plug>Lightspeed_s', {})
-vim.api.nvim_set_keymap('v', 'F', '<Plug>Lightspeed_S', {})
 
 -- BARBAR
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
@@ -532,48 +521,49 @@ map('t', '<c-s>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
 map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
 -- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
 
--- LUALINE
-require'lualine'.setup{
-  options = {
-    theme = 'gruvbox_material',
-    disabled_filetypes = {},
-    icons_enabled = true,
-  },
-  extensions = {'nvim-tree'},
-  sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch'},
-    lualine_c = {'filename'},
-    lualine_x = {
-      {
-        function()
-          local msg = 'none'
-          local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-          local clients = vim.lsp.get_active_clients()
-          if next(clients) == nil then return msg end
-          for _, client in ipairs(clients) do
-            local filetypes = client.config.filetypes
-            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-              return client.name
-            end
-          end
-          return msg
-        end,
-        icon = ' :',
-      },
-      {
-        'diagnostics',
-        sources = {'nvim_lsp'},
-        symbols = {error = ' ', warn = ' ', info = ' '},
-        color_error = '#ea6962',
-        color_warn = '#d8a657',
-        color_info = '#89b482'
-      },
-      'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
-  }
-}
+-- STATUSLINE
+require('wlsample.evil_line')
+-- require'lualine'.setup{
+--   options = {
+--     theme = 'gruvbox_material',
+--     disabled_filetypes = {},
+--     icons_enabled = true,
+--   },
+--   extensions = {'nvim-tree'},
+--   sections = {
+--     lualine_a = {'mode'},
+--     lualine_b = {'branch'},
+--     lualine_c = {'filename'},
+--     lualine_x = {
+--       {
+--         function()
+--           local msg = 'none'
+--           local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+--           local clients = vim.lsp.get_active_clients()
+--           if next(clients) == nil then return msg end
+--           for _, client in ipairs(clients) do
+--             local filetypes = client.config.filetypes
+--             if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+--               return client.name
+--             end
+--           end
+--           return msg
+--         end,
+--         icon = ' :',
+--       },
+--       {
+--         'diagnostics',
+--         sources = {'nvim_lsp'},
+--         symbols = {error = ' ', warn = ' ', info = ' '},
+--         color_error = '#ea6962',
+--         color_warn = '#d8a657',
+--         color_info = '#89b482'
+--       },
+--       'encoding', 'fileformat', 'filetype'},
+--     lualine_y = {'progress'},
+--     lualine_z = {'location'}
+--   }
+-- }
 
 ------------------- Navigation + TMUX -----------------
 vim.g.tmux_navigator_no_mappings = 1
