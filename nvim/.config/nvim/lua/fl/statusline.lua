@@ -20,11 +20,6 @@ basic.divider = { b_components.divider, '' }
 basic.bg = { ' ', 'StatusLine' }
 
 local colors_mode = {
-    -- Normal = { 'red', 'NormalBg' },
-    -- Insert = { 'green', 'NormalBg' },
-    -- Visual = { 'yellow', 'NormalBg' },
-    -- Replace = { 'blue_light', 'NormalBg' },
-    -- Command = { 'magenta', 'NormalBg' },
     Normal = { 'NormalBg', 'NormalFg' },
     Insert = { 'NormalBg', 'green' },
     Visual = { 'NormalBg', 'red' },
@@ -43,7 +38,7 @@ basic.vi_mode = {
         }
       else
         return {
-          { '   ', state.mode[2] },
+          { '  ', state.mode[2] },
           { helper.separators.slant_left_2, state.mode[2] },
         }
       end
@@ -91,19 +86,17 @@ basic.file = {
             return {
                 { b_components.file_modified(' '), 'magenta' },
                 { ' ', '' },
-                { b_components.cache_file_name('[No Name]', 'unique'), 'magenta' },
+                { b_components.cache_file_name('[No Name]', 'unique'), '' },
                 { b_components.line_col_lua, 'white' },
                 { b_components.progress_lua, '' },
-                { '  ', '' },
-                { b_components.cache_file_size(), 'white' },
+                { ' ', '' },
             }
         else
             return {
                 { b_components.file_modified(' '), 'magenta' },
                 { ' ', '' },
-                { b_components.cache_file_name('[No Name]', 'unique'), 'magenta' },
+                { b_components.cache_file_name('[No Name]', 'unique'), '' },
                 { ' ', '' },
-                { b_components.cache_file_size(), 'white' },
             }
         end
     end,
@@ -212,17 +205,19 @@ local default = {
         basic.vi_mode,
         { ' ', {'white', 'NormalBg'} },
         basic.file,
+        basic.lsp_diagnos,
         basic.divider,
         basic.file_right,
-        basic.lsp_diagnos,
         { ' ', {'white', 'NormalBg'} },
         { lsp_comps.lsp_name(), { 'magenta', 'NormalBg' }, breakpoint_width },
         basic.lsp_status,
         basic.git,
         { git_comps.git_branch(), { 'magenta', 'NormalBg' }, breakpoint_width },
         { ' ', {'white', 'NormalBg'} },
-        { b_components.cache_file_type({ icon = true }), { 'white', 'NormalBg' } },
-        { ' ', {'white', 'NormalBg'} },
+        { b_components.cache_file_type({ icon = true }), '' },
+        { ' ', '' },
+        { b_components.cache_file_size(), '' },
+        { ' ', '' },
         basic.square_mode
     },
     inactive = {
