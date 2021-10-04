@@ -69,7 +69,7 @@ require('packer').startup({function()
       require('neoscroll').setup({easing_function = 'circular',})
     end,
   }
-  use 'edluffy/specs.nvim' -- show jumps
+  use {'edluffy/specs.nvim', after = "neoscroll.nvim"}
 
   -- persistence
   use { 'folke/persistence.nvim',
@@ -522,7 +522,7 @@ map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent 
 -- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
 
 -- STATUSLINE
-require('wlsample.evil_line')
+require('fl.statusline')
 -- require'lualine'.setup{
 --   options = {
 --     theme = 'gruvbox_material',
