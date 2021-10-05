@@ -63,13 +63,12 @@ require('packer').startup({function()
   use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
 
   -- Smooth Scrolling
-  use {'karb94/neoscroll.nvim',
-    keys = { "<C-u>", "<C-d>", "gg", "G" },
+  use {'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" }, 
     config = function()
       require('neoscroll').setup({easing_function = 'circular',})
-    end,
+    end
   }
-  use {'edluffy/specs.nvim', after = "neoscroll.nvim"}
+  use 'edluffy/specs.nvim'
 
   -- persistence
   use { 'folke/persistence.nvim',
@@ -583,7 +582,7 @@ vim.api.nvim_set_keymap("n", "<leader>od", "<cmd>TroubleToggle lsp_workspace_dia
 vim.api.nvim_set_keymap("n", "<leader>ow", "<cmd>TroubleToggle lsp_document_diagnostics<cr>", {silent = true, noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>oq", "<cmd>TroubleToggle quickfix<cr>", {silent = true, noremap = true})
 
--------------------  SPECS
+------------------- SCROLL + SPECS
 require("specs").setup {
   show_jumps = true,
   min_jump = 5,
