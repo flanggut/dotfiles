@@ -1,3 +1,4 @@
+local strings = require('plenary.strings')
 local windline = require('windline')
 local helper = require('windline.helpers')
 local state = _G.WindLine.state
@@ -152,8 +153,7 @@ basic.lsp_status = {
       end
       local status = {}
       for _, msg in pairs(messages) do
-        -- table.insert(status, (msg.percentage or 0) .. "%% " .. (msg.title or ""))
-        table.insert(status, (msg.percentage or 0) .. "%%")
+        table.insert(status, (msg.percentage or 0) .. "%% " .. strings.truncate(msg.title or "", 25))
       end
       local spinners = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
       local ms = vim.loop.hrtime() / 1000000
