@@ -83,23 +83,16 @@ basic.file = {
         magenta = { 'magenta', 'NormalBg' },
     },
     text = function(_, _, width)
+        local t =  {
+            { b_components.file_modified(' '), 'magenta' },
+            { ' ', '' },
+            { b_components.cache_file_name('[No Name]', 'unique'), '' },
+        }
         if width > breakpoint_width then
-            return {
-                { b_components.file_modified(' '), 'magenta' },
-                { ' ', '' },
-                { b_components.cache_file_name('[No Name]', 'unique'), '' },
-                { b_components.line_col_lua, 'white' },
-                { b_components.progress_lua, '' },
-                { ' ', '' },
-            }
-        else
-            return {
-                { b_components.file_modified(' '), 'magenta' },
-                { ' ', '' },
-                { b_components.cache_file_name('[No Name]', 'unique'), '' },
-                { ' ', '' },
-            }
+          table.insert(t, { b_components.line_col_lua, 'white' })
         end
+        table.insert(t, { ' ', '' })
+        return t
     end,
 }
 
@@ -113,7 +106,6 @@ basic.file_right = {
         if width < breakpoint_width then
             return {
                 { b_components.line_col_lua, 'white' },
-                { b_components.progress_lua, '' },
             }
         end
     end,

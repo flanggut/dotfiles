@@ -4,7 +4,6 @@ local function map(mode, lhs, rhs, opts) -- map keybind
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
-vim.cmd [[colorscheme gruvbox-material]]
 -------------------- Basic Keybinds ------------------------
 vim.g.mapleader = ' '
 map('n', '<esc><esc>', '<cmd>nohlsearch<CR>')

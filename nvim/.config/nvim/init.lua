@@ -63,7 +63,7 @@ require('packer').startup({function()
   use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
 
   -- Smooth Scrolling
-  use {'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" }, 
+  use {'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" },
     config = function()
       require('neoscroll').setup({easing_function = 'circular',})
     end
@@ -129,7 +129,7 @@ end,
 config = {
   profile = {
     enable = false,
-    threshold = 0, -- integer in milliseconds, plugins which load faster than this won't be shown in profile output
+    threshold = 0,
   }
 }})
 if packer_init_required then
@@ -141,6 +141,7 @@ vim.o.background = "dark" -- or "light" for light mode
 if vim.fn.has('termguicolors') == 1 then
    vim.o.termguicolors = true
 end
+vim.cmd [[colorscheme gruvbox-material]]
 
 -------------------- Core Setup --------------------------
 require'fl.core'
@@ -487,22 +488,16 @@ vim.g.indentLine_enabled = 1
 vim.g.indentLine_char = '│'
 vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
 
--- BETTER WHITESPACE
--- map('n', '<leader>sw', '<cmd>StripWhitespace<CR>')
--- vim.g.better_whitespace_enabled = 1
--- vim.g.strip_whitespace_on_save = 0
--- vim.g.strip_max_file_size = 10000
--- vim.g.strip_whitelines_at_eof = 1
--- vim.g.better_whitespace_filetypes_blacklist= { 'packer', 'diff', 'gitcommit', 'unite',
---     'qf', 'help', 'TelescopePrompt', 'hgcommit' }
-
 -- ILLUMINATE
 vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
 
 -- NNN
-vim.cmd("let g:nnn#layout = { 'window': { 'width': 0.6, 'height': 0.7, 'xoffset': 0.95, 'highlight': 'Debug'} }")
-vim.cmd("let g:nnn#set_default_mappings = 0")
-vim.cmd("let g:nnn#command = 'nnn -A'")
+require('nnn').setup({
+	command = 'nnn -o -A',
+	set_default_mappings = 0,
+	replace_netrw = 1,
+  layout = { window = { width= 0.6, height= 0.7, xoffset= 0.95, highlight= 'Debug'} },
+})
 map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
 -- FLOATTERM
@@ -522,47 +517,6 @@ map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent 
 
 -- STATUSLINE
 require('fl.statusline')
--- require'lualine'.setup{
---   options = {
---     theme = 'gruvbox_material',
---     disabled_filetypes = {},
---     icons_enabled = true,
---   },
---   extensions = {'nvim-tree'},
---   sections = {
---     lualine_a = {'mode'},
---     lualine_b = {'branch'},
---     lualine_c = {'filename'},
---     lualine_x = {
---       {
---         function()
---           local msg = 'none'
---           local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
---           local clients = vim.lsp.get_active_clients()
---           if next(clients) == nil then return msg end
---           for _, client in ipairs(clients) do
---             local filetypes = client.config.filetypes
---             if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
---               return client.name
---             end
---           end
---           return msg
---         end,
---         icon = ' :',
---       },
---       {
---         'diagnostics',
---         sources = {'nvim_lsp'},
---         symbols = {error = ' ', warn = ' ', info = ' '},
---         color_error = '#ea6962',
---         color_warn = '#d8a657',
---         color_info = '#89b482'
---       },
---       'encoding', 'fileformat', 'filetype'},
---     lualine_y = {'progress'},
---     lualine_z = {'location'}
---   }
--- }
 
 ------------------- Navigation + TMUX -----------------
 vim.g.tmux_navigator_no_mappings = 1
