@@ -5,7 +5,15 @@ local function map(mode, lhs, rhs, opts) -- map keybind
 end
 
 -------------------- Basic Keybinds ------------------------
+--Remap space as leader key
+vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
+--Remap for dealing with word wrap
+vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", { noremap = true, expr = true, silent = true })
+vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = true, silent = true })
+
 map('n', '<esc><esc>', '<cmd>nohlsearch<CR>')
 map('n', '<esc>l', "<C-^>") map('n', '<leader>l', "<C-^>")
 map('n', '<leader>y', [["+y]])
@@ -37,35 +45,39 @@ map('n', '<leader>pl', [[<cmd>lua require('persistence').load()<cr>]])
 -------------------- Options -------------------------------
 
 -- Basic must haves
-vim.o.compatible = false
-vim.o.hidden = true                -- hide buffers instead of closing them
-vim.o.wildmode = 'longest,list'    -- bash like completion in cmndln
-vim.o.wildmenu = true
-vim.o.showmode = false             -- no mode in cmdln
 vim.o.cmdheight = 2
-vim.o.updatetime = 100
-vim.o.ttimeoutlen = 5
-vim.o.linespace = 3
-vim.o.laststatus = 2
-vim.o.splitbelow = true
+vim.o.compatible = false
 vim.o.completeopt='menuone,noselect'
-vim.wo.number = true                -- line numbers
+vim.o.foldlevelstart = 1
+vim.o.hidden = true                -- hide buffers instead of closing them
+vim.o.inccommand = 'nosplit'
+vim.o.laststatus = 2
+vim.o.linespace = 3
+vim.o.showmode = false             -- no mode in cmdln
+vim.o.splitbelow = true
+vim.o.ttimeoutlen = 5
+vim.o.updatetime = 100
+vim.o.wildmenu = true
+vim.o.wildmode = 'longest,list'    -- bash like completion in cmndln
 vim.wo.foldmethod = 'indent'
 vim.wo.foldnestmax = 1
-vim.o.foldlevelstart = 1
+vim.wo.number = true                -- line numbers
+vim.wo.relativenumber = true
+vim.wo.signcolumn = 'yes'
 
+vim.opt.undofile = true
 vim.cmd('set diffopt+=vertical')
-vim.cmd('set signcolumn=yes')
 
 -- Indentation
-vim.o.expandtab = true              -- Always use spaces instead of tabs
-vim.o.smarttab = true               -- Better tabs
-vim.o.smartindent = true            -- Inserts new level of indentation
 vim.o.autoindent = true             -- Copy indentation from previous line
-vim.o.tabstop = 2                   -- Columns a tab counts for
-vim.o.softtabstop = 2               -- Columns a tab inserts in insert mode
-vim.o.shiftwidth = 2                -- Columns inserted with the reindent operations
+vim.o.breakindent = true            -- Indent breaks.
+vim.o.expandtab = true              -- Always use spaces instead of tabs
 vim.o.shiftround = true             -- Always indent by multiple of shiftwidth
+vim.o.shiftwidth = 2                -- Columns inserted with the reindent operations
+vim.o.smartindent = true            -- Inserts new level of indentation
+vim.o.smarttab = true               -- Better tabs
+vim.o.softtabstop = 2               -- Columns a tab inserts in insert mode
+vim.o.tabstop = 2                   -- Columns a tab counts for
 
 -- Search
 vim.o.hlsearch = true

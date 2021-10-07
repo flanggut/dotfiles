@@ -259,11 +259,11 @@ map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
 map('n', '<leader>sd', "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
-map('n', '<leader>sl', "<cmd>lua require'telescope'.extensions.z.list({sorter = require'telescope.sorters'.get_fuzzy_file()})<CR>", {silent=true})
+map('n', '<leader>sj', "<cmd>lua require'telescope'.extensions.z.list({sorter = require'telescope.sorters'.get_fuzzy_file()})<CR>", {silent=true})
+map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
+map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false, sorter = require'telescope.sorters'.get_fuzzy_file()})<cr>")
 map('n', '<leader>sp', "<cmd>lua require('telescope.builtin').registers()<cr>")
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
--- map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
-map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false, sorter = require'telescope.sorters'.get_fuzzy_file()})<cr>")
 _G.myfiles = function(opts)
   if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
     require('telescope.builtin').find_files({hidden=true})
@@ -334,14 +334,10 @@ vim.api.nvim_set_keymap("n", "<leader>ml", ":lua mygrep({list_files_only=true})<
 
 -- NVIM CMP
 local cmp = require'cmp'
+local luasnip = require 'luasnip'
 cmp.setup {
   completion = {
     completeopt = 'menu,menuone,noinsert',
-  },
-  snippet = {
-    expand = function(args)
-      require'luasnip'.lsp_expand(args.body)
-    end
   },
   sources = {
     { name = 'nvim_lua'},
@@ -351,14 +347,10 @@ cmp.setup {
     { name = 'buffer'},
     { name = 'path'},
   },
-  mapping = {
-    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-e>"] = cmp.mapping.close(),
-    ["<C-y>"] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Insert,
-      select = true,
-    },
+  snippet = {
+    expand = function(args)
+      require'luasnip'.lsp_expand(args.body)
+    end
   },
   formatting = {
     format = function(_, vim_item)
@@ -369,72 +361,34 @@ cmp.setup {
       return vim_item
     end
   },
+  mapping = {
+    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-e>"] = cmp.mapping.close(),
+    ["<C-y>"] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Insert,
+      select = true,
+    },
+    ['<C-j>'] = function(fallback)
+      if vim.fn.pumvisible() == 1 then
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-n>', true, true, true), 'n')
+      elseif luasnip.expand_or_jumpable() then
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
+      else
+        fallback()
+      end
+    end,
+    ['<C-k>'] = function(fallback)
+      if vim.fn.pumvisible() == 1 then
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-p>', true, true, true), 'n')
+      elseif luasnip.jumpable(-1) then
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
+      else
+        fallback()
+      end
+    end,
+  },
 }
-
-local replace_termcodes = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    local test = vim.fn.getline('.'):sub(col, col):match '%s' ~= nil
-    print(vim.inspect(test))
-    return col == 0 or test
-end
-
--- Use c-j/k to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-local luasnip = require("luasnip")
-_G.cj_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return replace_termcodes "<C-n>"
-  elseif luasnip and luasnip.expand_or_jumpable() then
-    return replace_termcodes "<Plug>luasnip-expand-or-jump"
-  elseif check_back_space() then
-    return replace_termcodes "<C-j>"
-  else
-    return vim.fn['cmp#complete']()
-  end
-end
-_G.ck_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return replace_termcodes "<C-p>"
-  elseif luasnip and luasnip.jumpable(-1) then
-    return replace_termcodes "<Plug>luasnip-jump-prev"
-  else
-    return replace_termcodes "<C-k>"
-  end
-end
-vim.api.nvim_set_keymap("i", "<C-j>", "v:lua.cj_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-j>", "v:lua.cj_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<C-k>", "v:lua.ck_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<C-k>", "v:lua.ck_complete()", {expr = true})
-
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return replace_termcodes "<C-n>"
-  elseif luasnip and luasnip.expand_or_jumpable() then
-    return replace_termcodes "<Plug>luasnip-expand-or-jump"
-  elseif check_back_space() then
-    return replace_termcodes "<Tab>"
-  else
-    return vim.fn['cmp#complete']()
-  end
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return replace_termcodes "<C-p>"
-  elseif luasnip and luasnip.jumpable(-1) then
-    return replace_termcodes "<Plug>luasnip-jump-prev"
-  else
-    return replace_termcodes "<S-Tab>"
-  end
-end
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
 -- NVIMTREE
 vim.g.nvim_tree_quit_on_open = 1
@@ -487,6 +441,8 @@ map('n', '<leader>S', '<cmd>Alpha<CR>')
 vim.g.indentLine_enabled = 1
 vim.g.indentLine_char = '│'
 vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
+vim.g.indent_blankline_char_highlight = 'LineNr'
+vim.g.indent_blankline_show_trailing_blankline_indent = false
 
 -- ILLUMINATE
 vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
