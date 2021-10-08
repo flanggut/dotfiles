@@ -26,6 +26,7 @@ require('packer').startup({function()
   use 'nvim-treesitter/nvim-treesitter-refactor'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'RRethy/nvim-treesitter-textsubjects'
+  use 'mizlan/iswap.nvim'
 
   -- nvim-lsp
   use 'neovim/nvim-lspconfig'
@@ -55,7 +56,6 @@ require('packer').startup({function()
       {'hrsh7th/cmp-nvim-lsp'},
       {'hrsh7th/cmp-nvim-lua'},
       {'saadparwaiz1/cmp_luasnip'},
-      {'ray-x/cmp-treesitter'},
     }
   }
 
@@ -333,8 +333,8 @@ vim.api.nvim_set_keymap("n", "<leader>mg", ":lua mygrep({list_files_only=false})
 vim.api.nvim_set_keymap("n", "<leader>ml", ":lua mygrep({list_files_only=true})<CR>", {noremap = true, silent = true})
 
 -- NVIM CMP
-local cmp = require'cmp'
-local luasnip = require 'luasnip'
+local cmp = require('cmp')
+local luasnip = require('luasnip')
 cmp.setup {
   completion = {
     completeopt = 'menu,menuone,noinsert',
@@ -343,7 +343,6 @@ cmp.setup {
     { name = 'nvim_lua'},
     { name = 'nvim_lsp'},
     { name = 'luasnip'},
-    { name = 'treesitter'},
     { name = 'buffer'},
     { name = 'path'},
   },
@@ -353,13 +352,7 @@ cmp.setup {
     end
   },
   formatting = {
-    format = function(_, vim_item)
-      local strings = require('plenary.strings')
-      local lspkind = require('lspkind').presets.default[vim_item.kind]
-      vim_item.abbr = strings.truncate(vim_item.abbr, 60)
-      vim_item.abbr = string.format("%s %s", lspkind, vim_item.abbr)
-      return vim_item
-    end
+    format = require'lspkind'.cmp_format({with_text = false, maxwidth = 55})
   },
   mapping = {
     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -370,8 +363,8 @@ cmp.setup {
       select = true,
     },
     ['<C-j>'] = function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-n>', true, true, true), 'n')
+      if cmp.visible() then
+        cmp.select_next_item()
       elseif luasnip.expand_or_jumpable() then
         vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
       else
@@ -379,8 +372,8 @@ cmp.setup {
       end
     end,
     ['<C-k>'] = function(fallback)
-      if vim.fn.pumvisible() == 1 then
-        vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-p>', true, true, true), 'n')
+      if cmp.visible() then
+        cmp.select_prev_item()
       elseif luasnip.jumpable(-1) then
         vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
       else

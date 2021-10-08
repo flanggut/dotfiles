@@ -16,8 +16,13 @@ vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", { noremap = true,
 
 map('n', '<esc><esc>', '<cmd>nohlsearch<CR>')
 map('n', '<esc>l', "<C-^>") map('n', '<leader>l', "<C-^>")
+
+-- Y yank until the end of line  (note: this is now a default on master)
+map('n', 'Y', 'y$')
+-- yank to clipboard
 map('n', '<leader>y', [["+y]])
 map('v', '<leader>y', [["+y]])
+
 map('n', '<leader>co', [[<cmd>copen<CR>]])
 map('n', '<leader>cc', [[<cmd>cclose<CR>]])
 -- search and replace visual selection

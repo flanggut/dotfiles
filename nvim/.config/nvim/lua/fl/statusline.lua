@@ -3,10 +3,8 @@ local windline = require('windline')
 local helper = require('windline.helpers')
 local state = _G.WindLine.state
 
-local b_components = require('windline.components.basic')
+local basic_components = require('windline.components.basic')
 local lsp_comps = require('windline.components.lsp')
-local git_comps = require('windline.components.git')
--- local vim_components = require('windline.components.vim')
 
 local hl_list = {
     Black = { 'white', 'black' },
@@ -14,11 +12,10 @@ local hl_list = {
     Inactive = { 'InactiveFg', 'InactiveBg' },
     Active = { 'ActiveFg', 'ActiveBg' },
 }
-local basic = {}
+local M = {}
+M.divider = { basic_components.divider, '' }
 
 local breakpoint_width = 90
-basic.divider = { b_components.divider, '' }
-basic.bg = { ' ', 'StatusLine' }
 
 local colors_mode = {
     Normal = { 'NormalBg', 'NormalFg' },
@@ -28,7 +25,7 @@ local colors_mode = {
     Command = { 'NormalBg', 'yellow' },
 }
 
-basic.vi_mode = {
+M.vi_mode = {
     name = 'vi_mode',
     hl_colors = colors_mode,
     text = function()
@@ -45,7 +42,7 @@ basic.vi_mode = {
       end
     end,
 }
-basic.square_mode = {
+M.square_mode = {
     hl_colors = colors_mode,
     text = function()
       return {
@@ -55,7 +52,43 @@ basic.square_mode = {
     end,
 }
 
-basic.lsp_diagnos = {
+M.file = {
+    name = 'file',
+    hl_colors = {
+        default = hl_list.Black,
+        white = { 'white', 'NormalBg' },
+        magenta = { 'magenta', 'NormalBg' },
+    },
+    text = function(_, _, width)
+        local t =  {
+            { basic_components.file_modified(' '), 'magenta' },
+            { ' ', '' },
+            { basic_components.cache_file_name('[No Name]', 'unique'), '' },
+        }
+        if width > breakpoint_width then
+          table.insert(t, { basic_components.line_col_lua, 'white' })
+        end
+        table.insert(t, { ' ', '' })
+        return t
+    end,
+}
+
+M.file_right = {
+    hl_colors = {
+        default = hl_list.Black,
+        white = { 'white', 'NormalBg' },
+        magenta = { 'magenta', 'NormalBg' },
+    },
+    text = function(_, _, width)
+        if width < breakpoint_width then
+            return {
+                { basic_components.line_col_lua, 'white' },
+            }
+        end
+    end,
+}
+
+M.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
         red = { 'red', 'NormalBg' },
@@ -75,44 +108,9 @@ basic.lsp_diagnos = {
         return ''
     end,
 }
-basic.file = {
-    name = 'file',
-    hl_colors = {
-        default = hl_list.Black,
-        white = { 'white', 'NormalBg' },
-        magenta = { 'magenta', 'NormalBg' },
-    },
-    text = function(_, _, width)
-        local t =  {
-            { b_components.file_modified(' '), 'magenta' },
-            { ' ', '' },
-            { b_components.cache_file_name('[No Name]', 'unique'), '' },
-        }
-        if width > breakpoint_width then
-          table.insert(t, { b_components.line_col_lua, 'white' })
-        end
-        table.insert(t, { ' ', '' })
-        return t
-    end,
-}
 
-basic.file_right = {
-    hl_colors = {
-        default = hl_list.Black,
-        white = { 'white', 'NormalBg' },
-        magenta = { 'magenta', 'NormalBg' },
-    },
-    text = function(_, _, width)
-        if width < breakpoint_width then
-            return {
-                { b_components.line_col_lua, 'white' },
-            }
-        end
-    end,
-}
-
-basic.git = {
-    name = 'git',
+M.signify = {
+    name = 'signify',
     hl_colors = {
         green = { 'green', 'NormalBg' },
         red = { 'red', 'NormalBg' },
@@ -120,19 +118,22 @@ basic.git = {
     },
     width = breakpoint_width,
     text = function(bufnr)
-        if git_comps.is_git(bufnr) then
-            return {
-                { ' ', '' },
-                { git_comps.diff_added({ format = ' %s', show_zero = true }), 'green' },
-                { git_comps.diff_removed({ format = '  %s', show_zero = true }), 'red' },
-                { git_comps.diff_changed({ format = ' 柳%s', show_zero = true }), 'blue' },
-            }
+      if vim.api.nvim_call_function('exists', {'g:loaded_signify'}) then
+        local repostats = vim.api.nvim_call_function('sy#repo#get_stats', {bufnr})
+        if repostats[1] > -1 then
+          return {
+              { ' ', '' },
+              { string.format(' %s', repostats[1]), 'green' },
+              { string.format('  %s', repostats[3]), 'red' },
+              { string.format(' 柳%s', repostats[2]), 'blue' },
+          }
         end
-        return ''
+      end
+      return ''
     end,
 }
 
-basic.lsp_status = {
+M.lsp_status = {
     name = 'lsp_status',
     hl_colors = {
         white = { 'white', 'NormalBg' },
@@ -171,7 +172,7 @@ local quickfix = {
         { ' Total : %L ', { 'cyan', 'black_light' } },
         { helper.separators.slant_right, { 'black_light', 'InactiveBg' } },
         { ' ', { 'InactiveFg', 'InactiveBg' } },
-        basic.divider,
+        M.divider,
         { helper.separators.slant_right, { 'InactiveBg', 'black' } },
         { '🧛 ', { 'white', 'black' } },
     },
@@ -185,40 +186,41 @@ local explorer = {
     active = {
         { '  ', { 'black', 'red' } },
         { helper.separators.slant_right, { 'red', 'NormalBg' } },
-        { b_components.divider, '' },
-        { b_components.file_name(''), { 'white', 'NormalBg' } },
+        { basic_components.divider, '' },
+        { basic_components.file_name(''), { 'white', 'NormalBg' } },
     },
     always_active = true,
     show_last_status = true,
 }
+
 local default = {
     filetypes = { 'default' },
     active = {
-        basic.vi_mode,
+        M.vi_mode,
         { ' ', {'white', 'NormalBg'} },
-        basic.file,
-        basic.lsp_diagnos,
-        basic.divider,
-        basic.file_right,
+        M.file,
+        M.lsp_diagnos,
+        M.divider,
+        M.file_right,
         { ' ', {'white', 'NormalBg'} },
         { lsp_comps.lsp_name(), { 'magenta', 'NormalBg' }, breakpoint_width },
-        basic.lsp_status,
-        basic.git,
-        { git_comps.git_branch(), { 'magenta', 'NormalBg' }, breakpoint_width },
+        M.lsp_status,
         { ' ', {'white', 'NormalBg'} },
-        { b_components.cache_file_type({ icon = true }), '' },
+        { basic_components.cache_file_type({ icon = true }), '' },
         { ' ', '' },
-        { b_components.cache_file_size(), '' },
+        { basic_components.cache_file_size(), '' },
         { ' ', '' },
-        basic.square_mode
+        M.signify,
+        { ' ', '' },
+        M.square_mode
     },
     inactive = {
-        { b_components.full_file_name, hl_list.Inactive },
-        basic.file_name_inactive,
-        basic.divider,
-        basic.divider,
-        { b_components.line_col, hl_list.Inactive },
-        { b_components.progress, hl_list.Inactive },
+        { basic_components.full_file_name, hl_list.Inactive },
+        M.file_name_inactive,
+        M.divider,
+        M.divider,
+        { basic_components.line_col, hl_list.Inactive },
+        { basic_components.progress, hl_list.Inactive },
     },
 }
 
