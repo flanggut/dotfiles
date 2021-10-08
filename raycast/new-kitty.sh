@@ -12,4 +12,4 @@
 # Documentation:
 # @raycast.description Open new kitty window
 
-kitty --single-instance
+kitty --single-instance &
