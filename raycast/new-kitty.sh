@@ -12,4 +12,8 @@
 # Documentation:
 # @raycast.description Open new kitty window
 
+pushd ~
+
 kitty --single-instance &
+
+popd
