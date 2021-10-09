@@ -36,10 +36,10 @@ require('packer').startup({function()
 
   -- telescope
   use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
-  use 'nvim-telescope/telescope-fzy-native.nvim'
+  use {'nvim-telescope/telescope-frecency.nvim', requires = {'tami5/sqlite.lua'} }
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'nvim-telescope/telescope-symbols.nvim'
   use 'nvim-telescope/telescope-z.nvim'
-  use {'nvim-telescope/telescope-frecency.nvim', requires = {'tami5/sqlite.lua'} }
 
   -- lualine
   use {'windwp/windline.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
@@ -249,8 +249,8 @@ require('telescope').setup{
     }
   }
 }
-require'telescope'.load_extension('fzy_native')
 require'telescope'.load_extension('frecency')
+require'telescope'.load_extension('fzf')
 require'telescope'.load_extension('z')
 
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
