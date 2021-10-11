@@ -15,7 +15,11 @@ vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", { noremap = true,
 vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = true, silent = true })
 
 map('n', '<esc><esc>', '<cmd>nohlsearch<CR>')
-map('n', '<esc>l', "<C-^>") map('n', '<leader>l', "<C-^>")
+map('n', '<leader>l', "<C-^>")
+map('n', '-', '0')
+map('n', '+', '$')
+map('v', '-', '0')
+map('v', '+', '$')
 
 -- Y yank until the end of line  (note: this is now a default on master)
 map('n', 'Y', 'y$')
@@ -49,6 +53,15 @@ map('n', '<leader>pl', [[<cmd>lua require('persistence').load()<cr>]])
 
 -------------------- Options -------------------------------
 
+-- faster startup
+vim.g.loaded_gzip = false
+vim.g.loaded_matchit = false
+vim.g.loaded_netrwPlugin = false
+vim.g.loaded_tarPlugin = false
+vim.g.loaded_zipPlugin = false
+vim.g.loaded_2html_plugin = false
+vim.g.loaded_remote_plugins = false
+
 -- Basic must haves
 vim.o.cmdheight = 2
 vim.o.compatible = false
@@ -69,6 +82,7 @@ vim.wo.foldnestmax = 1
 vim.wo.number = true                -- line numbers
 vim.wo.relativenumber = true
 vim.wo.signcolumn = 'yes'
+vim.o.backspace = [[indent,eol,start]] -- Change backspace to behave more intuitively
 
 vim.opt.undofile = true
 vim.cmd('set diffopt+=vertical')
@@ -79,10 +93,12 @@ vim.o.breakindent = true            -- Indent breaks.
 vim.o.expandtab = true              -- Always use spaces instead of tabs
 vim.o.shiftround = true             -- Always indent by multiple of shiftwidth
 vim.o.shiftwidth = 2                -- Columns inserted with the reindent operations
+vim.o.showbreak = [[↪ ]]            -- Show line break
 vim.o.smartindent = true            -- Inserts new level of indentation
 vim.o.smarttab = true               -- Better tabs
 vim.o.softtabstop = 2               -- Columns a tab inserts in insert mode
 vim.o.tabstop = 2                   -- Columns a tab counts for
+vim.o.title = true
 
 -- Search
 vim.o.hlsearch = true
