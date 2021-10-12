@@ -21,6 +21,9 @@ require('packer').startup({function()
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
+  -- Speedup plugin loading
+  use 'lewis6991/impatient.nvim'
+
   -- treesitter
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-refactor'
@@ -127,6 +130,7 @@ require('packer').startup({function()
 
 end,
 config = {
+  compile_path = vim.fn.stdpath('config')..'/lua/packer_compiled.lua',
   profile = {
     enable = false,
     threshold = 0,
@@ -135,6 +139,8 @@ config = {
 if packer_init_required then
  require'packer'.sync()
 end
+require('impatient')
+require('packer_compiled')
 
 -------------------- Theme Setup --------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -272,8 +278,8 @@ _G.myfiles = function(opts)
 
     local myles_search = require 'telescope.finders'.new_job(
       function(prompt)
-        if not prompt or prompt == "" then
-          return nil
+        if not prompt or prompt == "" or string.len(prompt) < 10 then
+          return vim.tbl_flatten { 'find', '.', '-type', 'f', '-maxdepth', '1' }
         end
         return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
       end,
