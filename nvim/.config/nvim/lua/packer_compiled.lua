@@ -170,13 +170,17 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/nvim-cmp"
   },
+  ["nvim-lsp-installer"] = {
+    loaded = true,
+    path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/nvim-lsp-installer"
+  },
   ["nvim-lspconfig"] = {
     loaded = true,
     path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/nvim-lspconfig"
   },
-  ["nvim-lspinstall"] = {
+  ["nvim-notify"] = {
     loaded = true,
-    path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/nvim-lspinstall"
+    path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/nvim-notify"
   },
   ["nvim-tree.lua"] = {
     loaded = true,
@@ -227,14 +231,6 @@ _G.packer_plugins = {
   ["specs.nvim"] = {
     loaded = true,
     path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/specs.nvim"
-  },
-  ["sqlite.lua"] = {
-    loaded = true,
-    path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/sqlite.lua"
-  },
-  ["telescope-frecency.nvim"] = {
-    loaded = true,
-    path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/telescope-frecency.nvim"
   },
   ["telescope-fzf-native.nvim"] = {
     loaded = true,

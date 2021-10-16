@@ -34,12 +34,11 @@ require('packer').startup({function()
   -- nvim-lsp
   use 'neovim/nvim-lspconfig'
   use 'ray-x/lsp_signature.nvim'
-  use 'kabouzeid/nvim-lspinstall'
+  use 'williamboman/nvim-lsp-installer'
   use { 'folke/trouble.nvim', requires = 'kyazdani42/nvim-web-devicons' }
 
   -- telescope
   use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
-  use {'nvim-telescope/telescope-frecency.nvim', requires = {'tami5/sqlite.lua'} }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'nvim-telescope/telescope-symbols.nvim'
   use 'nvim-telescope/telescope-z.nvim'
@@ -63,7 +62,7 @@ require('packer').startup({function()
   }
 
   -- barbar
-  use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
+  use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons'} }
 
   -- Smooth Scrolling
   use {'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" },
@@ -95,6 +94,9 @@ require('packer').startup({function()
       alpha.setup(startify.opts)
     end
   }
+
+  -- notify
+  use 'rcarriga/nvim-notify'
 
   use { 'tpope/vim-scriptease',
     cmd = {
@@ -157,6 +159,7 @@ require'fl.core'
 local treesitter_config = require 'nvim-treesitter.configs'
 treesitter_config.setup {
   ensure_installed = 'maintained',
+  ignore_install = { 'elixir' },
   highlight = {enable = true},
   incremental_selection = {
     enable = true,
@@ -249,26 +252,21 @@ require('telescope').setup{
     color_devicons = true,
   },
   extensions = {
-    frecency = {
-      db_safe_mode = true,
-      auto_validate = false
-    }
   }
 }
-require'telescope'.load_extension('frecency')
 require'telescope'.load_extension('fzf')
 require'telescope'.load_extension('z')
 
 map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
-map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
+map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').commands()<cr>")
 map('n', '<leader>sd', "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map('n', '<leader>sj', "<cmd>lua require'telescope'.extensions.z.list({sorter = require'telescope.sorters'.get_fuzzy_file()})<CR>", {silent=true})
-map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
-map('n', '<leader>so', "<cmd>lua require'telescope'.extensions.frecency.frecency({previewer=false, sorter = require'telescope.sorters'.get_fuzzy_file()})<cr>")
+map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 map('n', '<leader>sp', "<cmd>lua require('telescope.builtin').registers()<cr>")
+map('n', '<leader>sq', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
 _G.myfiles = function(opts)
   if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
@@ -349,7 +347,7 @@ cmp.setup {
     { name = 'nvim_lua'},
     { name = 'nvim_lsp'},
     { name = 'luasnip'},
-    { name = 'buffer'},
+    { name = 'buffer', keyword_length = 4},
     { name = 'path'},
   },
   snippet = {
@@ -561,8 +559,13 @@ local lua_settings = {
       version = 'LuaJIT',
       path = vim.split(package.path, ';'),
     },
+    completion = {
+      keywordSnippet = "Disable",
+      showWord = "Disable",
+    },
     diagnostics = {
       -- Get the language server to recognize the `vim` global
+      enable = true,
       globals = {'vim'},
     },
     workspace = {
@@ -576,18 +579,19 @@ local lua_settings = {
 }
 
 -- Setup LSPINSTALL servers
-require'lspinstall'.setup()
-local servers = require'lspinstall'.installed_servers()
-for _, server in pairs(servers) do
-  local config = {
+local lsp_installer = require("nvim-lsp-installer")
+lsp_installer.on_server_ready(function(server)
+  local opts = {
     capabilities = capabilities,
     on_attach = on_attach
   }
-  if server == "lua" then
-    config.settings = lua_settings
+  if server.name == "sumneki_lua" then
+    opts.settings = lua_settings
   end
-  require'lspconfig'[server].setup(config)
-end
+  -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
+  server:setup(opts)
+  vim.cmd [[ do User LspAttachBuffers ]]
+end)
 
 ------------------------- LUASNIP ----------------------------
 require("luasnip").snippets = require('fl.snippets').snippets
