@@ -102,10 +102,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/cmp_luasnip"
   },
-  edge = {
-    loaded = true,
-    path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/edge"
-  },
   ["gruvbox-material"] = {
     loaded = true,
     path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/gruvbox-material"
@@ -148,11 +144,8 @@ _G.packer_plugins = {
     keys = { { "", "<C-u>" }, { "", "<C-d>" }, { "", "gg" }, { "", "G" } },
     loaded = false,
     needs_bufread = false,
+    only_cond = false,
     path = "/Users/flanggut/.local/share/nvim/site/pack/packer/opt/neoscroll.nvim"
-  },
-  neovim = {
-    loaded = true,
-    path = "/Users/flanggut/.local/share/nvim/site/pack/packer/start/neovim"
   },
   ["nnn.vim"] = {
     loaded = true,
@@ -214,6 +207,7 @@ _G.packer_plugins = {
     config = { "\27LJ\2\n9\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\16persistence\frequire\0" },
     loaded = false,
     needs_bufread = false,
+    only_cond = false,
     path = "/Users/flanggut/.local/share/nvim/site/pack/packer/opt/persistence.nvim"
   },
   ["plenary.nvim"] = {
@@ -268,6 +262,7 @@ _G.packer_plugins = {
     commands = { "Messages", "Verbose", "Time" },
     loaded = false,
     needs_bufread = false,
+    only_cond = false,
     path = "/Users/flanggut/.local/share/nvim/site/pack/packer/opt/vim-scriptease"
   },
   ["vim-signify"] = {
@@ -322,28 +317,28 @@ end
 time([[Config for zen-mode.nvim]], true)
 try_loadstring("\27LJ\2\n:\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\rzen-mode\frequire\0", "config", "zen-mode.nvim")
 time([[Config for zen-mode.nvim]], false)
--- Config for: alpha-nvim
-time([[Config for alpha-nvim]], true)
-try_loadstring("\27LJ\2\n“\2\0\0\t\0\15\1\0266\0\0\0'\2\1\0B\0\2\0026\1\0\0'\3\2\0B\1\2\0029\2\3\0019\2\4\0024\3\3\0009\4\6\1'\6\a\0'\a\b\0'\b\t\0B\4\4\2>\4\1\0039\4\6\1'\6\n\0'\a\v\0'\b\f\0B\4\4\0?\4\0\0=\3\5\0029\2\r\0009\4\14\1B\2\2\1K\0\1\0\topts\nsetup\f:qa<CR>\21ï™™  Quit neovim\6q#:e ~/.config/nvim/init.lua<CR>\21ï‚…  Edit config\6c\vbutton\bval\19bottom_buttons\fsection\26alpha.themes.startify\nalpha\frequire\5€€À™\4\0", "config", "alpha-nvim")
-time([[Config for alpha-nvim]], false)
 -- Config for: lspkind-nvim
 time([[Config for lspkind-nvim]], true)
 try_loadstring("\27LJ\2\n8\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\tinit\flspkind\frequire\0", "config", "lspkind-nvim")
 time([[Config for lspkind-nvim]], false)
+-- Config for: alpha-nvim
+time([[Config for alpha-nvim]], true)
+try_loadstring("\27LJ\2\n“\2\0\0\t\0\15\1\0266\0\0\0'\2\1\0B\0\2\0026\1\0\0'\3\2\0B\1\2\0029\2\3\0019\2\4\0024\3\3\0009\4\6\1'\6\a\0'\a\b\0'\b\t\0B\4\4\2>\4\1\0039\4\6\1'\6\n\0'\a\v\0'\b\f\0B\4\4\0?\4\0\0=\3\5\0029\2\r\0009\4\14\1B\2\2\1K\0\1\0\topts\nsetup\f:qa<CR>\21ï™™  Quit neovim\6q#:e ~/.config/nvim/init.lua<CR>\21ï‚…  Edit config\6c\vbutton\bval\19bottom_buttons\fsection\26alpha.themes.startify\nalpha\frequire\5€€À™\4\0", "config", "alpha-nvim")
+time([[Config for alpha-nvim]], false)
 
 -- Command lazy-loads
 time([[Defining lazy-load commands]], true)
+pcall(vim.cmd, [[command -nargs=* -range -bang -complete=file Messages lua require("packer.load")({'vim-scriptease'}, { cmd = "Messages", l1 = <line1>, l2 = <line2>, bang = <q-bang>, args = <q-args>, mods = "<mods>" }, _G.packer_plugins)]])
 pcall(vim.cmd, [[command -nargs=* -range -bang -complete=file Verbose lua require("packer.load")({'vim-scriptease'}, { cmd = "Verbose", l1 = <line1>, l2 = <line2>, bang = <q-bang>, args = <q-args>, mods = "<mods>" }, _G.packer_plugins)]])
 pcall(vim.cmd, [[command -nargs=* -range -bang -complete=file Time lua require("packer.load")({'vim-scriptease'}, { cmd = "Time", l1 = <line1>, l2 = <line2>, bang = <q-bang>, args = <q-args>, mods = "<mods>" }, _G.packer_plugins)]])
-pcall(vim.cmd, [[command -nargs=* -range -bang -complete=file Messages lua require("packer.load")({'vim-scriptease'}, { cmd = "Messages", l1 = <line1>, l2 = <line2>, bang = <q-bang>, args = <q-args>, mods = "<mods>" }, _G.packer_plugins)]])
 time([[Defining lazy-load commands]], false)
 
 -- Keymap lazy-loads
 time([[Defining lazy-load keymaps]], true)
 vim.cmd [[noremap <silent> G <cmd>lua require("packer.load")({'neoscroll.nvim'}, { keys = "G", prefix = "" }, _G.packer_plugins)<cr>]]
+vim.cmd [[noremap <silent> <C-d> <cmd>lua require("packer.load")({'neoscroll.nvim'}, { keys = "<lt>C-d>", prefix = "" }, _G.packer_plugins)<cr>]]
 vim.cmd [[noremap <silent> gg <cmd>lua require("packer.load")({'neoscroll.nvim'}, { keys = "gg", prefix = "" }, _G.packer_plugins)<cr>]]
 vim.cmd [[noremap <silent> <C-u> <cmd>lua require("packer.load")({'neoscroll.nvim'}, { keys = "<lt>C-u>", prefix = "" }, _G.packer_plugins)<cr>]]
-vim.cmd [[noremap <silent> <C-d> <cmd>lua require("packer.load")({'neoscroll.nvim'}, { keys = "<lt>C-d>", prefix = "" }, _G.packer_plugins)<cr>]]
 time([[Defining lazy-load keymaps]], false)
 
 vim.cmd [[augroup packer_load_aucmds]]

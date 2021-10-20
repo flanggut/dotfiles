@@ -113,8 +113,6 @@ require('packer').startup({function()
 
   -- theme
   use 'sainnhe/gruvbox-material'
-  use 'sainnhe/edge'
-  use('rose-pine/neovim')
 
   use {'folke/zen-mode.nvim', config = function() require('zen-mode').setup {} end }
   use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
@@ -407,7 +405,9 @@ require'lightspeed'.setup {
   limit_ft_matches = 0,
 }
 vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {})
-vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {})
+vim.api.nvim_set_keymap('n', 's', '<Plug>Lightspeed_S', {})
+vim.api.nvim_set_keymap('v', 'f', '<Plug>Lightspeed_s', {})
+vim.api.nvim_set_keymap('v', 's', '<Plug>Lightspeed_S', {})
 
 -- BARBAR
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
