@@ -39,4 +39,70 @@ M.generate_compile_commands = function()
   }):start()
 end
 
+M.myfiles = function(opts)
+  if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+    require('telescope.builtin').find_files({hidden=true})
+  else
+    opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
+
+    local myles_search = require 'telescope.finders'.new_job(
+      function(prompt)
+        if not prompt or prompt == "" or string.len(prompt) < 10 then
+          return vim.tbl_flatten { 'find', '.', '-type', 'f', '-maxdepth', '1' }
+        end
+        return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
+      end,
+      opts.entry_maker or require 'telescope.make_entry'.gen_from_file(opts), 25, opts.cwd
+    )
+    require 'telescope.pickers'.new(opts, {
+      prompt_title = "Myles",
+      finder = myles_search,
+      previewer = false,
+      sorter = false,
+    }):find()
+  end
+end
+
+M.mygrep = function(opts)
+  local make_entry = require "telescope.make_entry"
+  local pickers = require "telescope.pickers"
+  local finders = require "telescope.finders"
+  local conf = require("telescope.config").values
+  local escape_chars = function(string)
+    return string.gsub(string, "[%(|%)|\\|%[|%]|%-|%{%}|%?|%+|%*|%^|%$]", {
+      ["\\"] = "\\\\",
+      ["-"] = "\\-",
+      ["("] = "\\(",
+      [")"] = "\\)",
+      ["["] = "\\[",
+      ["]"] = "\\]",
+      ["{"] = "\\{",
+      ["}"] = "\\}",
+      ["?"] = "\\?",
+      ["+"] = "\\+",
+      ["*"] = "\\*",
+      ["^"] = "\\^",
+      ["$"] = "\\$",
+    })
+  end
+
+  if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+    local word = escape_chars(vim.fn.expand "<cword>")
+    local args = {"xbgs", "-is", word }
+    local sorter = conf.generic_sorter(opts)
+    opts.entry_maker = make_entry.gen_from_vimgrep(opts)
+    if opts.list_files_only then
+      opts.entry_maker = make_entry.gen_from_file(opts)
+      args = {"xbgs", "-isl", word }
+      sorter = conf.file_sorter(opts)
+    end
+    pickers.new(opts, {
+      prompt_title = "Find Word (" .. word .. ")",
+      finder = finders.new_oneshot_job(args, opts),
+      previewer = false,
+      sorter = sorter,
+    }):find()
+  end
+end
+
 return M
