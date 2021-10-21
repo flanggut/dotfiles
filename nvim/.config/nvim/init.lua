@@ -133,7 +133,7 @@ require('packer').startup({function()
   use 'b3nj5m1n/kommentary' -- comments
   use 'mcchrish/nnn.vim' -- best file browser
   use 'RRethy/vim-illuminate'
-  use 'voldikss/vim-floaterm'
+  use 'numtostr/FTerm.nvim'
   use 'christoomey/vim-tmux-navigator'
   use 'tversteeg/registers.nvim'
 
@@ -400,20 +400,23 @@ require('nnn').setup({
 })
 map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
--- FLOATTERM
+-- FTERM
+local shell = '/bin/fish'
 if vim.fn.has('mac') == 1 then
-  vim.g.floatterm_shell = '/usr/local/bin/fish'
-else
-  vim.g.floatterm_shell = '/bin/fish'
+  shell = '/usr/local/bin/fish'
 end
-vim.g.floaterm_autoclose = 1
-vim.g.floaterm_height = 0.8
-vim.g.floaterm_width = 0.8
-vim.g.floaterm_position = 'bottomright'
-map('n', '<c-s>', '<cmd>FloatermToggle<cr>', {silent = true})
-map('t', '<c-s>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
--- map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
--- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
+require'FTerm'.setup({
+  cmd = shell,
+  border = 'double',
+  dimensions  = {
+      height = 0.8,
+      width = 0.8,
+      x = 0.9,
+      y = 0.7
+  },
+})
+map('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true})
+map('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true})
 
 -- STATUSLINE
 require('fl.statusline')
