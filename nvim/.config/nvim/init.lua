@@ -13,6 +13,15 @@ if packer_init_required then
   vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', packer_install_path})
   vim.api.nvim_command 'packadd packer.nvim'
 end
+vim.api.nvim_exec(
+  [[
+  augroup Packer
+    autocmd!
+    autocmd BufWritePost init.lua PackerCompile
+  augroup end
+  ]],
+  false
+)
 
 -- Start up packer, sync packages afterwards if required
 require('packer').startup({function()
@@ -149,8 +158,9 @@ if vim.fn.has('termguicolors') == 1 then
 end
 vim.cmd [[colorscheme gruvbox-material]]
 
--------------------- Core Setup --------------------------
+-------------------- Basic Setup --------------------------
 require'fl.core'
+require'fl.globals'
 
 -------------------- Plugin Setup --------------------------
 -- TREESITTER
@@ -262,7 +272,7 @@ map('n', '<leader>sd', "<cmd>lua require('telescope.builtin').find_files({hidden
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map('n', '<leader>sj', "<cmd>lua require'telescope'.extensions.z.list({sorter = require'telescope.sorters'.get_fuzzy_file()})<CR>", {silent=true})
-map('n', '<leader>so', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
+map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 map('n', '<leader>sp', "<cmd>lua require('telescope.builtin').registers()<cr>")
 map('n', '<leader>sq', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
@@ -465,7 +475,7 @@ vim.g.floaterm_width = 0.8
 vim.g.floaterm_position = 'bottomright'
 map('n', '<c-s>', '<cmd>FloatermToggle<cr>', {silent = true})
 map('t', '<c-s>', '<c-\\><c-n><cmd>FloatermToggle<cr>', {silent = true})
-map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
+-- map('n', '<leader>cd', '<cmd>FloatermNew commands_for_file.py %:p<cr>', {silent = true})
 -- vim.cmd('autocmd FileType python nnoremap <silent> <leader>p :w<cr>:FloatermNew python3 %<cr>')
 
 -- STATUSLINE
@@ -611,3 +621,5 @@ function CodeLink()
     true)
 end
 map('n', '<leader>op', '<cmd>lua CodeLink()<CR>')
+
+map('n', '<leader>cd', '<cmd>lua R("fl.functions").generate_compile_commands()<CR>')
