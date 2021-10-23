@@ -59,15 +59,42 @@ require('packer').startup({function()
   use {'kyazdani42/nvim-tree.lua', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
 
   -- nvim-cmp and snippets
-  use {'L3MON4D3/LuaSnip'}
   use {'hrsh7th/nvim-cmp',
     requires = {
+      {'L3MON4D3/LuaSnip'},
       {'hrsh7th/cmp-buffer'},
       {'hrsh7th/cmp-path'},
       {'hrsh7th/cmp-nvim-lsp'},
       {'hrsh7th/cmp-nvim-lua'},
       {'saadparwaiz1/cmp_luasnip'},
     }
+  }
+
+  use {'ggandor/lightspeed.nvim', -- the new sneak
+    requires = {},
+    config = function ()
+      require'lightspeed'.setup {
+        limit_ft_matches = 1,
+      }
+      vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {noremap = false})
+      vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {noremap = false})
+      vim.api.nvim_set_keymap('v', 'f', '<Plug>Lightspeed_s', {noremap = false})
+      vim.api.nvim_set_keymap('v', 'F', '<Plug>Lightspeed_S', {noremap = false})
+    end
+  }
+
+  -- alpha startscreen
+  use { 'goolord/alpha-nvim',
+    requires = { 'kyazdani42/nvim-web-devicons' } ,
+    config = function ()
+      local alpha = require'alpha'
+      local startify = require'alpha.themes.startify'
+      startify.section.bottom_buttons.val = {
+        startify.button( "c", "  Edit config" , ":e ~/.config/nvim/init.lua<CR>"),
+        startify.button( "q", "  Quit neovim" , ":qa<CR>"),
+      }
+      alpha.setup(startify.opts)
+    end
   }
 
   -- barbar
@@ -90,19 +117,6 @@ require('packer').startup({function()
     end,
   }
 
-  -- alpha startscreen
-  use { 'goolord/alpha-nvim',
-    requires = { 'kyazdani42/nvim-web-devicons' },
-    config = function ()
-      local alpha = require'alpha'
-      local startify = require'alpha.themes.startify'
-      startify.section.bottom_buttons.val = {
-        startify.button( "c", "  Edit config" , ":e ~/.config/nvim/init.lua<CR>"),
-        startify.button( "q", "  Quit neovim" , ":qa<CR>"),
-      }
-      alpha.setup(startify.opts)
-    end
-  }
 
   -- notify
   use 'rcarriga/nvim-notify'
@@ -116,8 +130,10 @@ require('packer').startup({function()
   }
 
   -- the usual
-  use 'tpope/vim-repeat'
   use 'mhinz/vim-signify'
+  use 'tpope/vim-repeat'
+  use 'tpope/vim-surround'
+  use 'wellle/targets.vim'
   use 'kevinhwang91/nvim-bqf'
 
   -- theme
@@ -128,7 +144,6 @@ require('packer').startup({function()
 
   use 'danymat/neogen'
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
-  use 'ggandor/lightspeed.nvim' -- the new sneak
   use 'windwp/nvim-autopairs' -- insert pairs automatically
   use 'b3nj5m1n/kommentary' -- comments
   use 'mcchrish/nnn.vim' -- best file browser
@@ -161,6 +176,7 @@ vim.cmd [[colorscheme gruvbox-material]]
 -------------------- Basic Setup --------------------------
 require'fl.core'
 require'fl.globals'
+--
 
 -------------------- Plugin Setup --------------------------
 -- TREESITTER
@@ -301,7 +317,17 @@ cmp.setup {
     end
   },
   formatting = {
-    format = require'lspkind'.cmp_format({with_text = false, maxwidth = 55})
+    format = require'lspkind'.cmp_format({
+      with_text = true,
+      menu = {
+        nvim_lua = "[api]",
+        nvim_lsp = "[lsp]",
+        luasnip = "[snp]",
+        buffer = "[buf]",
+        path = "[pth]",
+      },
+      maxwidth = 55
+    })
   },
   mapping = {
     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -347,22 +373,22 @@ require'nvim-tree'.setup {
 }
 map('n', '<leader>n', '<cmd>lua require"nvim-tree".find_file(true)<CR>')
 
--- LIGHTSPEED
-require'lightspeed'.setup {
-  limit_ft_matches = 0,
-}
-vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {})
-vim.api.nvim_set_keymap('n', 's', '<Plug>Lightspeed_S', {})
-vim.api.nvim_set_keymap('v', 'f', '<Plug>Lightspeed_s', {})
-vim.api.nvim_set_keymap('v', 's', '<Plug>Lightspeed_S', {})
+-- ALPHA
+map('n', '<C-s>', '<cmd>Alpha<CR>')
 
 -- BARBAR
+vim.g.bufferline = {
+  letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
+}
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
 map('n', 'gl', "<cmd>BufferNext<CR>")
 map('n', '<leader>j', "<cmd>BufferPick<CR>")
 map('n', '<leader>bo', "<cmd>BufferCloseAllButCurrent<CR>")
 map('n', '<leader>bd', "<cmd>BufferOrderByDirectory<CR>")
 map('n', '<leader>q', "<cmd>BufferClose!<CR>")
+map('n', '<A-o>', ':BufferMovePrevious<CR>', {silent = true})
+map('n', '<A-p>', ':BufferMoveNext<CR>', {silent = true})
+
 
 -- KOMMENTARY
 require('kommentary.config').configure_language("default", {
@@ -377,9 +403,6 @@ require("nvim-autopairs.completion.cmp").setup({
   map_cr = true, --  map <CR> on insert mode
   map_complete = true -- it will auto insert `(` after select function or method item
 })
-
--- ALPHA
-map('n', '<leader>S', '<cmd>Alpha<CR>')
 
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
