@@ -17,7 +17,7 @@ vim.api.nvim_exec(
   [[
   augroup Packer
     autocmd!
-    autocmd BufWritePost init.lua PackerCompile
+    autocmd BufWritePost init.lua PackerCompile profile = true
   augroup end
   ]],
   false
@@ -39,6 +39,7 @@ require('packer').startup({function()
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'mizlan/iswap.nvim'
+  use 'mfussenegger/nvim-ts-hint-textobject'
 
   -- nvim-lsp
   use 'neovim/nvim-lspconfig'
@@ -156,7 +157,7 @@ end,
 config = {
   compile_path = vim.fn.stdpath('config')..'/lua/packer_compiled.lua',
   profile = {
-    enable = false,
+    enable = true,
     threshold = 0,
   }
 }})
@@ -189,7 +190,6 @@ treesitter_config.setup {
     enable = true,
     keymaps = {
       node_incremental = ',',
-      node_decremental = 'm',
     }
   },
   refactor = {
@@ -231,6 +231,8 @@ treesitter_config.setup {
     },
   },
 }
+map('o', 'm', ':<C-U>lua require("tsht").nodes()<CR>', {noremap = false, silent = true})
+map('v', 'm', ':lua require("tsht").nodes()<CR>', {noremap = true, silent = true})
 
 -- TELESCOPE
 require('telescope').setup{
@@ -301,6 +303,9 @@ map('n', '<leader>ml', ':lua R("fl.functions").mygrep({list_files_only=true})<CR
 local cmp = require('cmp')
 local luasnip = require('luasnip')
 cmp.setup {
+  experimental = {
+    ghost_text = true,
+  },
   completion = {
     completeopt = 'menu,menuone,noinsert',
   },
@@ -318,7 +323,7 @@ cmp.setup {
   },
   formatting = {
     format = require'lspkind'.cmp_format({
-      with_text = true,
+      with_text = false,
       menu = {
         nvim_lua = "[api]",
         nvim_lsp = "[lsp]",
@@ -326,7 +331,7 @@ cmp.setup {
         buffer = "[buf]",
         path = "[pth]",
       },
-      maxwidth = 55
+      maxwidth = 60
     })
   },
   mapping = {
