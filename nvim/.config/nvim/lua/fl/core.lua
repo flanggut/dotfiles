@@ -16,9 +16,9 @@ vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", { noremap = true,
 
 map('n', '<esc><esc>', '<cmd>nohlsearch<CR>')
 map('n', '<leader>l', "<C-^>")
-map('n', '-', '0')
+map('n', '-', '^')
 map('n', '+', '$')
-map('v', '-', '0')
+map('v', '-', '^')
 map('v', '+', '$')
 
 -- Y yank until the end of line  (note: this is now a default on master)
@@ -47,9 +47,6 @@ map('i', '<', '<<c-g>u', {noremap = true})
 -- Unmap common typos
 map('n', 'q:', "<nop>", {noremap=true})
 map('n', 'Q', "<nop>", {noremap=true})
-
--- restore the last session
-map('n', '<leader>pl', [[<cmd>lua require('persistence').load()<cr>]])
 
 -------------------- Options -------------------------------
 

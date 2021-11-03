@@ -23,6 +23,9 @@ vim.api.nvim_exec(
   false
 )
 
+-- For nathom/filetype plugin. Remove after neovim 0.6.0 is released.
+vim.g.did_load_filetypes = 1
+
 -- Start up packer, sync packages afterwards if required
 require('packer').startup({function()
   local use = require('packer').use
@@ -32,6 +35,8 @@ require('packer').startup({function()
 
   -- Speedup plugin loading
   use 'lewis6991/impatient.nvim'
+  use 'nathom/filetype.nvim'
+  use {'tweekmonster/startuptime.vim', cmd = 'StartupTime' }
 
   -- treesitter
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
@@ -46,6 +51,7 @@ require('packer').startup({function()
   use 'ray-x/lsp_signature.nvim'
   use 'williamboman/nvim-lsp-installer'
   use { 'folke/trouble.nvim', requires = 'kyazdani42/nvim-web-devicons' }
+  use 'folke/lua-dev.nvim'
 
   -- telescope
   use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
@@ -71,17 +77,26 @@ require('packer').startup({function()
     }
   }
 
-  use {'ggandor/lightspeed.nvim', -- the new sneak
-    requires = {},
+  -- use {'ggandor/lightspeed.nvim', -- the new sneak?
+  --   requires = {},
+  --   config = function ()
+  --     require'lightspeed'.setup {
+  --       limit_ft_matches = 1,
+  --     }
+  --     vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {noremap = false})
+  --     vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {noremap = false})
+  --     vim.api.nvim_set_keymap('v', 'f', '<Plug>Lightspeed_s', {noremap = false})
+  --     vim.api.nvim_set_keymap('v', 'F', '<Plug>Lightspeed_S', {noremap = false})
+  --   end
+  -- }
+  use {'phaazon/hop.nvim',
+    as = 'hop',
     config = function ()
-      require'lightspeed'.setup {
-        limit_ft_matches = 1,
-      }
-      vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {noremap = false})
-      vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {noremap = false})
-      vim.api.nvim_set_keymap('v', 'f', '<Plug>Lightspeed_s', {noremap = false})
-      vim.api.nvim_set_keymap('v', 'F', '<Plug>Lightspeed_S', {noremap = false})
-    end
+      require'hop'.setup{}
+      vim.api.nvim_set_keymap('n', 'f', '<cmd>HopChar1<CR>', {noremap = false})
+      vim.api.nvim_set_keymap('n', 'F', '<cmd>HopLine<CR>', {noremap = false})
+      vim.api.nvim_set_keymap('n', 's', '<cmd>HopChar2<CR>', {noremap = false})
+    end,
   }
 
   -- alpha startscreen
@@ -90,6 +105,10 @@ require('packer').startup({function()
     config = function ()
       local alpha = require'alpha'
       local startify = require'alpha.themes.startify'
+      startify.section.top_buttons.val = {
+        startify.button( "o", "  Open last session", ":lua require'persistence'.load()<CR>"),
+        startify.button( "e", "  New file", ":ene <CR>"),
+      }
       startify.section.bottom_buttons.val = {
         startify.button( "c", "  Edit config" , ":e ~/.config/nvim/init.lua<CR>"),
         startify.button( "q", "  Quit neovim" , ":qa<CR>"),
@@ -118,7 +137,6 @@ require('packer').startup({function()
     end,
   }
 
-
   -- notify
   use 'rcarriga/nvim-notify'
 
@@ -128,6 +146,44 @@ require('packer').startup({function()
       "Verbose", -- view verbose output in preview window.
       "Time", -- measure how long it takes to run some stuff.
     },
+  }
+
+  -- markdown
+  use 'ellisonleao/glow.nvim'
+
+  -- NNN
+  use { 'mcchrish/nnn.vim',
+    config = function()
+      require('nnn').setup({
+     	  command = 'nnn -o -A',
+     	  set_default_mappings = 0,
+     	  replace_netrw = 1,
+        layout = { window = { width= 0.6, height= 0.7, xoffset= 0.95, highlight= 'Debug'} },
+      })
+      vim.api.nvim_set_keymap('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
+    end,
+  }
+
+  use { 'lukas-reineke/format.nvim',
+    config = function()
+      require'format'.setup{
+        ["*"] = {
+          {cmd = {"sed -i 's/[ \t]*$//'"}} -- remove trailing whitespace
+        },
+      }
+    end,
+  }
+
+  use { 'chipsenkbeil/distant.nvim',
+    config = function()
+      require('distant').setup {
+        -- Applies Chip's personal settings to every machine you connect to:
+        -- 1. Ensures that distant servers terminate with no connections
+        -- 2. Provides navigation bindings for remote directories
+        -- 3. Provides keybinding to jump into a remote file's parent directory
+        ['*'] = require('distant.settings').chip_default()
+      }
+    end
   }
 
   -- the usual
@@ -147,7 +203,7 @@ require('packer').startup({function()
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
   use 'windwp/nvim-autopairs' -- insert pairs automatically
   use 'b3nj5m1n/kommentary' -- comments
-  use 'mcchrish/nnn.vim' -- best file browser
+
   use 'RRethy/vim-illuminate'
   use 'numtostr/FTerm.nvim'
   use 'christoomey/vim-tmux-navigator'
@@ -242,6 +298,7 @@ require('telescope').setup{
         ["<esc>"] = require('telescope.actions').close,
         ["<C-j>"] = require('telescope.actions').move_selection_next,
         ["<C-k>"] = require('telescope.actions').move_selection_previous,
+        ["<C-e>"] = require('telescope.actions').delete_buffer,
       },
     },
     preview_title = "",
@@ -283,17 +340,20 @@ require('telescope').setup{
 require'telescope'.load_extension('fzf')
 require'telescope'.load_extension('z')
 
-map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
+-- map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
+map('n', '<C-k>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
+-- map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').commands()<cr>")
 map('n', '<leader>sd', "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
-map('n', '<leader>sj', "<cmd>lua require'telescope'.extensions.z.list({sorter = require'telescope.sorters'.get_fuzzy_file()})<CR>", {silent=true})
+-- map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 map('n', '<leader>sp', "<cmd>lua require('telescope.builtin').registers()<cr>")
 map('n', '<leader>sq', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
+map('n', '<leader>sz', "<cmd>lua require'telescope'.extensions.z.list({sorter = require'telescope.sorters'.fuzzy_with_index_bias()})<CR>", {silent=true})
 
 map('n', '<C-p>', ':lua R("fl.functions").myfiles({})<CR>', {noremap = true, silent = true})
 map('n', '<leader>mg', ':lua R("fl.functions").mygrep({list_files_only=false})<CR>', {noremap = true, silent = true})
@@ -322,23 +382,33 @@ cmp.setup {
     end
   },
   formatting = {
-    format = require'lspkind'.cmp_format({
-      with_text = false,
-      menu = {
-        nvim_lua = "[api]",
-        nvim_lsp = "[lsp]",
-        luasnip = "[snp]",
-        buffer = "[buf]",
-        path = "[pth]",
-      },
-      maxwidth = 60
-    })
+    format = function(entry, vim_item)
+      local lspkind_format = require'lspkind'.cmp_format({
+        with_text = true,
+        menu = {
+          nvim_lua = "[api]",
+          nvim_lsp = "[lsp]",
+          luasnip = "[snp]",
+          buffer = "[buf]",
+          path = "[pth]",
+        },
+        maxwidth = 60
+      })
+      vim_item.abbr = vim_item.abbr:gsub("^%s+", "")
+      return lspkind_format(entry, vim_item)
+    end
   },
   mapping = {
-    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
     ["<C-e>"] = cmp.mapping.close(),
+    ["<C-f>"] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Insert,
+      select = true,
+    },
     ["<C-y>"] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Insert,
+      select = true,
+    },
+    ["<CR>"] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
     },
@@ -363,6 +433,10 @@ cmp.setup {
   },
 }
 
+-- AUTOPAIRS
+require('nvim-autopairs').setup()
+cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
+
 -- NVIMTREE
 vim.g.nvim_tree_quit_on_open = 1
 require'nvim-tree'.setup {
@@ -384,6 +458,7 @@ map('n', '<C-s>', '<cmd>Alpha<CR>')
 -- BARBAR
 vim.g.bufferline = {
   letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
+  insert_at_end = true,
 }
 map('n', 'gh', "<cmd>BufferPrevious<CR>")
 map('n', 'gl', "<cmd>BufferNext<CR>")
@@ -394,20 +469,12 @@ map('n', '<leader>q', "<cmd>BufferClose!<CR>")
 map('n', '<A-o>', ':BufferMovePrevious<CR>', {silent = true})
 map('n', '<A-p>', ':BufferMoveNext<CR>', {silent = true})
 
-
 -- KOMMENTARY
 require('kommentary.config').configure_language("default", {
     prefer_single_line_comments = true,
 })
 vim.api.nvim_set_keymap("n", "<leader>x", "<Plug>kommentary_line_default", {})
 vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
-
--- AUTOPAIRS
-require('nvim-autopairs').setup()
-require("nvim-autopairs.completion.cmp").setup({
-  map_cr = true, --  map <CR> on insert mode
-  map_complete = true -- it will auto insert `(` after select function or method item
-})
 
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
@@ -418,15 +485,6 @@ vim.g.indent_blankline_show_trailing_blankline_indent = false
 
 -- ILLUMINATE
 vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
-
--- NNN
-require('nnn').setup({
-	command = 'nnn -o -A',
-	set_default_mappings = 0,
-	replace_netrw = 1,
-  layout = { window = { width= 0.6, height= 0.7, xoffset= 0.95, highlight= 'Debug'} },
-})
-map('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
 
 -- FTERM
 local shell = '/bin/fish'
@@ -443,8 +501,8 @@ require'FTerm'.setup({
       y = 0.7
   },
 })
-map('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true})
-map('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true})
+map('n', '<A-t>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true})
+map('t', '<A-t>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true})
 
 -- STATUSLINE
 require('fl.statusline')
@@ -455,8 +513,9 @@ map('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {silent = true})
 map('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {silent = true})
 map('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {silent = true})
 map('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {silent = true})
-map('n', '<A-,>', '<cmd>split<cr>', {silent = true})
-map('n', '<A-.>', '<cmd>vsplit<cr>', {silent = true})
+
+-- map('n', '<A-,>', '<cmd>split<cr>', {silent = true})
+map('n', '<A-.>', '<cmd>FocusSplitRight<cr>', {silent = true})
 
 -------------------  TROUBLE
 require("trouble").setup {
@@ -529,42 +588,22 @@ nvim_lsp['clangd'].setup {
   on_attach = on_attach
 }
 
--- Configure lua language server for neovim development
-local lua_settings = {
-  Lua = {
-    runtime = {
-      -- LuaJIT in the case of Neovim
-      version = 'LuaJIT',
-      path = vim.split(package.path, ';'),
-    },
-    completion = {
-      keywordSnippet = "Disable",
-      showWord = "Disable",
-    },
-    diagnostics = {
-      -- Get the language server to recognize the `vim` global
-      enable = true,
-      globals = {'vim'},
-    },
-    workspace = {
-      -- Make the server aware of Neovim runtime files
-      library = {
-        [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-        [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
-      },
-    },
-  }
-}
-
 -- Setup LSPINSTALL servers
+local luadev = require('lua-dev').setup({
+  lspconfig = {
+    capabilities = capabilities,
+    on_attach = on_attach
+  }
+})
+
 local lsp_installer = require("nvim-lsp-installer")
 lsp_installer.on_server_ready(function(server)
   local opts = {
     capabilities = capabilities,
     on_attach = on_attach
   }
-  if server.name == "sumneki_lua" then
-    opts.settings = lua_settings
+  if server.name == "sumneko_lua" then
+    opts = luadev
   end
   -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
   server:setup(opts)

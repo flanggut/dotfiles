@@ -3,29 +3,35 @@ local M = {}
 M.restart_all_lsp_servers = function()
   for _, client in ipairs(vim.lsp.get_active_clients()) do
     if client then
-      local client_name = client.name
       client.stop()
       vim.defer_fn(function()
-        require('lspconfig')[client_name].autostart()
+        require('lspconfig')[client.name].autostart()
       end, 500)
     end
   end
 end
 
+M.compile_commands_running = {}
 M.generate_compile_commands = function()
   local Job = require'plenary.job'
+  local Path = require 'plenary.path'
   local notify = require'notify'
   local filename = vim.fn.expand('%:p')
+  local tail = string.match(filename, "[^" .. Path.path.sep .. "]*$")
   Job:new({
     command = 'commands_for_file.py',
     args = { filename },
     cwd = '~/fbsource',
     on_start = function()
-      notify("Generating compile commands for " .. filename, "info", {
-        timeout = 1000
+      M.compile_commands_running[filename] = true
+      notify("Generating compile commands for " .. tail, "info", {
+        keep = function()
+          return M.compile_commands_running[filename]
+        end
       })
     end,
     on_exit = function(j, return_val)
+      M.compile_commands_running[filename] = false
       if return_val == 0 then
         require'notify'("Compile commands done. Restarting language server...", "info", {
           timeout = 1000
