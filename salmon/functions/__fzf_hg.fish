@@ -11,19 +11,19 @@ function __fzf_hg
   # CTRL-Y: copy commit id to clipboard and exit
 
   # New version: also search for commit message
-  FZF_DEFAULT_COMMAND="hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog && cat ~/.cache/fzf_hg_smartlog | sed -e 's/^[\|\/\ ╷│├╯╭─╯]*//' | egrep -A 1 '(^(o|\@)\ )' | sed '/^--/d' | paste - - | cut -c 4-" fzf \
+  FZF_DEFAULT_COMMAND="hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog && cat ~/.cache/fzf_hg_smartlog | sed -e 's/^[\|\/\ ╷│├╯╭─╯]*//' | egrep -A 1 '(^(o|\@)\ )' | sed '/^--/d' | paste - - | cut -c 4- | sed -e 's/\ flanggut//'" fzf \
   --ansi --no-sort --reverse --preview-window right:60% \
   --preview "rg -N --passthru --color=always (echo {} | cut -c -9) ~/.cache/fzf_hg_smartlog" \
   --bind "enter:execute(hg up (echo {} | cut -c -9) && hg fsl --color always 2>/dev/null)+abort" \
-  --bind "ctrl-e:execute(hg up stable)+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
-  --bind "ctrl-u:execute(hg up (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
-  --bind "ctrl-g:execute(hg graft (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
-  --bind "ctrl-h:execute(hg hide (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
-  --bind "ctrl-r:execute(hg rebase -s (echo {} | cut -c -9) -d . )+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
-  --bind "ctrl-p:execute(hg pull)+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
+  --bind "ctrl-e:execute-silent(hg hide (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
+  --bind "ctrl-u:execute-silent(hg up (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
+  --bind "ctrl-g:execute(hg graft (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
+  --bind "ctrl-h:execute(hg rebase -s (echo {} | cut -c -9) -d . )+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
+  --bind "ctrl-p:execute(hg pull)+reload($FZF_DEFAULT_COMMAND)+refresh-preview" \
+  --bind "ctrl-r:execute(hg rebase -s (echo {} | cut -c -9) -d . )+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
   --bind "ctrl-s:execute(hg show --color always (echo {} | cut -c -9) | less -R)" \
-  --bind "ctrl-t:execute(hg rebase -s (pbpaste) -d (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+toggle-preview+toggle-preview" \
-  --bind "ctrl-y:execute(printf (echo {} | cut -c -9) | pbcopy)"
+  --bind "ctrl-t:execute(hg rebase -s (pbpaste) -d (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
+  --bind "ctrl-y:execute-silent(printf (echo {} | cut -c -9) | pbcopy)"
 
   # Reprint the command line
   commandline ""
