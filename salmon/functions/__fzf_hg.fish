@@ -11,7 +11,7 @@ function __fzf_hg
   # CTRL-Y: copy commit id to clipboard and exit
 
   # New version: also search for commit message
-  FZF_DEFAULT_COMMAND="hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog && cat ~/.cache/fzf_hg_smartlog | sed -e 's/^[\|\/\ ╷│├╯╭─╯]*//' | egrep -A 1 '(^(o|\@)\ )' | sed '/^--/d' | paste - - | cut -c 4- | sed -e 's/\ flanggut//'" fzf \
+  FZF_DEFAULT_COMMAND="hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog && cat ~/.cache/fzf_hg_smartlog | sed -e 's/^[\|\/\ ╷│├╯╭─╯]*//' | sed -e 's/[0-9]*:[0-9]*//' | sed -e 's/at\ *//' | sed -e 's/D[0-9]*//' | egrep -A 1 '(^(o|\@)\ )' | sed '/^--/d' | paste - - | cut -c 4- | sed -e 's/\ flanggut//'" fzf \
   --ansi --no-sort --reverse --preview-window right:60% \
   --preview "rg -N --passthru --color=always (echo {} | cut -c -9) ~/.cache/fzf_hg_smartlog" \
   --bind "enter:execute(hg up (echo {} | cut -c -9) && hg fsl --color always 2>/dev/null)+abort" \
