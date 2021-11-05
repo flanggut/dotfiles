@@ -1,26 +1,32 @@
+-------------------- Basic Setup --------------------------
+require'fl.core'
+require'fl.globals'
+
+-------------------- PLUGINS -------------------------------
 local function map(mode, lhs, rhs, opts) -- map keybind
   local options = {noremap = true}
   if opts then options = vim.tbl_extend('force', options, opts) end
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
--------------------- PLUGINS -------------------------------
 
 -- Auto install packer.nvim if not exists
 local packer_install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 local packer_init_required = vim.fn.isdirectory(packer_install_path) == 0
+
 if packer_init_required then
   vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', packer_install_path})
   vim.api.nvim_command 'packadd packer.nvim'
 end
+
 vim.api.nvim_exec(
-  [[
-  augroup Packer
-    autocmd!
-    autocmd BufWritePost init.lua PackerCompile profile = true
-  augroup end
-  ]],
-  false
+ [[
+ augroup Packer
+   autocmd!
+   autocmd BufWritePost init.lua  PackerCompile profile = true
+ augroup end
+ ]],
+ false
 )
 
 -- For nathom/filetype plugin. Remove after neovim 0.6.0 is released.
@@ -59,7 +65,7 @@ require('packer').startup({function()
   use 'nvim-telescope/telescope-symbols.nvim'
   use 'nvim-telescope/telescope-z.nvim'
 
-  -- lualine
+  -- statusline
   use {'windwp/windline.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
 
   -- nvim-tree
@@ -77,26 +83,33 @@ require('packer').startup({function()
     }
   }
 
-  -- use {'ggandor/lightspeed.nvim', -- the new sneak?
-  --   requires = {},
-  --   config = function ()
-  --     require'lightspeed'.setup {
-  --       limit_ft_matches = 1,
-  --     }
-  --     vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {noremap = false})
-  --     vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {noremap = false})
-  --     vim.api.nvim_set_keymap('v', 'f', '<Plug>Lightspeed_s', {noremap = false})
-  --     vim.api.nvim_set_keymap('v', 'F', '<Plug>Lightspeed_S', {noremap = false})
-  --   end
-  -- }
-  use {'phaazon/hop.nvim',
-    as = 'hop',
-    config = function ()
-      require'hop'.setup{}
-      vim.api.nvim_set_keymap('n', 'f', '<cmd>HopChar1<CR>', {noremap = false})
-      vim.api.nvim_set_keymap('n', 'F', '<cmd>HopLine<CR>', {noremap = false})
-      vim.api.nvim_set_keymap('n', 's', '<cmd>HopChar2<CR>', {noremap = false})
-    end,
+  -- keys
+  use { "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup {}
+    end
+  }
+
+  use {'ggandor/lightspeed.nvim', -- the new sneak?
+    requires = {},
+    setup = function ()
+      require'lightspeed'.setup {
+        limit_ft_matches = 5,
+      }
+      vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {noremap = false})
+      vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {noremap = false})
+      vim.api.nvim_set_keymap('x', 'f', '<Plug>Lightspeed_s', {noremap = false})
+      vim.api.nvim_set_keymap('x', 'F', '<Plug>Lightspeed_S', {noremap = false})
+      vim.api.nvim_set_keymap('o', 'f', '<Plug>Lightspeed_s', {noremap = false})
+      vim.api.nvim_set_keymap('o', 'F', '<Plug>Lightspeed_S', {noremap = false})
+
+      vim.api.nvim_set_keymap('n', 's', '<Plug>Lightspeed_f', {noremap = false})
+      vim.api.nvim_set_keymap('n', 'S', '<Plug>Lightspeed_F', {noremap = false})
+      vim.api.nvim_set_keymap('x', 's', '<Plug>Lightspeed_f', {noremap = false})
+      vim.api.nvim_set_keymap('x', 'S', '<Plug>Lightspeed_F', {noremap = false})
+      vim.api.nvim_set_keymap('o', 's', '<Plug>Lightspeed_f', {noremap = false})
+      vim.api.nvim_set_keymap('o', 'S', '<Plug>Lightspeed_F', {noremap = false})
+    end
   }
 
   -- alpha startscreen
@@ -114,11 +127,27 @@ require('packer').startup({function()
         startify.button( "q", "  Quit neovim" , ":qa<CR>"),
       }
       alpha.setup(startify.opts)
+      vim.api.nvim_set_keymap('n', '<C-s>', '<cmd>Alpha<CR>', {noremap = true})
     end
   }
 
   -- barbar
-  use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons'} }
+  use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons'},
+    setup = function ()
+      vim.g.bufferline = {
+        letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
+        insert_at_end = true,
+      }
+      vim.api.nvim_set_keymap('n', 'gh', "<cmd>BufferPrevious<CR>", {noremap = true})
+      vim.api.nvim_set_keymap('n', 'gl', "<cmd>BufferNext<CR>", {noremap = true})
+      vim.api.nvim_set_keymap('n', '<space>j', "<cmd>BufferPick<CR>", {noremap = true})
+      vim.api.nvim_set_keymap('n', '<space>bo', "<cmd>BufferCloseAllButCurrent<CR>", {noremap = true})
+      vim.api.nvim_set_keymap('n', '<space>bd', "<cmd>BufferOrderByDirectory<CR>", {noremap = true})
+      vim.api.nvim_set_keymap('n', '<space>q', "<cmd>BufferClose!<CR>", {noremap = true})
+      vim.api.nvim_set_keymap('n', '<A-o>', ':BufferMovePrevious<CR>', {noremap = true, silent = true})
+      vim.api.nvim_set_keymap('n', '<A-p>', ':BufferMoveNext<CR>', {noremap = true, silent = true})
+    end
+  }
 
   -- Smooth Scrolling
   use {'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" },
@@ -146,6 +175,15 @@ require('packer').startup({function()
       "Verbose", -- view verbose output in preview window.
       "Time", -- measure how long it takes to run some stuff.
     },
+  }
+
+  -- comments
+  use { 'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup{}
+      vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
+      vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
+    end
   }
 
   -- markdown
@@ -202,7 +240,6 @@ require('packer').startup({function()
   use 'danymat/neogen'
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
   use 'windwp/nvim-autopairs' -- insert pairs automatically
-  use 'b3nj5m1n/kommentary' -- comments
 
   use 'RRethy/vim-illuminate'
   use 'numtostr/FTerm.nvim'
@@ -229,11 +266,6 @@ if vim.fn.has('termguicolors') == 1 then
    vim.o.termguicolors = true
 end
 vim.cmd [[colorscheme gruvbox-material]]
-
--------------------- Basic Setup --------------------------
-require'fl.core'
-require'fl.globals'
---
 
 -------------------- Plugin Setup --------------------------
 -- TREESITTER
@@ -353,7 +385,7 @@ map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').oldfiles({include_
 map('n', '<leader>sp', "<cmd>lua require('telescope.builtin').registers()<cr>")
 map('n', '<leader>sq', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
 map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
-map('n', '<leader>sz', "<cmd>lua require'telescope'.extensions.z.list({sorter = require'telescope.sorters'.fuzzy_with_index_bias()})<CR>", {silent=true})
+map('n', '<leader>sz', "<cmd>lua require'telescope'.extensions.z.list()<CR>", {silent=true})
 
 map('n', '<C-p>', ':lua R("fl.functions").myfiles({})<CR>', {noremap = true, silent = true})
 map('n', '<leader>mg', ':lua R("fl.functions").mygrep({list_files_only=false})<CR>', {noremap = true, silent = true})
@@ -451,30 +483,6 @@ require'nvim-tree'.setup {
   }
 }
 map('n', '<leader>n', '<cmd>lua require"nvim-tree".find_file(true)<CR>')
-
--- ALPHA
-map('n', '<C-s>', '<cmd>Alpha<CR>')
-
--- BARBAR
-vim.g.bufferline = {
-  letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
-  insert_at_end = true,
-}
-map('n', 'gh', "<cmd>BufferPrevious<CR>")
-map('n', 'gl', "<cmd>BufferNext<CR>")
-map('n', '<leader>j', "<cmd>BufferPick<CR>")
-map('n', '<leader>bo', "<cmd>BufferCloseAllButCurrent<CR>")
-map('n', '<leader>bd', "<cmd>BufferOrderByDirectory<CR>")
-map('n', '<leader>q', "<cmd>BufferClose!<CR>")
-map('n', '<A-o>', ':BufferMovePrevious<CR>', {silent = true})
-map('n', '<A-p>', ':BufferMoveNext<CR>', {silent = true})
-
--- KOMMENTARY
-require('kommentary.config').configure_language("default", {
-    prefer_single_line_comments = true,
-})
-vim.api.nvim_set_keymap("n", "<leader>x", "<Plug>kommentary_line_default", {})
-vim.api.nvim_set_keymap("v", "<leader>x", "<Plug>kommentary_visual_default", {})
 
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
