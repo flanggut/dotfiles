@@ -3,9 +3,7 @@
 if not functions -q fisher
     curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
     fisher install jethrokuan/z
-    fisher install IlanCosman/tide
-# set -u tide_right_prompt_items status context jobs virtual_env time
-# set -u tide_left_prompt_items os pwd git cmd_duration newline prompt_char
+    fisher install IlanCosman/tide@v5
 end
 
 ############################
@@ -17,6 +15,8 @@ set -gx NNN_NO_AUTOSELECT 1
 
 set -g tide_cmd_duration_threshold 100
 set -g tide_cmd_duration_decimals 1
+set -g tide_left_prompt_items os pwd git newline character
+set -g tide_right_prompt_items status context jobs virtual_env cmd_duration time
 
 ############################
 #       Alias Config       #
