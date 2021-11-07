@@ -77,13 +77,6 @@ require('packer').startup({function()
     end
   }
 
-  -- keys
-  use { "folke/which-key.nvim",
-    config = function()
-      require("which-key").setup {}
-    end
-  }
-
   use {'ggandor/lightspeed.nvim', -- the new sneak?
     requires = {},
     config = function ()
@@ -117,8 +110,8 @@ require('packer').startup({function()
         startify.button( "e", "  New file", ":ene <CR>"),
       }
       startify.section.bottom_buttons.val = {
-        -- startify.button( "c", "    Edit config" , ":e ~/.config/nvim/init.lua<CR>"),
-        startify.button( "c", "  Edit dotfiles" , "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>"),
+        startify.button( "c", "  Edit config" , ":e ~/.config/nvim/lua/fl/plugins.lua<CR>"),
+        -- startify.button( "c", "    Edit config" , "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>"),
         startify.button( "q", "  Quit neovim" , ":qa<CR>"),
       }
       alpha.setup(startify.opts)
@@ -145,12 +138,33 @@ require('packer').startup({function()
   }
 
   -- Smooth Scrolling
-  use {'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" },
+  use {
+    'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" },
     config = function()
       require('neoscroll').setup({easing_function = 'circular',})
     end
   }
-  use 'edluffy/specs.nvim'
+  use {
+    'edluffy/specs.nvim',
+    after = 'neoscroll.nvim',
+    config = function ()
+      require'specs'.setup {
+        show_jumps = true,
+        min_jump = 5,
+        popup = {
+          delay_ms = 0, -- delay before popup displays
+          inc_ms = 20, -- time increments used for fade/resize effects
+          blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+          width = 20,
+          winhl = "PMenu",
+          fader = require("specs").linear_fader,
+          resizer = require("specs").shrink_resizer,
+        },
+        ignore_filetypes = {},
+        ignore_buftypes = { nofile = true },
+      }
+    end
+  }
 
   -- persistence
   use { 'folke/persistence.nvim',
@@ -256,6 +270,33 @@ require('packer').startup({function()
   use 'numtostr/FTerm.nvim'
   use 'christoomey/vim-tmux-navigator'
   use 'tversteeg/registers.nvim'
+
+  -- keys
+  use {
+    'folke/which-key.nvim',
+    config = function()
+      local wk = require("which-key")
+      wk.setup {}
+      local leader = {
+        s = {
+          name = "+search",
+          d = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },
+          f = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Buffer Fuzzy" },
+          y = {
+            function()
+              require("telescope.builtin").lsp_document_symbols({
+                symbols = { "Class", "Function", "Method", "Constructor", "Interface", "Module" },
+                symbol_width = 50,
+                symbol_type_width = 12,
+              })
+            end,
+            "Goto Symbol",
+          },
+        },
+      }
+      wk.register(leader, { prefix = "<leader>" })
+    end
+  }
 
 end,
   config = {

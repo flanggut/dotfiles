@@ -124,7 +124,6 @@ map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true,
 -- map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').commands()<cr>")
-map('n', '<leader>sd', "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 -- map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
@@ -271,23 +270,6 @@ vim.api.nvim_set_keymap("n", "<leader>oo", "<cmd>TroubleToggle<cr>", {silent = t
 vim.api.nvim_set_keymap("n", "<leader>od", "<cmd>TroubleToggle lsp_workspace_diagnostics<cr>", {silent = true, noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>ow", "<cmd>TroubleToggle lsp_document_diagnostics<cr>", {silent = true, noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>oq", "<cmd>TroubleToggle quickfix<cr>", {silent = true, noremap = true})
-
-------------------- SCROLL + SPECS
-require("specs").setup {
-  show_jumps = true,
-  min_jump = 5,
-  popup = {
-    delay_ms = 0, -- delay before popup displays
-    inc_ms = 20, -- time increments used for fade/resize effects
-    blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
-    width = 20,
-    winhl = "PMenu",
-    fader = require("specs").linear_fader,
-    resizer = require("specs").shrink_resizer,
-  },
-  ignore_filetypes = {},
-  ignore_buftypes = { nofile = true },
-}
 
 -------------------- LSP Setup ------------------------------
 local nvim_lsp = require ('lspconfig')
