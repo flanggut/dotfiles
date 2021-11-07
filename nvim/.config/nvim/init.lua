@@ -1,264 +1,12 @@
--------------------- Basic Setup --------------------------
-require'fl.core'
 require'fl.globals'
+require'fl.core'
+require'fl.plugins'
 
--------------------- PLUGINS -------------------------------
 local function map(mode, lhs, rhs, opts) -- map keybind
   local options = {noremap = true}
   if opts then options = vim.tbl_extend('force', options, opts) end
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
-
-
--- Auto install packer.nvim if not exists
-local packer_install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-local packer_init_required = vim.fn.isdirectory(packer_install_path) == 0
-
-if packer_init_required then
-  vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', packer_install_path})
-  vim.api.nvim_command 'packadd packer.nvim'
-end
-
-vim.api.nvim_exec(
- [[
- augroup Packer
-   autocmd!
-   autocmd BufWritePost init.lua  PackerCompile profile = true
- augroup end
- ]],
- false
-)
-
--- For nathom/filetype plugin. Remove after neovim 0.6.0 is released.
-vim.g.did_load_filetypes = 1
-
--- Start up packer, sync packages afterwards if required
-require('packer').startup({function()
-  local use = require('packer').use
-
-  -- Packer can manage itself
-  use 'wbthomason/packer.nvim'
-
-  -- Speedup plugin loading
-  use 'lewis6991/impatient.nvim'
-  use 'nathom/filetype.nvim'
-  use {'tweekmonster/startuptime.vim', cmd = 'StartupTime' }
-
-  -- treesitter
-  use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use 'nvim-treesitter/nvim-treesitter-refactor'
-  use 'nvim-treesitter/nvim-treesitter-textobjects'
-  use 'RRethy/nvim-treesitter-textsubjects'
-  use 'mizlan/iswap.nvim'
-  use 'mfussenegger/nvim-ts-hint-textobject'
-
-  -- nvim-lsp
-  use 'neovim/nvim-lspconfig'
-  use 'ray-x/lsp_signature.nvim'
-  use 'williamboman/nvim-lsp-installer'
-  use { 'folke/trouble.nvim', requires = 'kyazdani42/nvim-web-devicons' }
-  use 'folke/lua-dev.nvim'
-
-  -- telescope
-  use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-  use 'nvim-telescope/telescope-symbols.nvim'
-  use 'nvim-telescope/telescope-z.nvim'
-
-  -- statusline
-  use {'windwp/windline.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
-
-  -- nvim-tree
-  use {'kyazdani42/nvim-tree.lua', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
-
-  -- nvim-cmp and snippets
-  use {'hrsh7th/nvim-cmp',
-    requires = {
-      {'L3MON4D3/LuaSnip'},
-      {'hrsh7th/cmp-buffer'},
-      {'hrsh7th/cmp-path'},
-      {'hrsh7th/cmp-nvim-lsp'},
-      {'hrsh7th/cmp-nvim-lua'},
-      {'saadparwaiz1/cmp_luasnip'},
-    }
-  }
-
-  -- keys
-  use { "folke/which-key.nvim",
-    config = function()
-      require("which-key").setup {}
-    end
-  }
-
-  use {'ggandor/lightspeed.nvim', -- the new sneak?
-    requires = {},
-    setup = function ()
-      require'lightspeed'.setup {
-        limit_ft_matches = 5,
-      }
-      vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {noremap = false})
-      vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {noremap = false})
-      vim.api.nvim_set_keymap('x', 'f', '<Plug>Lightspeed_s', {noremap = false})
-      vim.api.nvim_set_keymap('x', 'F', '<Plug>Lightspeed_S', {noremap = false})
-      vim.api.nvim_set_keymap('o', 'f', '<Plug>Lightspeed_s', {noremap = false})
-      vim.api.nvim_set_keymap('o', 'F', '<Plug>Lightspeed_S', {noremap = false})
-
-      vim.api.nvim_set_keymap('n', 's', '<Plug>Lightspeed_f', {noremap = false})
-      vim.api.nvim_set_keymap('n', 'S', '<Plug>Lightspeed_F', {noremap = false})
-      vim.api.nvim_set_keymap('x', 's', '<Plug>Lightspeed_f', {noremap = false})
-      vim.api.nvim_set_keymap('x', 'S', '<Plug>Lightspeed_F', {noremap = false})
-      vim.api.nvim_set_keymap('o', 's', '<Plug>Lightspeed_f', {noremap = false})
-      vim.api.nvim_set_keymap('o', 'S', '<Plug>Lightspeed_F', {noremap = false})
-    end
-  }
-
-  -- alpha startscreen
-  use { 'goolord/alpha-nvim',
-    requires = { 'kyazdani42/nvim-web-devicons' } ,
-    config = function ()
-      local alpha = require'alpha'
-      local startify = require'alpha.themes.startify'
-      startify.section.top_buttons.val = {
-        startify.button( "o", "  Open last session", ":lua require'persistence'.load()<CR>"),
-        startify.button( "e", "  New file", ":ene <CR>"),
-      }
-      startify.section.bottom_buttons.val = {
-        startify.button( "c", "  Edit config" , ":e ~/.config/nvim/init.lua<CR>"),
-        startify.button( "q", "  Quit neovim" , ":qa<CR>"),
-      }
-      alpha.setup(startify.opts)
-      vim.api.nvim_set_keymap('n', '<C-s>', '<cmd>Alpha<CR>', {noremap = true})
-    end
-  }
-
-  -- barbar
-  use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons'},
-    setup = function ()
-      vim.g.bufferline = {
-        letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
-        insert_at_end = true,
-      }
-      vim.api.nvim_set_keymap('n', 'gh', "<cmd>BufferPrevious<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', 'gl', "<cmd>BufferNext<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<space>j', "<cmd>BufferPick<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<space>bo', "<cmd>BufferCloseAllButCurrent<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<space>bd', "<cmd>BufferOrderByDirectory<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<space>q', "<cmd>BufferClose!<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<A-o>', ':BufferMovePrevious<CR>', {noremap = true, silent = true})
-      vim.api.nvim_set_keymap('n', '<A-p>', ':BufferMoveNext<CR>', {noremap = true, silent = true})
-    end
-  }
-
-  -- Smooth Scrolling
-  use {'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" },
-    config = function()
-      require('neoscroll').setup({easing_function = 'circular',})
-    end
-  }
-  use 'edluffy/specs.nvim'
-
-  -- persistence
-  use { 'folke/persistence.nvim',
-    event = 'BufReadPre', -- this will only start session saving when an actual file was opened
-    module = 'persistence',
-    config = function()
-      require('persistence').setup()
-    end,
-  }
-
-  -- notify
-  use 'rcarriga/nvim-notify'
-
-  use { 'tpope/vim-scriptease',
-    cmd = {
-      "Messages", --view messages in quickfix list
-      "Verbose", -- view verbose output in preview window.
-      "Time", -- measure how long it takes to run some stuff.
-    },
-  }
-
-  -- comments
-  use { 'numToStr/Comment.nvim',
-    config = function()
-      require('Comment').setup{}
-      vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
-      vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
-    end
-  }
-
-  -- markdown
-  use 'ellisonleao/glow.nvim'
-
-  -- NNN
-  use { 'mcchrish/nnn.vim',
-    config = function()
-      require('nnn').setup({
-     	  command = 'nnn -o -A',
-     	  set_default_mappings = 0,
-     	  replace_netrw = 1,
-        layout = { window = { width= 0.6, height= 0.7, xoffset= 0.95, highlight= 'Debug'} },
-      })
-      vim.api.nvim_set_keymap('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
-    end,
-  }
-
-  use { 'lukas-reineke/format.nvim',
-    config = function()
-      require'format'.setup{
-        ["*"] = {
-          {cmd = {"sed -i 's/[ \t]*$//'"}} -- remove trailing whitespace
-        },
-      }
-    end,
-  }
-
-  use { 'chipsenkbeil/distant.nvim',
-    config = function()
-      require('distant').setup {
-        -- Applies Chip's personal settings to every machine you connect to:
-        -- 1. Ensures that distant servers terminate with no connections
-        -- 2. Provides navigation bindings for remote directories
-        -- 3. Provides keybinding to jump into a remote file's parent directory
-        ['*'] = require('distant.settings').chip_default()
-      }
-    end
-  }
-
-  -- the usual
-  use 'mhinz/vim-signify'
-  use 'tpope/vim-repeat'
-  use 'tpope/vim-surround'
-  use 'wellle/targets.vim'
-  use 'kevinhwang91/nvim-bqf'
-
-  -- theme
-  use 'sainnhe/gruvbox-material'
-
-  use {'folke/zen-mode.nvim', config = function() require('zen-mode').setup {} end }
-  use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
-
-  use 'danymat/neogen'
-  use 'lukas-reineke/indent-blankline.nvim' -- indent line
-  use 'windwp/nvim-autopairs' -- insert pairs automatically
-
-  use 'RRethy/vim-illuminate'
-  use 'numtostr/FTerm.nvim'
-  use 'christoomey/vim-tmux-navigator'
-  use 'tversteeg/registers.nvim'
-
-end,
-config = {
-  compile_path = vim.fn.stdpath('config')..'/lua/packer_compiled.lua',
-  profile = {
-    enable = true,
-    threshold = 0,
-  }
-}})
-if packer_init_required then
- require'packer'.sync()
-end
-require('impatient')
-require('packer_compiled')
 
 -------------------- Theme Setup --------------------------
 vim.o.background = "dark" -- or "light" for light mode
@@ -372,8 +120,7 @@ require('telescope').setup{
 require'telescope'.load_extension('fzf')
 require'telescope'.load_extension('z')
 
--- map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
-map('n', '<C-k>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
+map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
 -- map('n', '<C-l>', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').commands()<cr>")
@@ -465,10 +212,6 @@ cmp.setup {
   },
 }
 
--- AUTOPAIRS
-require('nvim-autopairs').setup()
-cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
-
 -- NVIMTREE
 vim.g.nvim_tree_quit_on_open = 1
 require'nvim-tree'.setup {
@@ -512,17 +255,12 @@ require'FTerm'.setup({
 map('n', '<A-t>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true})
 map('t', '<A-t>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true})
 
--- STATUSLINE
-require('fl.statusline')
-
 ------------------- Navigation + TMUX -----------------
 vim.g.tmux_navigator_no_mappings = 1
 map('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {silent = true})
 map('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {silent = true})
 map('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {silent = true})
 map('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {silent = true})
-
--- map('n', '<A-,>', '<cmd>split<cr>', {silent = true})
 map('n', '<A-.>', '<cmd>FocusSplitRight<cr>', {silent = true})
 
 -------------------  TROUBLE
@@ -617,9 +355,6 @@ lsp_installer.on_server_ready(function(server)
   server:setup(opts)
   vim.cmd [[ do User LspAttachBuffers ]]
 end)
-
-------------------------- LUASNIP ----------------------------
-require("luasnip").snippets = require('fl.snippets').snippets
 
 --------------------- Custom functions -----------------
 function CodeLink()
