@@ -115,7 +115,6 @@ require('packer').startup({function()
       }
       startify.section.bottom_buttons.val = {
         startify.button( "c", "  Edit config" , ":e ~/.config/nvim/lua/fl/plugins.lua<CR>"),
-        -- startify.button( "c", "    Edit config" , "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>"),
         startify.button( "q", "  Quit neovim" , ":qa<CR>"),
       }
       alpha.setup(startify.opts)
@@ -195,7 +194,7 @@ require('packer').startup({function()
     config = function()
       require('Comment').setup{}
       vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
-      vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
+      vim.api.nvim_set_keymap('x', '<space>x', 'gc', {silent = true})
     end
   }
 
@@ -265,12 +264,19 @@ require('packer').startup({function()
     end
   }
 
+  -- Illuminate
+  use {
+    'RRethy/vim-illuminate',
+    config = function ()
+      vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
+    end
+  }
+
   use {'folke/zen-mode.nvim', config = function() require('zen-mode').setup {} end }
   use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
 
   use 'danymat/neogen'
   use 'lukas-reineke/indent-blankline.nvim' -- indent line
-  use 'RRethy/vim-illuminate'
   use 'numtostr/FTerm.nvim'
   use 'christoomey/vim-tmux-navigator'
   use 'tversteeg/registers.nvim'

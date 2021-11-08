@@ -159,9 +159,6 @@ vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
 vim.g.indent_blankline_char_highlight = 'LineNr'
 vim.g.indent_blankline_show_trailing_blankline_indent = false
 
--- ILLUMINATE
-vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
-
 -- FTERM
 local shell = '/bin/fish'
 if vim.fn.has('mac') == 1 then
@@ -186,7 +183,6 @@ map('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {silent = true})
 map('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {silent = true})
 map('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {silent = true})
 map('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {silent = true})
-map('n', '<A-.>', '<cmd>FocusSplitRight<cr>', {silent = true})
 
 -------------------  TROUBLE
 require("trouble").setup {
@@ -219,6 +215,9 @@ local on_attach = function(client, bufnr)
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
     buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    vim.cmd([[
+      au BufWritePre * lua vim.lsp.buf.formatting_sync(nil, 1000)
+    ]])
   end
   if client.resolved_capabilities.document_range_formatting then
     buf_set_keymap("v", "<leader>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
