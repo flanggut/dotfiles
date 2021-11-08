@@ -16,7 +16,7 @@ function __fzf_hg
   --preview "rg -N --passthru --color=always (echo {} | cut -c -9) ~/.cache/fzf_hg_smartlog" \
   --bind "enter:execute(hg up (echo {} | cut -c -9) && hg fsl --color always 2>/dev/null)+abort" \
   --bind "ctrl-e:execute-silent(hg hide (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
-  --bind "ctrl-u:execute-silent(hg up (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
+  --bind "ctrl-u:execute(hg up (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
   --bind "ctrl-g:execute(hg graft (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
   --bind "ctrl-h:execute(hg rebase -s (echo {} | cut -c -9) -d . )+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
   --bind "ctrl-p:execute(hg pull)+reload($FZF_DEFAULT_COMMAND)+refresh-preview" \
