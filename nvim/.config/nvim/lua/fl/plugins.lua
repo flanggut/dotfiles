@@ -245,13 +245,6 @@ require('packer').startup({function()
     end
   }
 
-  -- the usual
-  use 'mhinz/vim-signify'
-  use 'tpope/vim-repeat'
-  use 'tpope/vim-surround'
-  use 'wellle/targets.vim'
-  use 'kevinhwang91/nvim-bqf'
-
   -- theme
   use {
     'sainnhe/gruvbox-material',
@@ -264,7 +257,7 @@ require('packer').startup({function()
     end
   }
 
-  -- Illuminate
+  -- Illuminate variables
   use {
     'RRethy/vim-illuminate',
     config = function ()
@@ -272,11 +265,29 @@ require('packer').startup({function()
     end
   }
 
+  -- documentation generator
+  use {
+    'danymat/neogen',
+    config = function ()
+      require'neogen'.setup {
+        enabled = true
+      }
+    end
+  }
+
+  -- zen mode
   use {'folke/zen-mode.nvim', config = function() require('zen-mode').setup {} end }
+
+  -- lsp kind symbols
   use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
 
-  use 'danymat/neogen'
-  use 'lukas-reineke/indent-blankline.nvim' -- indent line
+  -- the usual
+  use 'mhinz/vim-signify'
+  use 'tpope/vim-repeat'
+  use 'tpope/vim-surround'
+  use 'wellle/targets.vim'
+  use 'kevinhwang91/nvim-bqf'
+  use 'lukas-reineke/indent-blankline.nvim'
   use 'numtostr/FTerm.nvim'
   use 'christoomey/vim-tmux-navigator'
   use 'tversteeg/registers.nvim'
@@ -288,6 +299,10 @@ require('packer').startup({function()
       local wk = require("which-key")
       wk.setup {}
       local leader = {
+        i = {
+          name = "+insert",
+          d = { "<cmd>lua require('neogen').generate()<CR>", "Documentation" }
+        },
         s = {
           name = "+search",
           d = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },
