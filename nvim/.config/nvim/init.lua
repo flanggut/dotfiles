@@ -267,19 +267,5 @@ lsp_installer.on_server_ready(function(server)
 end)
 
 --------------------- Custom functions -----------------
-function CodeLink()
-  vim.api.nvim_exec(
-    [[
-        let file = expand( "%:f" )
-        let path = substitute(file, ".*/fbsource/", "", "")
-        let line = line('.')
-
-        let g = "https://www.internalfb.com/code/fbsource/\[master\]/" . path . "?lines=". line
-        echom g
-        silent exec "!open \'". g ."'"
-    ]],
-    true)
-end
-map('n', '<leader>op', '<cmd>lua CodeLink()<CR>')
-
 map('n', '<leader>cd', '<cmd>lua R("fl.functions").generate_compile_commands()<CR>')
+map('n', '<leader>op', '<cmd>lua R("fl.functions").open_in_browser()<CR>')

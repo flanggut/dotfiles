@@ -110,4 +110,16 @@ M.mygrep = function(opts)
   end
 end
 
+M.open_in_browser = function ()
+  local filename = vim.fn.expand('%:p')
+  local tail = filename:gsub('^.*fbsource', '')
+  local line = vim.api.nvim_win_get_cursor(0)[1]
+  require'notify'("Opening in browser: " .. tail, "info")
+  require'plenary.job':new({
+    command = 'open',
+    args = { 'https://www.internalfb.com/code/fbsource/[master]' .. tail .. '?lines=' .. tostring(line) },
+    cwd = '~/fbsource',
+  }):start()
+end
+
 return M
