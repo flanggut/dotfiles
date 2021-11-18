@@ -66,6 +66,9 @@ treesitter_config.setup {
       },
     },
   },
+  playground = {
+    enable = true,
+  },
 }
 map('o', 'm', ':<C-U>lua require("tsht").nodes()<CR>', {noremap = false, silent = true})
 map('v', 'm', ':lua require("tsht").nodes()<CR>', {noremap = true, silent = true})

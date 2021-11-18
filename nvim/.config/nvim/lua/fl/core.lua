@@ -81,6 +81,8 @@ vim.wo.relativenumber = true
 vim.wo.signcolumn = 'yes'
 vim.o.backspace = [[indent,eol,start]] -- Change backspace to behave more intuitively
 
+vim.opt.shada = { "!", "'1000", "<50", "s10", "h" }
+vim.opt.swapfile = false
 vim.opt.undofile = true
 vim.cmd('set diffopt+=vertical')
 
@@ -111,4 +113,9 @@ vim.cmd([[
 -- set correct filetype for fish
 vim.cmd([[
   au BufNewFile,BufRead *.fish set filetype=fish
+]])
+
+-- set correct filetype for BUCK
+vim.cmd([[
+  au BufNewFile,BufRead BUCK set filetype=python
 ]])

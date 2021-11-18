@@ -32,6 +32,7 @@ require('packer').startup({function()
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'nvim-treesitter/nvim-treesitter-refactor'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
+  use 'nvim-treesitter/playground'
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'mizlan/iswap.nvim'
   use 'mfussenegger/nvim-ts-hint-textobject'
@@ -84,9 +85,7 @@ require('packer').startup({function()
   use {'ggandor/lightspeed.nvim', -- the new sneak?
     requires = {},
     config = function ()
-      require'lightspeed'.setup {
-        limit_ft_matches = 5,
-      }
+      require'lightspeed'.setup {}
       vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {noremap = false})
       vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {noremap = false})
       vim.api.nvim_set_keymap('x', 'f', '<Plug>Lightspeed_s', {noremap = false})
@@ -301,7 +300,7 @@ require('packer').startup({function()
       local leader = {
         i = {
           name = "+insert",
-          d = { "<cmd>lua require('neogen').generate()<CR>", "Documentation" }
+          d = { "<cmd>lua require('neogen').generate{}<CR>", "Documentation" }
         },
         s = {
           name = "+search",
