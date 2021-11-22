@@ -59,7 +59,25 @@ require('packer').startup({function()
   }
 
   -- nvim-tree
-  use {'kyazdani42/nvim-tree.lua', requires = {'kyazdani42/nvim-web-devicons', opt = true} }
+  use {
+    'kyazdani42/nvim-tree.lua',
+    requires = {'kyazdani42/nvim-web-devicons', opt = true},
+    config = function()
+      vim.g.nvim_tree_quit_on_open = 1
+      require'nvim-tree'.setup {
+        auto_close = true,
+        highjack_cursor = true,
+        quit_on_open = true,
+        update_focused_file = {
+          enable = true,
+        },
+        view = {
+          width = 50,
+        }
+      }
+      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>NvimTreeFindFileToggle<CR>', {noremap = true})
+    end
+  }
 
   -- nvim-cmp and snippets
   use {'hrsh7th/nvim-cmp',
