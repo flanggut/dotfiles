@@ -226,9 +226,8 @@ require('packer').startup({function()
   use { 'windwp/nvim-autopairs',
     after = 'nvim-cmp',
     config = function ()
-      local cmp = require('cmp')
-      require('nvim-autopairs').setup()
-      cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
+      require'nvim-autopairs'.setup()
+      require'cmp'.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
     end
   }
 
@@ -248,10 +247,6 @@ require('packer').startup({function()
   use {
     'sainnhe/gruvbox-material',
     config = function ()
-      vim.o.background = "dark" -- or "light" for light mode
-      if vim.fn.has('termguicolors') == 1 then
-        vim.o.termguicolors = true
-      end
       vim.cmd [[colorscheme gruvbox-material]]
     end
   }
@@ -298,9 +293,15 @@ require('packer').startup({function()
       local wk = require("which-key")
       wk.setup {}
       local leader = {
+        c = {
+          d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" }
+        },
         i = {
           name = "+insert",
           d = { "<cmd>lua require('neogen').generate{}<CR>", "Documentation" }
+        },
+        o = {
+          p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Compile commands" }
         },
         s = {
           name = "+search",
