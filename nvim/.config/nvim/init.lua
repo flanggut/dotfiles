@@ -131,21 +131,6 @@ map('n', '<C-p>', ':lua R("fl.functions").myfiles({})<CR>', {noremap = true, sil
 map('n', '<leader>mg', ':lua R("fl.functions").mygrep({list_files_only=false})<CR>', {noremap = true, silent = true})
 map('n', '<leader>ml', ':lua R("fl.functions").mygrep({list_files_only=true})<CR>', {noremap = true, silent = true})
 
--- NVIMTREE
-vim.g.nvim_tree_quit_on_open = 1
-require'nvim-tree'.setup {
-  auto_close = true,
-  highjack_cursor = true,
-  quit_on_open = true,
-  update_focused_file = {
-    enable = true,
-  },
-  view = {
-    width = 50,
-  }
-}
-map('n', '<leader>n', '<cmd>lua require"nvim-tree".find_file(true)<CR>')
-
 -- INDENTLINE
 vim.g.indentLine_enabled = 1
 vim.g.indentLine_char = '│'
