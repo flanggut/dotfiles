@@ -1,9 +1,10 @@
 ############################
 #     Bootstrap fisher     #
 if not functions -q fisher
-    curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
-    fisher install jethrokuan/z
-    fisher install IlanCosman/tide@v5
+    echo "curl -sL https://git.io/fisher | source"
+    echo fisher install jorgebucaran/fisher
+    echo fisher install jethrokuan/z
+    echo fisher install IlanCosman/tide@v5
 end
 
 ############################
