@@ -5,7 +5,7 @@ M.restart_all_lsp_servers = function()
     if client then
       client.stop()
       vim.defer_fn(function()
-        require('lspconfig')[client.name].autostart()
+        require('lspconfig')[client.name].launch()
       end, 500)
     end
   end
@@ -33,9 +33,7 @@ M.generate_compile_commands = function()
     on_exit = function(j, return_val)
       M.compile_commands_running[filename] = false
       if return_val == 0 then
-        require'notify'("Compile commands done for " .. tail, "info", {
-          timeout = 1000
-        })
+        M.restart_all_lsp_servers()
       else
        notify("Compile commands error. \n" .. table.concat(j:stderr_result(), "\n"), "error")
       end

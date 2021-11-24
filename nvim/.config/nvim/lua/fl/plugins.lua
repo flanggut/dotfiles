@@ -29,7 +29,13 @@ require('packer').startup({function()
   use {'tweekmonster/startuptime.vim', cmd = 'StartupTime' }
 
   -- treesitter
-  use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = ':TSUpdate',
+    config = function ()
+      require'fl.treesitter'
+    end
+  }
   use 'nvim-treesitter/nvim-treesitter-refactor'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'nvim-treesitter/playground'
@@ -217,6 +223,35 @@ require('packer').startup({function()
 
   -- markdown
   use 'ellisonleao/glow.nvim'
+
+  -- notes
+  use {
+    'renerocksai/telekasten.nvim',
+    config = function()
+      local home = vim.fn.expand("~/zettelkasten")
+      require('telekasten').setup({
+        home         = home,
+        dailies      = home .. '/' .. 'daily',
+        weeklies     = home .. '/' .. 'weekly',
+        templates    = home .. '/' .. 'templates',
+        extension    = ".md",
+
+        -- following a link to a non-existing note will create it
+        follow_creates_nonexisting = true,
+        dailies_create_nonexisting = true,
+        weeklies_create_nonexisting = true,
+
+        -- template for new notes (new_note, follow_link)
+        template_new_note = home .. '/' .. 'templates/new_note.md',
+
+        -- template for newly created daily notes (goto_today)
+        template_new_daily = home .. '/' .. 'templates/daily.md',
+
+        -- template for newly created weekly notes (goto_thisweek)
+        template_new_weekly= home .. '/' .. 'templates/weekly.md',
+      })
+    end
+  }
 
   -- NNN
   use { 'mcchrish/nnn.vim',
