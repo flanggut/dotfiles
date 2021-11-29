@@ -328,13 +328,24 @@ require('packer').startup({function()
   -- lsp kind symbols
   use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
 
+  use {
+    'lukas-reineke/indent-blankline.nvim',
+    config = function ()
+      vim.g.indentLine_enabled = 1
+      vim.g.indentLine_char = '│'
+      vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
+      vim.g.indent_blankline_char_highlight = 'LineNr'
+      vim.g.indent_blankline_show_trailing_blankline_indent = false
+    end
+  }
+
+
   -- the usual
   use 'mhinz/vim-signify'
   use 'tpope/vim-repeat'
   use 'tpope/vim-surround'
   use 'wellle/targets.vim'
   use 'kevinhwang91/nvim-bqf'
-  use 'lukas-reineke/indent-blankline.nvim'
   use 'numtostr/FTerm.nvim'
   use 'christoomey/vim-tmux-navigator'
   use 'tversteeg/registers.nvim'

@@ -74,13 +74,6 @@ map('n', '<C-p>', ':lua R("fl.functions").myfiles({})<CR>', {noremap = true, sil
 map('n', '<leader>mg', ':lua R("fl.functions").mygrep({list_files_only=false})<CR>', {noremap = true, silent = true})
 map('n', '<leader>ml', ':lua R("fl.functions").mygrep({list_files_only=true})<CR>', {noremap = true, silent = true})
 
--- INDENTLINE
-vim.g.indentLine_enabled = 1
-vim.g.indentLine_char = '│'
-vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
-vim.g.indent_blankline_char_highlight = 'LineNr'
-vim.g.indent_blankline_show_trailing_blankline_indent = false
-
 -- FTERM
 local shell = '/bin/fish'
 if vim.fn.has('mac') == 1 then
