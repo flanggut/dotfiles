@@ -93,11 +93,6 @@ map('n', '<A-t>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true})
 map('t', '<A-t>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true})
 
 ------------------- Navigation + TMUX -----------------
-vim.g.tmux_navigator_no_mappings = 1
-map('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {silent = true})
-map('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {silent = true})
-map('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {silent = true})
-map('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {silent = true})
 
 -------------------- LSP Setup ------------------------------
 local nvim_lsp = require ('lspconfig')

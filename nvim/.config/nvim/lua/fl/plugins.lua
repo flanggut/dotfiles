@@ -351,6 +351,17 @@ require('packer').startup({function()
     end
   }
 
+  use {
+    'christoomey/vim-tmux-navigator',
+    config = function ()
+      vim.g.tmux_navigator_no_mappings = 1
+      vim.api.nvim_set_keymap('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {noremap= true, silent = true})
+      vim.api.nvim_set_keymap('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {noremap= true, silent = true})
+      vim.api.nvim_set_keymap('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {noremap= true, silent = true})
+      vim.api.nvim_set_keymap('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {noremap= true, silent = true})
+    end
+  }
+
 
   -- the usual
   use 'mhinz/vim-signify'
@@ -359,7 +370,6 @@ require('packer').startup({function()
   use 'wellle/targets.vim'
   use 'kevinhwang91/nvim-bqf'
   use 'numtostr/FTerm.nvim'
-  use 'christoomey/vim-tmux-navigator'
   use 'tversteeg/registers.nvim'
 
   -- keys
