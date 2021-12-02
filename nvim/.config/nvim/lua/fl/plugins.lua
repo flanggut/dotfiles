@@ -76,27 +76,6 @@ require('packer').startup({function()
     end
   }
 
-  -- nvim-tree
-  use {
-    'kyazdani42/nvim-tree.lua',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true},
-    config = function()
-      vim.g.nvim_tree_quit_on_open = 1
-      require'nvim-tree'.setup {
-        auto_close = true,
-        highjack_cursor = true,
-        quit_on_open = true,
-        update_focused_file = {
-          enable = true,
-        },
-        view = {
-          width = 50,
-        }
-      }
-      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>NvimTreeFindFileToggle<CR>', {noremap = true})
-    end
-  }
-
   -- nvim-cmp and snippets
   use {'hrsh7th/nvim-cmp',
     requires = {
@@ -269,12 +248,12 @@ require('packer').startup({function()
   use { 'mcchrish/nnn.vim',
     config = function()
       require('nnn').setup({
-     	  command = 'nnn -o -A',
-     	  set_default_mappings = 0,
-     	  replace_netrw = 1,
+        command = 'nnn -o -A',
+        set_default_mappings = 0,
+        replace_netrw = 1,
         layout = { window = { width= 0.6, height= 0.7, xoffset= 0.95, highlight= 'Debug'} },
       })
-      vim.api.nvim_set_keymap('n', '<c-n>', '<cmd>NnnPicker %:p:h<cr>', {silent = true})
+      vim.api.nvim_set_keymap('n', '<c-n>', '<cmd>NnnPicker %:p<cr>', {silent = true, noremap = true})
     end,
   }
 
@@ -384,7 +363,9 @@ require('packer').startup({function()
         },
         i = {
           name = "+insert",
-          d = { "<cmd>lua require('neogen').generate{}<CR>", "Documentation" }
+          d = { "<cmd>lua require('neogen').generate{}<CR>", "Documentation" },
+          s = { "<cmd>ISwap<CR>", "Swap arguments" },
+          w = { "<cmd>ISwapWith<CR>", "Swap argument with other" }
         },
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Compile commands" }

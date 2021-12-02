@@ -89,8 +89,8 @@ require'FTerm'.setup({
       y = 0.7
   },
 })
-map('n', '<A-t>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true})
-map('t', '<A-t>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true})
+map('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true})
+map('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true})
 
 ------------------- Navigation + TMUX -----------------
 
@@ -117,7 +117,7 @@ local on_attach = function(client, bufnr)
   if client.resolved_capabilities.document_formatting then
     buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
     vim.cmd([[
-      au BufWritePre * lua vim.lsp.buf.formatting_sync(nil, 1000)
+      au BufWritePre *.cpp,*.h lua vim.lsp.buf.formatting_sync(nil, 1000)
     ]])
   end
   if client.resolved_capabilities.document_range_formatting then

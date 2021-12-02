@@ -32,7 +32,6 @@ vim.wo.foldmethod = 'indent'
 vim.wo.foldnestmax = 1
 
 vim.wo.number = true
-vim.wo.relativenumber = true
 
 vim.wo.signcolumn = 'yes'
 
