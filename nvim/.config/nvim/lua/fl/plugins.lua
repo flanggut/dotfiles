@@ -114,6 +114,16 @@ require('packer').startup({function()
       vim.api.nvim_set_keymap('x', 'S', '<Plug>Lightspeed_F', {noremap = false})
       vim.api.nvim_set_keymap('o', 's', '<Plug>Lightspeed_f', {noremap = false})
       vim.api.nvim_set_keymap('o', 'S', '<Plug>Lightspeed_F', {noremap = false})
+      vim.cmd(([[
+      let g:lightspeed_last_motion = ''
+      augroup lightspeed_last_motion
+      autocmd!
+      autocmd User LightspeedSxEnter let g:lightspeed_last_motion = 'sx'
+      autocmd User LightspeedFtEnter let g:lightspeed_last_motion = 'ft'
+      augroup end
+      map <expr> ; g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_;_sx" : "<Plug>Lightspeed_;_ft"
+      map <expr> , g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_,_sx" : "<Plug>Lightspeed_,_ft"
+      ]]))
     end
   }
 
@@ -374,6 +384,7 @@ require('packer').startup({function()
           name = "+search",
           d = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },
           f = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Buffer Fuzzy" },
+          s = { "<cmd>Telescope treesitter<cr>", "Treesitter" },
           y = {
             function()
               require("telescope.builtin").lsp_document_symbols({
