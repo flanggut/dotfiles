@@ -351,6 +351,28 @@ require('packer').startup({function()
     end
   }
 
+  -- Terminal
+  use {
+    'numtostr/FTerm.nvim',
+    config = function ()
+      local shell = '/bin/fish'
+      if vim.fn.has('mac') == 1 then
+        shell = '/usr/local/bin/fish'
+      end
+      require'FTerm'.setup({
+        cmd = shell,
+        border = 'double',
+        dimensions  = {
+          height = 0.8,
+          width = 0.8,
+          x = 0.9,
+          y = 0.7
+        },
+      })
+      vim.api.nvim_set_keymap('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true, noremap = true})
+      vim.api.nvim_set_keymap('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true, noremap = true})
+    end
+  }
 
   -- the usual
   use 'mhinz/vim-signify'
@@ -358,7 +380,6 @@ require('packer').startup({function()
   use 'tpope/vim-surround'
   use 'wellle/targets.vim'
   use 'kevinhwang91/nvim-bqf'
-  use 'numtostr/FTerm.nvim'
   use 'tversteeg/registers.nvim'
 
   -- keys

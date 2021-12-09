@@ -74,26 +74,6 @@ map('n', '<C-p>', ':lua R("fl.functions").myfiles({})<CR>', {noremap = true, sil
 map('n', '<leader>mg', ':lua R("fl.functions").mygrep({list_files_only=false})<CR>', {noremap = true, silent = true})
 map('n', '<leader>ml', ':lua R("fl.functions").mygrep({list_files_only=true})<CR>', {noremap = true, silent = true})
 
--- FTERM
-local shell = '/bin/fish'
-if vim.fn.has('mac') == 1 then
-  shell = '/usr/local/bin/fish'
-end
-require'FTerm'.setup({
-  cmd = shell,
-  border = 'double',
-  dimensions  = {
-      height = 0.8,
-      width = 0.8,
-      x = 0.9,
-      y = 0.7
-  },
-})
-map('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true})
-map('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true})
-
-------------------- Navigation + TMUX -----------------
-
 -------------------- LSP Setup ------------------------------
 local nvim_lsp = require ('lspconfig')
 local on_attach = function(client, bufnr)
