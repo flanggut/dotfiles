@@ -1,4 +1,5 @@
 require'fl.globals'
 require'fl.core'
-require'fl.plugins'
-require'fl.lsp'
+vim.defer_fn(function()
+  require'fl.plugins'
+end, 0)

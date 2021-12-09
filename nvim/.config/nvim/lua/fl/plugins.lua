@@ -44,10 +44,22 @@ require('packer').startup({function()
   use 'mfussenegger/nvim-ts-hint-textobject'
 
   -- nvim-lsp
-  use 'neovim/nvim-lspconfig'
-  use 'ray-x/lsp_signature.nvim'
-  use 'williamboman/nvim-lsp-installer'
-  use 'folke/lua-dev.nvim'
+  use {
+    'neovim/nvim-lspconfig',
+    requires = {
+      'ray-x/lsp_signature.nvim',
+      'williamboman/nvim-lsp-installer',
+      'folke/lua-dev.nvim',
+    },
+    wants = {
+      'lua-dev.nvim',
+      'cmp-nvim-lsp',
+      'nvim-lsp-installer',
+    },
+    config = function()
+      require('fl.lsp')
+    end,
+  }
   use {
     'folke/trouble.nvim',
     requires = 'kyazdani42/nvim-web-devicons',
