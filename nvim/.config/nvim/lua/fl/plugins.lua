@@ -63,10 +63,20 @@ require('packer').startup({function()
   }
 
   -- telescope
-  use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'} }
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      'nvim-lua/popup.nvim',
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope-fzf-native.nvim',
+      'nvim-telescope/telescope-symbols.nvim',
+      'nvim-telescope/telescope-z.nvim'
+    },
+    config = function ()
+      require'fl.telescope'
+    end
+  }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-  use 'nvim-telescope/telescope-symbols.nvim'
-  use 'nvim-telescope/telescope-z.nvim'
 
   -- statusline
   use {'windwp/windline.nvim',
