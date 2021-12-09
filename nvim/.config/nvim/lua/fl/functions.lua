@@ -112,10 +112,12 @@ M.open_in_browser = function ()
   local filename = vim.fn.expand('%:p')
   local tail = filename:gsub('^.*fbsource', '')
   local line = vim.api.nvim_win_get_cursor(0)[1]
+  local url = 'https://www.internalfb.com/code/fbsource/[master]' .. tail .. '?lines=' .. tostring(line)
   require'notify'("Opening in browser: " .. tail, "info")
+  require'notify'(url, "info")
   require'plenary.job':new({
     command = 'open',
-    args = { 'https://www.internalfb.com/code/fbsource/[master]' .. tail .. '?lines=' .. tostring(line) },
+    args = { url },
     cwd = '~/fbsource',
   }):start()
 end

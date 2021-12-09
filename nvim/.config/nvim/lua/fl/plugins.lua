@@ -373,7 +373,7 @@ require('packer').startup({function()
         },
         i = {
           name = "+insert",
-          d = { "<cmd>lua require('neogen').generate{}<CR>", "Documentation" },
+          d = { "<cmd>lua require('neogen').generate()<CR>", "Documentation" },
           s = { "<cmd>ISwap<CR>", "Swap arguments" },
           w = { "<cmd>ISwapWith<CR>", "Swap argument with other" }
         },
