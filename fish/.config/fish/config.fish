@@ -21,6 +21,7 @@ set -g tide_right_prompt_items status context jobs virtual_env cmd_duration time
 
 ############################
 #       Alias Config       #
+alias j="z"
 alias vim="nvim"
 alias duh="du -h -d1"
 alias ll="tree -C | less -r"
