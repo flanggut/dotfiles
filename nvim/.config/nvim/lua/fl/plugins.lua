@@ -57,7 +57,7 @@ require('packer').startup({function()
       'nvim-lsp-installer',
     },
     config = function()
-      require('fl.lsp')
+      require'fl.lsp'
     end,
   }
   use {
@@ -94,7 +94,14 @@ require('packer').startup({function()
   use {'windwp/windline.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true},
     config = function ()
-      require('fl.statusline')
+      require'fl.statusline'
+    end
+  }
+  use {
+    "SmiteshP/nvim-gps",
+    requires = "nvim-treesitter/nvim-treesitter",
+    config = function ()
+      require("nvim-gps").setup()
     end
   }
 
@@ -118,6 +125,9 @@ require('packer').startup({function()
       require("luasnip").snippets = require('fl.snippets').snippets
     end
   }
+
+  -- dressing, better default ui
+  use {'stevearc/dressing.nvim'}
 
   use {'ggandor/lightspeed.nvim', -- the new sneak?
     requires = {},
@@ -225,7 +235,12 @@ require('packer').startup({function()
   }
 
   -- notify
-  use 'rcarriga/nvim-notify'
+  use {
+    'rcarriga/nvim-notify',
+    config = function ()
+      vim.notify = require'notify'
+    end
+  }
 
   use { 'tpope/vim-scriptease',
     cmd = {
