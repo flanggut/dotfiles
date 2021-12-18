@@ -304,16 +304,6 @@ require('packer').startup({function()
     end,
   }
 
-  use { 'lukas-reineke/format.nvim',
-    config = function()
-      require'format'.setup{
-        ["*"] = {
-          {cmd = {"sed -i 's/[ \t]*$//'"}} -- remove trailing whitespace
-        },
-      }
-    end,
-  }
-
   use { 'windwp/nvim-autopairs',
     after = 'nvim-cmp',
     config = function ()
@@ -426,14 +416,15 @@ require('packer').startup({function()
       local wk = require("which-key")
       wk.setup {}
       local leader = {
+        a = {
+          s = { "<cmd>ISwapWith<CR>", "Swap argument with other" }
+        },
         c = {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" }
         },
         i = {
           name = "+insert",
           d = { "<cmd>lua require('neogen').generate()<CR>", "Documentation" },
-          s = { "<cmd>ISwap<CR>", "Swap arguments" },
-          w = { "<cmd>ISwapWith<CR>", "Swap argument with other" }
         },
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Compile commands" }

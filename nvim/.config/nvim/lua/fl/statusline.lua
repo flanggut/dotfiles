@@ -59,28 +59,16 @@ M.file = {
     white = { 'white', 'NormalBg' },
     magenta = { 'magenta', 'NormalBg' },
   },
-  text = function()
-    local t =  {
-      { basic_components.file_modified(' '), 'magenta' },
-      { ' ', '' },
-      { basic_components.cache_file_name('[No Name]', 'unique'), '' },
-    }
+  text = function(_, _, _)
+    local t = {}
+    -- if width > breakpoint_width then
+    --   table.insert(t, { basic_components.line_col_lua, 'white' })
+    --   table.insert(t, { ' ', '' })
+    -- end
+    table.insert(t, { basic_components.file_modified(' '), 'magenta' })
     table.insert(t, { ' ', '' })
-    return t
-  end,
-}
-
-M.rowcol = {
-  name = 'rowcol',
-  hl_colors = {
-    white = { 'white', 'NormalBg' },
-  },
-  text = function(_, _, width)
-    local t =  {}
-    if width > breakpoint_width then
-      table.insert(t, { basic_components.line_col_lua, 'white' })
-      table.insert(t, { ' ', '' })
-    end
+    table.insert(t, { basic_components.cache_file_name('[No Name]', 'unique'), ''})
+    table.insert(t, { ' ', '' })
     return t
   end,
 }
@@ -225,22 +213,22 @@ local default = {
   active = {
     M.vi_mode,
     { ' ', {'white', 'NormalBg'} },
+    M.lsp_diag,
+    { ' ', {'white', 'NormalBg'} },
     M.file,
+    { ' ', {'white', 'NormalBg'} },
     M.gps,
     M.divider,
     M.file_right,
     { ' ', {'white', 'NormalBg'} },
-    M.lsp_diag,
-    { ' ', '' },
     { lsp_comps.lsp_name(), { 'magenta', 'NormalBg' }, breakpoint_width },
     M.lsp_status,
     { ' ', {'white', 'NormalBg'} },
     { basic_components.cache_file_type({ icon = true }), '' },
     { ' ', '' },
     { basic_components.cache_file_size(), '' },
-    { ' ', '' },
+    { ' ', {'white', 'NormalBg'} },
     M.signify,
-    { ' ', '' },
     M.square_mode
   },
   inactive = {

@@ -45,6 +45,11 @@ nvim_lsp['clangd'].setup {
   on_attach = on_attach
 }
 
+nvim_lsp['rust_analyzer'].setup {
+  capabilities = capabilities,
+  on_attach = on_attach
+}
+
 -- Setup LSPINSTALL servers
 local luadev = require('lua-dev').setup({
   lspconfig = {
