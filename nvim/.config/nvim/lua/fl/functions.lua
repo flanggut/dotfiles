@@ -122,4 +122,17 @@ M.open_in_browser = function ()
   }):start()
 end
 
+M.file_runner = function ()
+  local ftermconfig = {
+    dimensions  = {
+      height = 0.8,
+      width = 0.8,
+      x = 0.9,
+      y = 0.7
+    },
+    cmd = {'python3', vim.api.nvim_buf_get_name(0)}
+  }
+  require('FTerm').scratch(ftermconfig)
+end
+
 return M

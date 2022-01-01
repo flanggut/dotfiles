@@ -50,11 +50,13 @@ require('packer').startup({function()
       'ray-x/lsp_signature.nvim',
       'williamboman/nvim-lsp-installer',
       'folke/lua-dev.nvim',
+      'jose-elias-alvarez/null-ls.nvim',
     },
     wants = {
       'lua-dev.nvim',
       'cmp-nvim-lsp',
       'nvim-lsp-installer',
+      'null-ls.nvim'
     },
     config = function()
       require'fl.lsp'
@@ -423,12 +425,18 @@ require('packer').startup({function()
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" }
         },
         i = {
-          name = "+insert",
-          d = { "<cmd>lua require('neogen').generate()<CR>", "Documentation" },
+          d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
+        },
+        k = {
+          c = { "<cmd>lua require('telescope.builtin').commands()<cr>", "Command" },
+          e = { "<cmd>e<CR>", "Read" },
+          w = { "<cmd>w<CR>", "Write" },
+          q = { "<cmd>q<CR>", "Close window" },
         },
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Compile commands" }
         },
+        p = { "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", "Python" },
         s = {
           name = "+search",
           d = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },

@@ -50,6 +50,15 @@ nvim_lsp['rust_analyzer'].setup {
   on_attach = on_attach
 }
 
+nvim_lsp['pyright'].setup {
+  capabilities = capabilities,
+  on_attach = function(client, bufnr)
+     client.resolved_capabilities.document_formatting = false
+     client.resolved_capabilities.document_range_formatting = false
+     on_attach(client, bufnr)
+  end
+}
+
 -- Setup LSPINSTALL servers
 local luadev = require('lua-dev').setup({
   lspconfig = {
@@ -71,3 +80,14 @@ lsp_installer.on_server_ready(function(server)
   server:setup(opts)
   vim.cmd [[ do User LspAttachBuffers ]]
 end)
+
+local nls = require("null-ls")
+nls.setup({
+  debounce = 150,
+  save_after_format = false,
+  sources = {
+    nls.builtins.formatting.black,
+    nls.builtins.formatting.fish_indent,
+  },
+  on_attach = on_attach,
+})

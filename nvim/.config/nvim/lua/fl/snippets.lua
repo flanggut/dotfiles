@@ -27,6 +27,13 @@ M.snippets = {
       ls.text_node('[[maybe_unused]]'),
     }),
   },
+  python = {
+    ls.snippet("print", {
+      ls.text_node('print(f"{'),
+      ls.insert_node(0),
+      ls.text_node('}")'),
+    }),
+  },
 }
 
 return M
