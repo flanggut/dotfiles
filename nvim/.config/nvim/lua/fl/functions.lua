@@ -1,5 +1,23 @@
 local M = {}
 
+M.is_tmux = function ()
+  return os.getenv('TMUX') ~= nil
+end
+
+local function get_tmux_socket()
+    -- The socket path is the first value in the comma-separated list of $TMUX.
+    return vim.split(os.getenv('TMUX'), ',')[1]
+end
+
+function M.tmux_execute(arg)
+    local t_cmd = string.format('tmux -S %s %s', get_tmux_socket(), arg)
+    local handle = assert(io.popen(t_cmd), string.format('Tmux: Unable to execute > [%s]', t_cmd))
+    local result = handle:read()
+    handle:close()
+    return result
+end
+
+
 M.restart_all_lsp_servers = function()
   for _, client in ipairs(vim.lsp.get_active_clients()) do
     if client then
@@ -123,6 +141,14 @@ M.open_in_browser = function ()
 end
 
 M.file_runner = function ()
+  -- Default tmux handler.
+  if M.is_tmux() then
+    local command = "send -t -1 C-p Enter"
+    require'notify'("tmux " .. command, "info")
+    M.tmux_execute(command)
+    return
+  end
+
   local ftermconfig = {
     dimensions  = {
       height = 0.8,
