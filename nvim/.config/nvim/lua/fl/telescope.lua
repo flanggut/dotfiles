@@ -46,18 +46,16 @@ require('telescope').setup{
 }
 require'telescope'.load_extension('fzf')
 require'telescope'.load_extension('z')
+require'telescope'.load_extension('harpoon')
 
 local function map(mode, lhs, rhs, opts) -- map keybind
   local options = {noremap = true}
   if opts then options = vim.tbl_extend('force', options, opts) end
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
-map('n', '<C-l>', "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>")
-map('n', '<leader>h', "<cmd>lua require('telescope.builtin').command_history()<cr>")
 map('n', '<leader>sb', "<cmd>lua require('telescope.builtin').symbols()<cr>")
 map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').commands()<cr>")
 map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-map('n', '<leader>sh', "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
 map('n', '<leader>sp', "<cmd>lua require('telescope.builtin').registers()<cr>")
 map('n', '<leader>sq', "<cmd>lua require('telescope.builtin').quickfix()<cr>")

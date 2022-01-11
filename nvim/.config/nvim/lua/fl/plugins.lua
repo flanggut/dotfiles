@@ -189,13 +189,18 @@ require('packer').startup({function()
       }
       vim.api.nvim_set_keymap('n', 'gh', "<cmd>BufferPrevious<CR>", {noremap = true})
       vim.api.nvim_set_keymap('n', 'gl', "<cmd>BufferNext<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<space>j', "<cmd>BufferPick<CR>", {noremap = true})
+      -- vim.api.nvim_set_keymap('n', '<space>j', "<cmd>BufferPick<CR>", {noremap = true})
       vim.api.nvim_set_keymap('n', '<space>bo', "<cmd>BufferCloseAllButCurrent<CR>", {noremap = true})
       vim.api.nvim_set_keymap('n', '<space>bd', "<cmd>BufferOrderByDirectory<CR>", {noremap = true})
       vim.api.nvim_set_keymap('n', '<space>q', "<cmd>BufferClose!<CR>", {noremap = true})
       vim.api.nvim_set_keymap('n', '<A-o>', ':BufferMovePrevious<CR>', {noremap = true, silent = true})
       vim.api.nvim_set_keymap('n', '<A-p>', ':BufferMoveNext<CR>', {noremap = true, silent = true})
     end
+  }
+
+  -- harpoon
+  use {
+    'ThePrimeagen/harpoon',
   }
 
   -- Smooth Scrolling
@@ -424,14 +429,24 @@ require('packer').startup({function()
         c = {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" }
         },
+        h = {
+          name = "+harpoon",
+          i = { "<cmd>lua require('harpoon.ui').toggle_quick_menu()<CR>", "List Files" },
+          s = { "<cmd>lua require('harpoon.mark').add_file()<CR>", "Add File" },
+        },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
+        j = { "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>", "Buffers" },
         k = {
-          c = { "<cmd>lua require('telescope.builtin').commands()<cr>", "Command" },
-          e = { "<cmd>e<CR>", "Read" },
-          w = { "<cmd>w<CR>", "Write" },
-          q = { "<cmd>q<CR>", "Close window" },
+          function()
+            require("telescope.builtin").lsp_document_symbols({
+              symbols = { "Class", "Function", "Method", "Constructor", "Interface", "Module" },
+              symbol_width = 50,
+              symbol_type_width = 12,
+            })
+          end,
+          "Goto Symbol",
         },
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Compile commands" }
@@ -441,7 +456,10 @@ require('packer').startup({function()
           name = "+search",
           d = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },
           f = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Buffer Fuzzy" },
+          h = { "<cmd>Telescope command_history<cr>", "Command History" },
+          H = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
           s = { "<cmd>Telescope treesitter<cr>", "Treesitter" },
+          v = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/.local/share/nvim/site/pack/packer/'})<cr>", "Vim Plugins" },
           y = {
             function()
               require("telescope.builtin").lsp_document_symbols({
