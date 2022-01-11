@@ -92,9 +92,9 @@ set fish_color_selection white --bold --background=brblack
 set fish_color_user brgreen
 set fish_color_valid_path --underline
 
-if test "$TERM_PROGRAM" = "iTerm.app"
-    # Enable iTerm2 tmux integration
-    set -x ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX YES
-    # iTerm2 Shell integration
-    source ~/.iterm2_shell_integration.(basename $SHELL)
+# Enable shell-integration for kitty
+if set -q KITTY_INSTALLATION_DIR
+    set --global KITTY_SHELL_INTEGRATION enabled
+    source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
+    set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
 end
