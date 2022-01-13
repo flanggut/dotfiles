@@ -42,6 +42,12 @@ require('packer').startup({function()
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'mizlan/iswap.nvim'
   use 'mfussenegger/nvim-ts-hint-textobject'
+  use {
+    'lewis6991/spellsitter.nvim',
+    config = function()
+      require('spellsitter').setup()
+    end
+  }
 
   -- nvim-lsp
   use {
