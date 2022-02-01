@@ -79,11 +79,6 @@ vim.cmd([[
   au BufNewFile,BufRead *.fish set filetype=fish
 ]])
 
--- set correct filetype for BUCK
-vim.cmd([[
-  au BufNewFile,BufRead BUCK set filetype=python
-]])
-
 -------------------- Basic Keybinds ------------------------
 local function map(mode, lhs, rhs, opts) -- map keybind
   local options = {noremap = true}

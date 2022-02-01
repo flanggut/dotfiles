@@ -14,9 +14,6 @@ vim.cmd([[
   augroup end
 ]])
 
--- For nathom/filetype plugin. Remove after neovim 0.6.0 is released.
-vim.g.did_load_filetypes = 1
-
 -- Start up packer, sync packages afterwards if required
 require('packer').startup({function()
   local use = require('packer').use
@@ -25,7 +22,6 @@ require('packer').startup({function()
   use 'wbthomason/packer.nvim'
 
   -- Speedup plugin loading
-  use 'nathom/filetype.nvim'
   use {'tweekmonster/startuptime.vim', cmd = 'StartupTime' }
 
   -- treesitter
@@ -97,6 +93,7 @@ require('packer').startup({function()
     end
   }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use {'nvim-telescope/telescope-file-browser.nvim'}
 
   -- statusline
   use {'windwp/windline.nvim',
@@ -140,20 +137,9 @@ require('packer').startup({function()
   use {'ggandor/lightspeed.nvim', -- the new sneak?
     requires = {},
     config = function ()
-      require'lightspeed'.setup {}
-      vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_s', {noremap = false})
-      vim.api.nvim_set_keymap('n', 'F', '<Plug>Lightspeed_S', {noremap = false})
-      vim.api.nvim_set_keymap('x', 'f', '<Plug>Lightspeed_s', {noremap = false})
-      vim.api.nvim_set_keymap('x', 'F', '<Plug>Lightspeed_S', {noremap = false})
-      vim.api.nvim_set_keymap('o', 'f', '<Plug>Lightspeed_s', {noremap = false})
-      vim.api.nvim_set_keymap('o', 'F', '<Plug>Lightspeed_S', {noremap = false})
-
-      vim.api.nvim_set_keymap('n', 's', '<Plug>Lightspeed_f', {noremap = false})
-      vim.api.nvim_set_keymap('n', 'S', '<Plug>Lightspeed_F', {noremap = false})
-      vim.api.nvim_set_keymap('x', 's', '<Plug>Lightspeed_f', {noremap = false})
-      vim.api.nvim_set_keymap('x', 'S', '<Plug>Lightspeed_F', {noremap = false})
-      vim.api.nvim_set_keymap('o', 's', '<Plug>Lightspeed_f', {noremap = false})
-      vim.api.nvim_set_keymap('o', 'S', '<Plug>Lightspeed_F', {noremap = false})
+      require'lightspeed'.setup {
+        ignore_case = true
+      }
       vim.cmd(([[
       let g:lightspeed_last_motion = ''
       augroup lightspeed_last_motion
@@ -174,8 +160,9 @@ require('packer').startup({function()
       local alpha = require'alpha'
       local startify = require'alpha.themes.startify'
       startify.section.top_buttons.val = {
-        startify.button( "o", "  Open last session", ":lua require'persistence'.load()<CR>"),
+        startify.button( "l", "  Open last session", ":lua require'persistence'.load()<CR>"),
         startify.button( "e", "  New file", ":ene <CR>"),
+        startify.button( "o", "  Neorg", ":Neorg workspace meta<CR>"),
       }
       startify.section.bottom_buttons.val = {
         startify.button( "c", "  Edit config" , ":e ~/.config/nvim/lua/fl/plugins.lua<CR>"),
@@ -186,21 +173,35 @@ require('packer').startup({function()
     end
   }
 
-  -- barbar
-  use {'romgrk/barbar.nvim', requires = {'kyazdani42/nvim-web-devicons'},
-    setup = function ()
-      vim.g.bufferline = {
-        letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
-        insert_at_end = true,
+  -- bufferline
+  use {
+    'akinsho/bufferline.nvim',
+    requires = {'kyazdani42/nvim-web-devicons'},
+    config = function()
+      require('bufferline').setup{
+        options = {
+          show_close_icon = false,
+          show_buffer_close_icons = false,
+          sort_by = 'relative_directory',
+          max_name_length = 35,
+        },
+        highlights = {
+          buffer_selected = {
+            gui = "bold"
+          },
+          fill = {
+            guibg = {
+              attribute = "bg",
+              highlight = "Normal"
+            }
+          },
+        }
       }
-      vim.api.nvim_set_keymap('n', 'gh', "<cmd>BufferPrevious<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', 'gl', "<cmd>BufferNext<CR>", {noremap = true})
-      -- vim.api.nvim_set_keymap('n', '<space>j', "<cmd>BufferPick<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<space>bo', "<cmd>BufferCloseAllButCurrent<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<space>bd', "<cmd>BufferOrderByDirectory<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<space>q', "<cmd>BufferClose!<CR>", {noremap = true})
-      vim.api.nvim_set_keymap('n', '<A-o>', ':BufferMovePrevious<CR>', {noremap = true, silent = true})
-      vim.api.nvim_set_keymap('n', '<A-p>', ':BufferMoveNext<CR>', {noremap = true, silent = true})
+
+      vim.api.nvim_set_keymap('n', 'gh', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', 'gl', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', 'gj', ':BufferLinePick<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', 'gq', ':BufferLinePickClose<CR>', { noremap = true, silent = true })
     end
   }
 
@@ -277,31 +278,41 @@ require('packer').startup({function()
 
   -- notes
   use {
-    'renerocksai/telekasten.nvim',
+    'nvim-neorg/neorg',
+    requires = {"nvim-lua/plenary.nvim", "nvim-neorg/neorg-telescope"},
     config = function()
-      local home = vim.fn.expand("~/zettelkasten")
-      require('telekasten').setup({
-        home         = home,
-        dailies      = home .. '/' .. 'daily',
-        weeklies     = home .. '/' .. 'weekly',
-        templates    = home .. '/' .. 'templates',
-        extension    = ".md",
-
-        -- following a link to a non-existing note will create it
-        follow_creates_nonexisting = true,
-        dailies_create_nonexisting = true,
-        weeklies_create_nonexisting = true,
-
-        -- template for new notes (new_note, follow_link)
-        template_new_note = home .. '/' .. 'templates/new_note.md',
-
-        -- template for newly created daily notes (goto_today)
-        template_new_daily = home .. '/' .. 'templates/daily.md',
-
-        -- template for newly created weekly notes (goto_thisweek)
-        template_new_weekly= home .. '/' .. 'templates/weekly.md',
+      require('neorg').setup ({
+        load = {
+          ["core.defaults"] = {},
+          ["core.integrations.telescope"] = {},
+          ["core.keybinds"] = {
+            config = {
+              default_keybinds = true, -- Generate the default keybinds
+              neorg_leader = "<Leader>o" -- This is the default if unspecified
+            }
+          },
+          ["core.norg.concealer"] = {},
+          ["core.norg.completion"] = {
+            config = {
+              engine = "nvim-cmp"
+            }
+          },
+          ["core.norg.dirman"] = {
+            config = {
+              workspaces = {
+                meta = "~/neorg",
+              }
+            }
+          },
+          ["core.gtd.base"] = {
+            config = {
+              workspace = "meta",
+            }
+          },
+          ["core.norg.journal"] = {},
+        },
       })
-    end
+    end,
   }
 
   -- NNN
@@ -438,12 +449,11 @@ require('packer').startup({function()
         h = {
           name = "+harpoon",
           i = { "<cmd>lua require('harpoon.ui').toggle_quick_menu()<CR>", "List Files" },
-          s = { "<cmd>lua require('harpoon.mark').add_file()<CR>", "Add File" },
+          f = { "<cmd>lua require('harpoon.mark').add_file()<CR>", "Add File" },
         },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
-        j = { "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true, previewer=false})<cr>", "Buffers" },
         k = {
           function()
             require("telescope.builtin").lsp_document_symbols({
@@ -455,9 +465,10 @@ require('packer').startup({function()
           "Goto Symbol",
         },
         o = {
-          p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Compile commands" }
+          p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" }
         },
         p = { "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", "Python" },
+        q = { "<cmd>bdelete!<CR>", "Close Buffer" },
         s = {
           name = "+search",
           d = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },
@@ -479,6 +490,7 @@ require('packer').startup({function()
         },
       }
       wk.register(leader, { prefix = "<leader>" })
+      wk.register({["<C-j>"] = { "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true})<cr>", "Buffers" }})
     end
   }
 
@@ -493,3 +505,5 @@ end,
 if packer_init_required then
   require'packer'.sync()
 end
+
+require("plenary.filetype").add_file("fl")

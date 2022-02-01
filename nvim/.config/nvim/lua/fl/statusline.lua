@@ -67,8 +67,8 @@ M.file = {
     -- end
     table.insert(t, { basic_components.file_modified(' '), 'magenta' })
     table.insert(t, { ' ', '' })
-    table.insert(t, { basic_components.cache_file_name('[No Name]', 'unique'), ''})
-    table.insert(t, { ' ', '' })
+    -- table.insert(t, { basic_components.cache_file_name('[No Name]', 'unique'), ''})
+    -- table.insert(t, { ' ', '' })
     return t
   end,
 }

@@ -51,7 +51,7 @@ M.generate_compile_commands = function()
     on_exit = function(j, return_val)
       M.compile_commands_running[filename] = false
       if return_val == 0 then
-        M.restart_all_lsp_servers()
+        -- M.restart_all_lsp_servers()
       else
        notify("Compile commands error. \n" .. table.concat(j:stderr_result(), "\n"), "error")
       end
@@ -143,7 +143,9 @@ end
 M.file_runner = function ()
   -- Default tmux handler.
   if M.is_tmux() then
-    local command = "send -t -1 C-p Enter"
+    local command = "send -t -1 C-c"
+    M.tmux_execute(command)
+    command = "send -t -1 C-p Enter"
     require'notify'("tmux " .. command, "info")
     M.tmux_execute(command)
     return

@@ -1,4 +1,6 @@
 local nvim_lsp = require ('lspconfig')
+local util = require('lspconfig.util')
+
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -7,7 +9,7 @@ local on_attach = function(client, bufnr)
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
-  buf_set_keymap('n', '<C-j>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', '<leader>j', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('i', '<C-h>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
@@ -20,7 +22,7 @@ local on_attach = function(client, bufnr)
   if client.resolved_capabilities.document_formatting then
     buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
     vim.cmd([[
-      au BufWritePre *.cpp,*.h lua vim.lsp.buf.formatting_sync(nil, 1000)
+    au BufWritePre *.cpp,*.h lua vim.lsp.buf.formatting_sync(nil, 1000)
     ]])
   end
   if client.resolved_capabilities.document_range_formatting then
@@ -36,6 +38,7 @@ end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
+-- C++
 nvim_lsp['clangd'].setup {
   capabilities = capabilities,
   cmd = {
@@ -45,42 +48,88 @@ nvim_lsp['clangd'].setup {
   on_attach = on_attach
 }
 
+-- Rust
 nvim_lsp['rust_analyzer'].setup {
   capabilities = capabilities,
   on_attach = on_attach
 }
 
-nvim_lsp['pyright'].setup {
-  capabilities = capabilities,
-  on_attach = function(client, bufnr)
-     client.resolved_capabilities.document_formatting = false
-     client.resolved_capabilities.document_range_formatting = false
-     on_attach(client, bufnr)
-  end
-}
+-- Python
+if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+  nvim_lsp['pyright'].setup {
+    capabilities = capabilities,
+    on_attach = function(client, bufnr)
+      client.resolved_capabilities.document_formatting = false
+      client.resolved_capabilities.document_range_formatting = false
+      on_attach(client, bufnr)
+    end
+  }
+else
+  vim.g.python3_host_prog = '/usr/local/bin/python3'
+  vim.g.python_host_prog = '/usr/local/bin/python2'
+
+  nvim_lsp['pylsp'].setup {
+    cmd = {
+      vim.env.PYLS_PATH,
+      "--verbose",
+      "--log-file",
+      "/tmp/flanggut-logs/pyls.log"
+    },
+    on_attach = on_attach,
+    capabilities = capabilities,
+    filetypes = {"python", "buck"},
+    root_dir = util.root_pattern(".buckconfig"),
+    single_file_support = true,
+    settings = {
+      pyls = {
+        formatAlreadyFormattedFilesOnSave = false,
+        BuckFormatOnSave = false,
+        extraPaths = {},
+        ThriftGoToDef = true,
+        plugins = {
+          jedi_completion = {enabled = true},
+          jedi_definition = {
+            enabled = true,
+            follow_imports = true,
+            follow_builtin_imports = true
+          },
+          jedi_hover = {enabled = true},
+          jedi_references = {enabled = true},
+          jedi_signature_help = {enabled = true},
+          jedi_symbols = {enabled = true},
+          fb_pyfmt_format = {enabled = true}
+        }
+      },
+      completionDetailLimit = 50,
+    },
+    handlers = {
+      ['window/showStatus'] = vim.lsp.handlers["window/showMessage"]
+    },
+  }
+end
 
 -- Setup LSPINSTALL servers
-local luadev = require('lua-dev').setup({
-  lspconfig = {
+local function on_server_ready(server)
+  local default_opts = {
     capabilities = capabilities,
     on_attach = on_attach
   }
-})
-
-local lsp_installer = require("nvim-lsp-installer")
-lsp_installer.on_server_ready(function(server)
-  local opts = {
-    capabilities = capabilities,
-    on_attach = on_attach
+  local luadev_opts = require('lua-dev').setup{
+    lspconfig = {
+      capabilities = capabilities,
+      on_attach = on_attach
+    }
   }
   if server.name == "sumneko_lua" then
-    opts = luadev
+    server:setup(luadev_opts)
+  else
+    server:setup(default_opts)
   end
-  -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
-  server:setup(opts)
   vim.cmd [[ do User LspAttachBuffers ]]
-end)
+end
+require("nvim-lsp-installer").on_server_ready(on_server_ready)
 
+-- Setup null-ls
 local nls = require("null-ls")
 nls.setup({
   debounce = 150,

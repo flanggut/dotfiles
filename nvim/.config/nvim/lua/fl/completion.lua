@@ -8,11 +8,12 @@ cmp.setup {
     completeopt = 'menu,menuone,noinsert',
   },
   sources = {
-    { name = 'luasnip'},
-    { name = 'nvim_lua'},
-    { name = 'nvim_lsp'},
-    { name = 'buffer', keyword_length = 4},
-    { name = 'path'},
+    { name = 'luasnip' },
+    { name = 'nvim_lua' },
+    { name = 'nvim_lsp' },
+    { name = 'buffer', keyword_length = 4 },
+    { name = 'path' },
+    { name = 'neorg' },
   },
   snippet = {
     expand = function(args)
