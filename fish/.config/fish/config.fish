@@ -19,22 +19,17 @@ set -g tide_cmd_duration_decimals 1
 set -g tide_left_prompt_items os pwd git newline character
 set -g tide_right_prompt_items status context jobs virtual_env cmd_duration time
 
+zoxide init fish | source
+
 ############################
 #       Alias Config       #
-alias j="z"
+abbr -a j z
+
 alias vim="nvim"
 alias duh="du -h -d1"
 alias ll="tree -C | less -r"
 alias mru="ls -t | head -5"
 alias p3="python3"
-
-function zp
-  if test "$history[1]" != "zp"
-    eval $history[1]
-  else
-    eval $history[2]
-  end
-end
 
 alias dff="hg diff | delta | less -r"
 alias show="hg diff -r .^ | delta | less -r"
@@ -57,6 +52,14 @@ alias rg="rg --no-ignore-messages --max-columns=160 -S"
 alias ...="cd ../.."
 
 alias xtrace="xcrun xctrace record --template 'Time Profiler' --launch --"
+
+function zp
+  if test "$history[1]" != "zp"
+    eval $history[1]
+  else
+    eval $history[2]
+  end
+end
 
 ############################
 #       Mac Specifics      #
