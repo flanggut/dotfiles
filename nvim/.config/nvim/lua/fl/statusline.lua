@@ -1,4 +1,3 @@
-local strings = require('plenary.strings')
 local windline = require('windline')
 local helper = require('windline.helpers')
 local state = _G.WindLine.state
@@ -12,8 +11,6 @@ local hl_list = {
   Inactive = { 'InactiveFg', 'InactiveBg' },
   Active = { 'ActiveFg', 'ActiveBg' },
 }
-local M = {}
-M.divider = { basic_components.divider, '' }
 
 local breakpoint_width = 90
 
@@ -24,6 +21,8 @@ local colors_mode = {
   Replace = { 'NormalBg', 'blue_light' },
   Command = { 'NormalBg', 'yellow' },
 }
+
+local M = {}
 
 M.vi_mode = {
   name = 'vi_mode',
@@ -42,6 +41,7 @@ M.vi_mode = {
     end
   end,
 }
+
 M.square_mode = {
   hl_colors = colors_mode,
   text = function()
@@ -49,27 +49,6 @@ M.square_mode = {
       { helper.separators.slant_right_2, state.mode[2] },
       { '  ', state.mode[2] },
     }
-  end,
-}
-
-M.file = {
-  name = 'file',
-  hl_colors = {
-    default = hl_list.Black,
-    white = { 'white', 'NormalBg' },
-    magenta = { 'magenta', 'NormalBg' },
-  },
-  text = function(_, _, _)
-    local t = {}
-    -- if width > breakpoint_width then
-    --   table.insert(t, { basic_components.line_col_lua, 'white' })
-    --   table.insert(t, { ' ', '' })
-    -- end
-    table.insert(t, { basic_components.file_modified(' '), 'magenta' })
-    table.insert(t, { ' ', '' })
-    -- table.insert(t, { basic_components.cache_file_name('[No Name]', 'unique'), ''})
-    -- table.insert(t, { ' ', '' })
-    return t
   end,
 }
 
@@ -133,31 +112,6 @@ M.signify = {
   end,
 }
 
-M.lsp_status = {
-  name = 'lsp_status',
-  hl_colors = {
-    white = { 'white', 'NormalBg' },
-  },
-  width = breakpoint_width,
-  text = function(_)
-    local messages = vim.lsp.util.get_progress_messages()
-    if #messages == 0 then
-      return ''
-    end
-    local status = {}
-    for _, msg in pairs(messages) do
-      table.insert(status, (msg.percentage or 0) .. "%% " .. strings.truncate(msg.title or "", 25))
-    end
-    local spinners = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-    local ms = vim.loop.hrtime() / 1000000
-    local frame = math.floor(ms / 120) % #spinners
-    return {
-      { ' ', 'white' },
-      { spinners[frame + 1] .. " " .. table.concat(status, " | "), 'white'},
-    }
-  end,
-}
-
 local gps = require("nvim-gps")
 M.gps = {
   name = 'gps',
@@ -187,7 +141,7 @@ local quickfix = {
     { ' Total : %L ', { 'cyan', 'black_light' } },
     { helper.separators.slant_right, { 'black_light', 'InactiveBg' } },
     { ' ', { 'InactiveFg', 'InactiveBg' } },
-    M.divider,
+    { basic_components.divider, '' },
     { helper.separators.slant_right, { 'InactiveBg', 'black' } },
     { '🧛 ', { 'white', 'black' } },
   },
@@ -213,22 +167,23 @@ local default = {
   active = {
     M.vi_mode,
     { ' ', {'white', 'NormalBg'} },
+    { basic_components.file_modified(' '), { 'magenta', 'NormalBg' }},
     M.lsp_diag,
     { ' ', {'white', 'NormalBg'} },
     M.file,
     { ' ', {'white', 'NormalBg'} },
     M.gps,
-    M.divider,
+    { basic_components.divider, '' },
     M.file_right,
-    { ' ', {'white', 'NormalBg'} },
-    { lsp_comps.lsp_name(), { 'magenta', 'NormalBg' }, breakpoint_width },
-    M.lsp_status,
     { ' ', {'white', 'NormalBg'} },
     { basic_components.cache_file_type({ icon = true }), '' },
     { ' ', '' },
     { basic_components.cache_file_size(), '' },
     { ' ', {'white', 'NormalBg'} },
     M.signify,
+    { ' ', {'white', 'NormalBg'} },
+    { lsp_comps.lsp_name(), { 'magenta', 'NormalBg' }, breakpoint_width },
+    { ' ', {'white', 'NormalBg'} },
     M.square_mode
   },
   inactive = {

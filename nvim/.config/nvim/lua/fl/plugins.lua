@@ -110,6 +110,18 @@ require('packer').startup({function()
     end
   }
 
+  -- lsp status fidget
+  use {
+    'j-hui/fidget.nvim',
+    config = function ()
+      require'fidget'.setup{
+        text = {
+          spinner = "dots"
+        }
+      }
+    end
+  }
+
   -- nvim-cmp and snippets
   use {'hrsh7th/nvim-cmp',
     requires = {
