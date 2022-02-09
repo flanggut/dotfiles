@@ -137,9 +137,18 @@ require('packer').startup({function()
       require('fl.completion')
     end
   }
-  use {'L3MON4D3/LuaSnip',
+  use {
+    'L3MON4D3/LuaSnip',
     config = function ()
-      require("luasnip").snippets = require('fl.snippets').snippets
+      require('luasnip').config.set_config {
+        history = true,
+        updateevents = "TextChanged,TextChangedI",
+      }
+      require('fl.snippets').load()
+      vim.cmd([[
+        command! ReloadSnippets lua R('fl.snippets').load()
+        au BufWritePost snippets.lua ReloadSnippets
+      ]])
     end
   }
 
@@ -502,6 +511,10 @@ require('packer').startup({function()
         },
       }
       wk.register(leader, { prefix = "<leader>" })
+      local leaderleader = {
+        s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" }
+      }
+      wk.register(leaderleader, { prefix = "<leader><leader>" })
       wk.register({["<C-j>"] = { "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true})<cr>", "Buffers" }})
     end
   }

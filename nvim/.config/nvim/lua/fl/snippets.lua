@@ -1,39 +1,30 @@
-local ls  = require("luasnip")
-
 local M = {}
 
-M.snippets = {
-  cpp = {
-    -- cout
-    ls.snippet("co", { -- Trigger is co.
-      -- Simple static text.
-      ls.text_node('std::cout << "\\U0001F98A " << '),
-      -- Insert node.
-      ls.insert_node(0),
-      ls.text_node(' << std::endl;'),
-    }),
-    -- lambda
-    ls.snippet("la", {
-      ls.text_node('[&'),
-      ls.insert_node(1),
-      ls.text_node(']('),
-      ls.insert_node(2),
-      ls.text_node('){'),
-      ls.insert_node(0),
-      ls.text_node('}'),
-    }),
-    -- maybe unused
-    ls.snippet("may", {
-      ls.text_node('[[maybe_unused]]'),
-    }),
-  },
-  python = {
-    ls.snippet("print", {
-      ls.text_node('print(f"{'),
-      ls.insert_node(0),
-      ls.text_node('}")'),
-    }),
-  },
-}
+function M.load()
+  local ls  = require("luasnip")
+  local fmt = require("luasnip.extras.fmt").fmt
+  local s = ls.snippet
+  local i = ls.insert_node
+  local rep = require("luasnip.extras").rep
+
+  local snippets = {
+    cpp = {
+      s("co", fmt('std::cout << "\\U0001F98A " << {} << std::endl;', { i(1) })),
+      s("la", fmt('[&]({}){{ {} }}', { i(0), i(1) })),
+      s("imfor", fmt('for (int y = 0; y < {}.height(); ++y) {{\n  for (int x = 0; x < {}.width(); ++x) {{\n  {}\n }}\n}}', { i(1), rep(1), i(0) })),
+      s("may", fmt('[[maybe_unused]]', {})),
+    },
+    lua = {
+    },
+    python = {
+      s("print", fmt('print(f"{{ {} }}")', { i(0) })),
+    },
+  }
+
+  ls.snippets = snippets
+
+  require'cmp_luasnip'.clear_cache()
+end
 
 return M
+
