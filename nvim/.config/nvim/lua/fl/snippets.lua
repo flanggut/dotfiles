@@ -11,7 +11,7 @@ function M.load()
     cpp = {
       s("co", fmt('std::cout << "\\U0001F98A " << {} << std::endl;', { i(1) })),
       s("la", fmt('[&]({}){{ {} }}', { i(0), i(1) })),
-      s("imfor", fmt('for (int y = 0; y < {}.height(); ++y) {{\n  for (int x = 0; x < {}.width(); ++x) {{\n  {}\n }}\n}}', { i(1), rep(1), i(0) })),
+      s("imfor", fmt('for (int y = 0; y < {}.height(); ++y) {{\n  for (int x = 0; x < {}.width(); ++x) {{\n    {}\n  }}\n}}', { i(1), rep(1), i(0) })),
       s("may", fmt('[[maybe_unused]]', {})),
     },
     lua = {

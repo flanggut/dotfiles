@@ -147,7 +147,10 @@ require('packer').startup({function()
       require('fl.snippets').load()
       vim.cmd([[
         command! ReloadSnippets lua R('fl.snippets').load()
+        augroup reload_snippets
+        au!
         au BufWritePost snippets.lua ReloadSnippets
+        augroup END
       ]])
     end
   }
@@ -274,6 +277,19 @@ require('packer').startup({function()
     'rcarriga/nvim-notify',
     config = function ()
       vim.notify = require'notify'
+    end
+  }
+
+  -- mini
+  use {
+    'echasnovski/mini.nvim',
+    config = function()
+      require('mini.indentscope').setup{
+        symbol = '│',
+        draw = {
+          animation = function() return 10 end,
+        }
+      }
     end
   }
 
