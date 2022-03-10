@@ -97,7 +97,7 @@ M.signify = {
   },
   width = breakpoint_width,
   text = function(bufnr)
-    if vim.api.nvim_call_function('exists', {'g:loaded_signify'}) then
+    if vim.g.loaded_signify then
       local repostats = vim.api.nvim_call_function('sy#repo#get_stats', {bufnr})
       if repostats[1] > -1 then
         return {

@@ -90,6 +90,7 @@ require('packer').startup({function()
     },
     config = function ()
       require'fl.telescope'
+      vim.api.nvim_set_keymap("n", "F", "<cmd>Telescope current_buffer_fuzzy_find<cr>", {silent = true, noremap = true})
     end
   }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
@@ -164,6 +165,9 @@ require('packer').startup({function()
       require'lightspeed'.setup {
         ignore_case = true
       }
+      vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_omni_s', {})
+      vim.api.nvim_set_keymap('n', 's', '<Plug>Lightspeed_f', {})
+      vim.api.nvim_set_keymap('n', 'S', '<Plug>Lightspeed_F', {})
       vim.cmd(([[
       let g:lightspeed_last_motion = ''
       augroup lightspeed_last_motion
@@ -201,6 +205,7 @@ require('packer').startup({function()
   use {
     'akinsho/bufferline.nvim',
     requires = {'kyazdani42/nvim-web-devicons'},
+    event = "BufReadPre",
     config = function()
       require('bufferline').setup{
         options = {
@@ -419,6 +424,7 @@ require('packer').startup({function()
 
   use {
     'lukas-reineke/indent-blankline.nvim',
+    event = "BufReadPre",
     config = function ()
       vim.g.indentLine_enabled = 1
       vim.g.indentLine_char = '│'
@@ -463,12 +469,17 @@ require('packer').startup({function()
   }
 
   -- the usual
-  use 'mhinz/vim-signify'
   use 'tpope/vim-repeat'
   use 'tpope/vim-surround'
   use 'wellle/targets.vim'
   use 'kevinhwang91/nvim-bqf'
   use 'tversteeg/registers.nvim'
+
+  use {
+    'mhinz/vim-signify',
+    opt = true,
+    event = 'BufRead',
+  }
 
   -- keys
   use {
@@ -491,6 +502,7 @@ require('packer').startup({function()
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
+        -- j = { "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true})<cr>", "Dotfiles" },
         k = {
           function()
             require("telescope.builtin").lsp_document_symbols({
@@ -528,19 +540,23 @@ require('packer').startup({function()
       }
       wk.register(leader, { prefix = "<leader>" })
       local leaderleader = {
-        s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" }
+        h = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
+        s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
-      wk.register({["<C-j>"] = { "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true})<cr>", "Buffers" }})
+      wk.register({["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true})<cr>", "Buffers" }})
     end
   }
 
 end,
   config = {
+    display = {
+      open_fn = require('packer.util').float,
+    },
     profile = {
       enable = true,
       threshold = 0,
-    }
+    },
   }
 })
 if packer_init_required then

@@ -68,7 +68,7 @@ M.myfiles = function(opts)
 
     local myles_search = require 'telescope.finders'.new_job(
       function(prompt)
-        if not prompt or prompt == "" or string.len(prompt) < 10 then
+        if not prompt or prompt == "" or string.len(prompt) < 7 then
           return vim.tbl_flatten { 'find', '.', '-type', 'f', '-maxdepth', '1' }
         end
         return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
