@@ -502,7 +502,6 @@ require('packer').startup({function()
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
-        -- j = { "<cmd>lua require('telescope.builtin').buffers({sort_mru=true, sort_lastused=true})<cr>", "Dotfiles" },
         k = {
           function()
             require("telescope.builtin").lsp_document_symbols({
