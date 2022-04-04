@@ -41,6 +41,18 @@ require('telescope').setup{
     scroll_strategy = "cycle",
     color_devicons = true,
   },
+  pickers = {
+    buffers = require('telescope.themes').get_cursor({
+      sort_mru=true,
+      sort_lastused=true,
+      previewer=false,
+      mappings = {
+        i = {
+          ["<C-l>"] = require('telescope.actions').close
+        }
+      },
+    }),
+  },
   extensions = {
   }
 }
