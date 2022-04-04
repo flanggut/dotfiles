@@ -543,7 +543,7 @@ require('packer').startup({function()
         s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
-      wk.register({["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_cursor({sort_mru=true, sort_lastused=true, previewer=false}))<cr>", "Buffers" }})
+      wk.register({["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" }})
     end
   }
 
