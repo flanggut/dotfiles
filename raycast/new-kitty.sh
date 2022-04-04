@@ -3,7 +3,7 @@
 # Required parameters:
 # @raycast.schemaVersion 1
 # @raycast.title New kitty
-# @raycast.mode compact
+# @raycast.mode silent
 # @raycast.packageName Terminal
 
 # Optional parameters:
