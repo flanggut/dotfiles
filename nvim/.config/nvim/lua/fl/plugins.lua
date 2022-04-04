@@ -38,16 +38,13 @@ require('packer').startup({function()
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'mizlan/iswap.nvim'
   use 'mfussenegger/nvim-ts-hint-textobject'
-  use {
-    'lewis6991/spellsitter.nvim',
-    config = function()
-      require('spellsitter').setup()
-    end
-  }
+  use 'kyazdani42/nvim-web-devicons'
 
   -- nvim-lsp
   use {
     'neovim/nvim-lspconfig',
+    opt = true,
+    event = 'BufReadPre',
     requires = {
       'ray-x/lsp_signature.nvim',
       'williamboman/nvim-lsp-installer',
@@ -66,6 +63,8 @@ require('packer').startup({function()
   }
   use {
     'folke/trouble.nvim',
+    opt = true,
+    event = 'BufReadPost',
     requires = 'kyazdani42/nvim-web-devicons',
     config = function ()
       require("trouble").setup {
@@ -97,23 +96,30 @@ require('packer').startup({function()
   use {'nvim-telescope/telescope-file-browser.nvim'}
 
   -- statusline
-  use {'windwp/windline.nvim',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true},
-    config = function ()
-      require'fl.statusline'
-    end
-  }
   use {
     "SmiteshP/nvim-gps",
+    opt = true,
+    event = 'BufReadPre',
     requires = "nvim-treesitter/nvim-treesitter",
     config = function ()
       require("nvim-gps").setup()
+    end
+  }
+  use {
+    'windwp/windline.nvim',
+    opt = true,
+    after = 'nvim-gps',
+    requires = {'kyazdani42/nvim-web-devicons', opt = true},
+    config = function ()
+      require'fl.statusline'
     end
   }
 
   -- lsp status fidget
   use {
     'j-hui/fidget.nvim',
+    opt = true,
+    event = 'BufReadPre',
     config = function ()
       require'fidget'.setup{
         text = {
@@ -124,43 +130,50 @@ require('packer').startup({function()
   }
 
   -- nvim-cmp and snippets
-  use {'hrsh7th/nvim-cmp',
+  use {
+    'hrsh7th/nvim-cmp',
+    opt = true,
+    event = 'InsertEnter',
+    wants = { 'LuaSnip' },
     requires = {
-      {'L3MON4D3/LuaSnip'},
       {'hrsh7th/cmp-buffer'},
       {'hrsh7th/cmp-path'},
       {'hrsh7th/cmp-nvim-lsp'},
       {'hrsh7th/cmp-nvim-lua'},
       {'hrsh7th/cmp-cmdline'},
       {'saadparwaiz1/cmp_luasnip'},
+      {
+        'L3MON4D3/LuaSnip',
+        config = function ()
+          require('luasnip').config.set_config {
+            history = true,
+            updateevents = "TextChanged,TextChangedI",
+          }
+          require('fl.snippets').load()
+          vim.cmd([[
+          command! ReloadSnippets lua R('fl.snippets').load()
+          command! ClearSnippetCache lua require'cmp_luasnip'.clear_cache()
+          augroup reload_snippets
+          au!
+          au BufWritePost snippets.lua ReloadSnippets
+          au BufWritePost snippets.lua ClearSnippetCache
+          augroup END
+          ]])
+        end
+      },
     },
     config = function ()
       require('fl.completion')
     end
   }
-  use {
-    'L3MON4D3/LuaSnip',
-    config = function ()
-      require('luasnip').config.set_config {
-        history = true,
-        updateevents = "TextChanged,TextChangedI",
-      }
-      require('fl.snippets').load()
-      vim.cmd([[
-        command! ReloadSnippets lua R('fl.snippets').load()
-        augroup reload_snippets
-        au!
-        au BufWritePost snippets.lua ReloadSnippets
-        augroup END
-      ]])
-    end
-  }
 
   -- dressing, better default ui
-  use {'stevearc/dressing.nvim'}
+  use {
+    'stevearc/dressing.nvim',
+    event = 'BufReadPre'
+  }
 
   use {'ggandor/lightspeed.nvim', -- the new sneak?
-    requires = {},
     config = function ()
       require'lightspeed'.setup {
         ignore_case = true
@@ -205,6 +218,7 @@ require('packer').startup({function()
   use {
     'akinsho/bufferline.nvim',
     requires = {'kyazdani42/nvim-web-devicons'},
+    opt = true,
     event = "BufReadPre",
     config = function()
       require('bufferline').setup{
@@ -234,20 +248,18 @@ require('packer').startup({function()
     end
   }
 
-  -- harpoon
-  use {
-    'ThePrimeagen/harpoon',
-  }
-
   -- Smooth Scrolling
   use {
     'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" },
+    opt = true,
+    event = "BufReadPre",
     config = function()
       require('neoscroll').setup({easing_function = 'circular',})
     end
   }
   use {
     'edluffy/specs.nvim',
+    opt = true,
     after = 'neoscroll.nvim',
     config = function ()
       require'specs'.setup {
@@ -270,6 +282,7 @@ require('packer').startup({function()
 
   -- persistence
   use { 'folke/persistence.nvim',
+    opt = true,
     event = 'BufReadPre', -- this will only start session saving when an actual file was opened
     module = 'persistence',
     config = function()
@@ -288,6 +301,8 @@ require('packer').startup({function()
   -- mini
   use {
     'echasnovski/mini.nvim',
+    opt = true,
+    event = 'BufReadPre',
     config = function()
       require('mini.indentscope').setup{
         symbol = '│',
@@ -308,6 +323,8 @@ require('packer').startup({function()
 
   -- comments
   use { 'numToStr/Comment.nvim',
+    opt = true,
+    event = "BufRead",
     config = function()
       require('Comment').setup{}
       vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
@@ -317,45 +334,6 @@ require('packer').startup({function()
 
   -- markdown
   use 'ellisonleao/glow.nvim'
-
-  -- notes
-  use {
-    'nvim-neorg/neorg',
-    requires = {"nvim-lua/plenary.nvim", "nvim-neorg/neorg-telescope"},
-    config = function()
-      require('neorg').setup ({
-        load = {
-          ["core.defaults"] = {},
-          ["core.integrations.telescope"] = {},
-          ["core.keybinds"] = {
-            config = {
-              default_keybinds = true, -- Generate the default keybinds
-              neorg_leader = "<Leader>o" -- This is the default if unspecified
-            }
-          },
-          ["core.norg.concealer"] = {},
-          ["core.norg.completion"] = {
-            config = {
-              engine = "nvim-cmp"
-            }
-          },
-          ["core.norg.dirman"] = {
-            config = {
-              workspaces = {
-                meta = "~/neorg",
-              }
-            }
-          },
-          ["core.gtd.base"] = {
-            config = {
-              workspace = "meta",
-            }
-          },
-          ["core.norg.journal"] = {},
-        },
-      })
-    end,
-  }
 
   -- NNN
   use { 'mcchrish/nnn.vim',
@@ -370,23 +348,13 @@ require('packer').startup({function()
     end,
   }
 
-  use { 'windwp/nvim-autopairs',
+  use { 
+    'windwp/nvim-autopairs',
+    opt = true,
     after = 'nvim-cmp',
     config = function ()
       require'nvim-autopairs'.setup()
       require'cmp'.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
-    end
-  }
-
-  use { 'chipsenkbeil/distant.nvim',
-    config = function()
-      require('distant').setup {
-        -- Applies Chip's personal settings to every machine you connect to:
-        -- 1. Ensures that distant servers terminate with no connections
-        -- 2. Provides navigation bindings for remote directories
-        -- 3. Provides keybinding to jump into a remote file's parent directory
-        ['*'] = require('distant.settings').chip_default()
-      }
     end
   }
 
@@ -401,6 +369,8 @@ require('packer').startup({function()
   -- Illuminate variables
   use {
     'RRethy/vim-illuminate',
+    opt = true,
+    event = 'BufRead',
     config = function ()
       vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
     end
@@ -409,6 +379,8 @@ require('packer').startup({function()
   -- documentation generator
   use {
     'danymat/neogen',
+    opt = true,
+    event = 'BufRead',
     config = function ()
       require'neogen'.setup {
         enabled = true
@@ -416,15 +388,13 @@ require('packer').startup({function()
     end
   }
 
-  -- zen mode
-  use {'folke/zen-mode.nvim', config = function() require('zen-mode').setup {} end }
-
   -- lsp kind symbols
   use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
 
   use {
     'lukas-reineke/indent-blankline.nvim',
-    event = "BufReadPre",
+    opt = true,
+    event = 'BufReadPre',
     config = function ()
       vim.g.indentLine_enabled = 1
       vim.g.indentLine_char = '│'
@@ -493,11 +463,6 @@ require('packer').startup({function()
         },
         c = {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" }
-        },
-        h = {
-          name = "+harpoon",
-          i = { "<cmd>lua require('harpoon.ui').toggle_quick_menu()<CR>", "List Files" },
-          f = { "<cmd>lua require('harpoon.mark').add_file()<CR>", "Add File" },
         },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },

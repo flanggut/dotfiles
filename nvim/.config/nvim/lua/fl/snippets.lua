@@ -17,8 +17,6 @@ function M.load()
   ls.add_snippets("python", {
     s("print", fmt('print(f"{{ {} }}")', { i(0) })),
   })
-
-  require'cmp_luasnip'.clear_cache()
 end
 
 return M
