@@ -64,7 +64,7 @@ require('packer').startup({function()
   use {
     'folke/trouble.nvim',
     opt = true,
-    event = 'BufReadPost',
+    event = 'BufRead',
     requires = 'kyazdani42/nvim-web-devicons',
     config = function ()
       require("trouble").setup {
@@ -100,9 +100,9 @@ require('packer').startup({function()
     "SmiteshP/nvim-gps",
     opt = true,
     event = 'BufReadPre',
-    requires = "nvim-treesitter/nvim-treesitter",
+    requires = 'nvim-treesitter/nvim-treesitter',
     config = function ()
-      require("nvim-gps").setup()
+      require('nvim-gps').setup()
     end
   }
   use {
@@ -123,7 +123,7 @@ require('packer').startup({function()
     config = function ()
       require'fidget'.setup{
         text = {
-          spinner = "dots"
+          spinner = 'dots'
         }
       }
     end
@@ -250,9 +250,9 @@ require('packer').startup({function()
 
   -- Smooth Scrolling
   use {
-    'karb94/neoscroll.nvim', keys = { "<C-u>", "<C-d>", "gg", "G" },
+    'karb94/neoscroll.nvim',
     opt = true,
-    event = "BufReadPre",
+    event = 'BufRead',
     config = function()
       require('neoscroll').setup({easing_function = 'circular',})
     end
@@ -313,18 +313,16 @@ require('packer').startup({function()
     end
   }
 
-  use { 'tpope/vim-scriptease',
-    cmd = {
-      "Messages", --view messages in quickfix list
-      "Verbose", -- view verbose output in preview window.
-      "Time", -- measure how long it takes to run some stuff.
-    },
+  use { 
+    'tpope/vim-scriptease',
+    opt = true,
+    cmd = { 'Messages', 'Verbose', 'Time' },
   }
 
   -- comments
   use { 'numToStr/Comment.nvim',
     opt = true,
-    event = "BufRead",
+    keys = { '<space>x' },
     config = function()
       require('Comment').setup{}
       vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
@@ -333,10 +331,16 @@ require('packer').startup({function()
   }
 
   -- markdown
-  use 'ellisonleao/glow.nvim'
+  use {
+    'ellisonleao/glow.nvim',
+    opt = true,
+    cmd = 'Glow',
+  }
 
   -- NNN
   use { 'mcchrish/nnn.vim',
+    opt = true,
+    cmd = { 'NnnPicker' },
     config = function()
       require('nnn').setup({
         command = 'nnn -o -A',
@@ -393,8 +397,6 @@ require('packer').startup({function()
 
   use {
     'lukas-reineke/indent-blankline.nvim',
-    opt = true,
-    event = 'BufReadPre',
     config = function ()
       vim.g.indentLine_enabled = 1
       vim.g.indentLine_char = '│'
@@ -418,6 +420,8 @@ require('packer').startup({function()
   -- Terminal
   use {
     'numtostr/FTerm.nvim',
+    opt = true,
+    keys = { '<A-i>' },
     config = function ()
       local shell = '/bin/fish'
       if vim.fn.has('mac') == 1 then
@@ -444,7 +448,6 @@ require('packer').startup({function()
   use 'wellle/targets.vim'
   use 'kevinhwang91/nvim-bqf'
   use 'tversteeg/registers.nvim'
-
   use {
     'mhinz/vim-signify',
     opt = true,

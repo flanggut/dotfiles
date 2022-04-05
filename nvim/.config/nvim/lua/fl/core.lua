@@ -51,9 +51,9 @@ vim.wo.number = true
 
 vim.wo.signcolumn = 'yes'
 
-vim.opt.shada = { "!", "'1000", "<50", "s10", "h" }
+vim.opt.shada = { "!", "'500", "<50", "s10", "h" }
 vim.opt.swapfile = false
-vim.opt.undofile = true
+vim.opt.undofile = false
 
 vim.cmd('set diffopt+=vertical')
 
