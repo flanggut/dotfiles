@@ -21,8 +21,14 @@ require('packer').startup({function()
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- Speedup plugin loading
-  use {'tweekmonster/startuptime.vim', cmd = 'StartupTime' }
+  -- Theme
+  use {
+    'sainnhe/gruvbox-material',
+    config = function ()
+      vim.cmd [[colorscheme gruvbox-material]]
+    end
+  }
+  use 'kyazdani42/nvim-web-devicons'
 
   -- treesitter
   use {
@@ -38,7 +44,6 @@ require('packer').startup({function()
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'mizlan/iswap.nvim'
   use 'mfussenegger/nvim-ts-hint-textobject'
-  use 'kyazdani42/nvim-web-devicons'
 
   -- nvim-lsp
   use {
@@ -313,12 +318,6 @@ require('packer').startup({function()
     end
   }
 
-  use { 
-    'tpope/vim-scriptease',
-    opt = true,
-    cmd = { 'Messages', 'Verbose', 'Time' },
-  }
-
   -- comments
   use { 'numToStr/Comment.nvim',
     opt = true,
@@ -352,21 +351,13 @@ require('packer').startup({function()
     end,
   }
 
-  use { 
+  use {
     'windwp/nvim-autopairs',
     opt = true,
     after = 'nvim-cmp',
     config = function ()
       require'nvim-autopairs'.setup()
       require'cmp'.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
-    end
-  }
-
-  -- theme
-  use {
-    'sainnhe/gruvbox-material',
-    config = function ()
-      vim.cmd [[colorscheme gruvbox-material]]
     end
   }
 
@@ -448,11 +439,9 @@ require('packer').startup({function()
   use 'wellle/targets.vim'
   use 'kevinhwang91/nvim-bqf'
   use 'tversteeg/registers.nvim'
-  use {
-    'mhinz/vim-signify',
-    opt = true,
-    event = 'BufRead',
-  }
+  use { 'tweekmonster/startuptime.vim', cmd = 'StartupTime' }
+  use { 'mhinz/vim-signify', event = 'BufRead', }
+  use { 'tpope/vim-scriptease', cmd = { 'Messages', 'Verbose', 'Time' }, }
 
   -- keys
   use {
