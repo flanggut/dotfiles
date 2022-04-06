@@ -24,6 +24,7 @@ zoxide init fish | source
 ############################
 #       Alias Config       #
 abbr -a j z
+abbr -a ji zi
 
 alias vim="nvim"
 alias duh="du -h -d1"
