@@ -1,7 +1,7 @@
 local treesitter_config = require 'nvim-treesitter.configs'
 treesitter_config.setup {
-  ensure_installed = 'maintained',
-  ignore_install = { 'elixir' },
+  ensure_installed = 'all',
+  ignore_install = { 'elixir', 'phpdoc' },
   highlight = {enable = true},
   incremental_selection = {
     enable = true,

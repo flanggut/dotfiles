@@ -199,6 +199,11 @@ require('packer').startup({function()
     end
   }
 
+  use {
+    'gbprod/yanky.nvim',
+    event = 'BufRead'
+  }
+
   -- alpha startscreen
   use { 'goolord/alpha-nvim',
     requires = { 'kyazdani42/nvim-web-devicons' } ,
@@ -339,7 +344,7 @@ require('packer').startup({function()
   -- NNN
   use { 'mcchrish/nnn.vim',
     opt = true,
-    cmd = { 'NnnPicker' },
+    keys = { '<c-n>' },
     config = function()
       require('nnn').setup({
         command = 'nnn -o -A',
