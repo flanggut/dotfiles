@@ -15,9 +15,7 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 })
 
 -- Start up packer, sync packages afterwards if required
-require('packer').startup({function()
-  local use = require('packer').use
-
+require('packer').startup({function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
@@ -73,21 +71,6 @@ require('packer').startup({function()
     config = function()
       require'fl.lsp'
     end,
-  }
-  use {
-    'folke/trouble.nvim',
-    opt = true,
-    event = 'BufRead',
-    requires = 'kyazdani42/nvim-web-devicons',
-    config = function ()
-      require("trouble").setup {
-        auto_close = true,
-      }
-      vim.api.nvim_set_keymap("n", "<leader>oo", "<cmd>TroubleToggle<cr>", {silent = true, noremap = true})
-      vim.api.nvim_set_keymap("n", "<leader>od", "<cmd>TroubleToggle lsp_workspace_diagnostics<cr>", {silent = true, noremap = true})
-      vim.api.nvim_set_keymap("n", "<leader>ow", "<cmd>TroubleToggle lsp_document_diagnostics<cr>", {silent = true, noremap = true})
-      vim.api.nvim_set_keymap("n", "<leader>oq", "<cmd>TroubleToggle quickfix<cr>", {silent = true, noremap = true})
-    end
   }
 
   -- telescope
@@ -508,7 +491,9 @@ require('packer').startup({function()
       wk.register({["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" }})
     end
   }
-
+  if packer_init_required then
+    require'packer'.sync()
+  end
 end,
   config = {
     display = {
@@ -516,8 +501,4 @@ end,
     },
   }
 })
-if packer_init_required then
-  require'packer'.sync()
-end
-
 require("plenary.filetype").add_file("fl")
