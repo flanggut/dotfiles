@@ -86,14 +86,16 @@ if vim.fn.has('termguicolors') == 1 then
 end
 
 -- highlight text on yank
-vim.cmd([[
-  au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}
-]])
+vim.api.nvim_create_autocmd("TextYankPost", {
+  pattern = "*",
+  command = "lua vim.highlight.on_yank({higroup='IncSearch', timeout=150, on_visual=true})"
+})
 
 -- set correct filetype for fish
-vim.cmd([[
-  au BufNewFile,BufRead *.fish set filetype=fish
-]])
+vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+  pattern = "*.fish",
+  command = "set filetype=fish"
+})
 
 -------------------- Basic Keybinds ------------------------
 local function map(mode, lhs, rhs, opts) -- map keybind
