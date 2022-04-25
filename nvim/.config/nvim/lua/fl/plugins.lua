@@ -4,15 +4,15 @@ local packer_init_required = vim.fn.isdirectory(packer_install_path) == 0
 
 if packer_init_required then
   vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', packer_install_path})
-  vim.api.nvim_command 'packadd packer.nvim'
+  vim.api.nvim_command('packadd packer.nvim')
 end
 
-vim.cmd([[
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost plugins.lua source <afile> | PackerCompile
-  augroup end
-]])
+local packer_group = vim.api.nvim_create_augroup('PackerAutoCompile', {clear = true})
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = 'plugins.lua',
+  command = 'source <afile> | PackerCompile',
+  group = packer_group,
+})
 
 -- Start up packer, sync packages afterwards if required
 require('packer').startup({function()
@@ -29,6 +29,14 @@ require('packer').startup({function()
     end
   }
   use 'kyazdani42/nvim-web-devicons'
+
+  -- notify
+  use {
+    'rcarriga/nvim-notify',
+    config = function ()
+      vim.notify = require'notify'
+    end
+  }
 
   -- treesitter
   use {
@@ -300,14 +308,6 @@ require('packer').startup({function()
     end,
   }
 
-  -- notify
-  use {
-    'rcarriga/nvim-notify',
-    config = function ()
-      vim.notify = require'notify'
-    end
-  }
-
   -- mini
   use {
     'echasnovski/mini.nvim',
@@ -513,10 +513,6 @@ end,
   config = {
     display = {
       open_fn = require('packer.util').float,
-    },
-    profile = {
-      enable = true,
-      threshold = 0,
     },
   }
 })
