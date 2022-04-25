@@ -28,14 +28,6 @@ require('packer').startup({function(use)
   }
   use 'kyazdani42/nvim-web-devicons'
 
-  -- notify
-  use {
-    'rcarriga/nvim-notify',
-    config = function ()
-      vim.notify = require'notify'
-    end
-  }
-
   -- treesitter
   use {
     'nvim-treesitter/nvim-treesitter',
@@ -50,6 +42,31 @@ require('packer').startup({function(use)
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'mizlan/iswap.nvim'
   use 'mfussenegger/nvim-ts-hint-textobject'
+
+  -- telescope
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      'nvim-lua/popup.nvim',
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope-fzf-native.nvim',
+      'nvim-telescope/telescope-symbols.nvim',
+      'nvim-telescope/telescope-z.nvim'
+    },
+    config = function ()
+      require'fl.telescope'
+      vim.api.nvim_set_keymap("n", "F", "<cmd>Telescope current_buffer_fuzzy_find<cr>", {silent = true, noremap = true})
+    end
+  }
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+
+  -- notify
+  use {
+    'rcarriga/nvim-notify',
+    config = function ()
+      vim.notify = require'notify'
+    end
+  }
 
   -- nvim-lsp
   use {
@@ -72,24 +89,6 @@ require('packer').startup({function(use)
       require'fl.lsp'
     end,
   }
-
-  -- telescope
-  use {
-    'nvim-telescope/telescope.nvim',
-    requires = {
-      'nvim-lua/popup.nvim',
-      'nvim-lua/plenary.nvim',
-      'nvim-telescope/telescope-fzf-native.nvim',
-      'nvim-telescope/telescope-symbols.nvim',
-      'nvim-telescope/telescope-z.nvim'
-    },
-    config = function ()
-      require'fl.telescope'
-      vim.api.nvim_set_keymap("n", "F", "<cmd>Telescope current_buffer_fuzzy_find<cr>", {silent = true, noremap = true})
-    end
-  }
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-  use {'nvim-telescope/telescope-file-browser.nvim'}
 
   -- statusline
   use {
