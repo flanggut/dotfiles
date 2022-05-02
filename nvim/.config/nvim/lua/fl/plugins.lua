@@ -128,7 +128,7 @@ require('packer').startup({function(use)
   use {
     'hrsh7th/nvim-cmp',
     opt = true,
-    event = 'InsertEnter',
+    event = 'BufRead',
     wants = { 'LuaSnip' },
     requires = {
       {'hrsh7th/cmp-buffer'},
@@ -187,11 +187,6 @@ require('packer').startup({function(use)
       map <expr> , g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_,_sx" : "<Plug>Lightspeed_,_ft"
       ]]))
     end
-  }
-
-  use {
-    'gbprod/yanky.nvim',
-    event = 'BufRead'
   }
 
   -- alpha startscreen
@@ -316,13 +311,6 @@ require('packer').startup({function(use)
     end
   }
 
-  -- markdown
-  use {
-    'ellisonleao/glow.nvim',
-    opt = true,
-    cmd = 'Glow',
-  }
-
   -- NNN
   use { 'mcchrish/nnn.vim',
     opt = true,
@@ -423,7 +411,6 @@ require('packer').startup({function(use)
   -- the usual
   use 'tpope/vim-repeat'
   use 'tpope/vim-surround'
-  use 'wellle/targets.vim'
   use 'kevinhwang91/nvim-bqf'
   use 'tversteeg/registers.nvim'
   use { 'tweekmonster/startuptime.vim', cmd = 'StartupTime' }
