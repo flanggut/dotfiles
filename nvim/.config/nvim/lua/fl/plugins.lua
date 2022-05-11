@@ -168,24 +168,14 @@ require('packer').startup({function(use)
     event = 'BufReadPre'
   }
 
-  use {'ggandor/lightspeed.nvim', -- the new sneak?
+  use {
+    'ggandor/leap.nvim',
     config = function ()
-      require'lightspeed'.setup {
-        ignore_case = true
+      require('leap').setup {
+        case_insensitive = true,
       }
-      vim.api.nvim_set_keymap('n', 'f', '<Plug>Lightspeed_omni_s', {})
-      vim.api.nvim_set_keymap('n', 's', '<Plug>Lightspeed_f', {})
-      vim.api.nvim_set_keymap('n', 'S', '<Plug>Lightspeed_F', {})
-      vim.cmd(([[
-      let g:lightspeed_last_motion = ''
-      augroup lightspeed_last_motion
-      autocmd!
-      autocmd User LightspeedSxEnter let g:lightspeed_last_motion = 'sx'
-      autocmd User LightspeedFtEnter let g:lightspeed_last_motion = 'ft'
-      augroup end
-      map <expr> ; g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_;_sx" : "<Plug>Lightspeed_;_ft"
-      map <expr> , g:lightspeed_last_motion == 'sx' ? "<Plug>Lightspeed_,_sx" : "<Plug>Lightspeed_,_ft"
-      ]]))
+      require('leap').set_default_keymaps(true)
+      vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require('leap').leap {['target-windows'] = { vim.fn.getwininfo(vim.fn.win_getid())[1] }}<CR>", {})
     end
   }
 
@@ -433,16 +423,6 @@ require('packer').startup({function(use)
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
-        k = {
-          function()
-            require("telescope.builtin").lsp_document_symbols({
-              symbols = { "Class", "Function", "Method", "Constructor", "Interface", "Module" },
-              symbol_width = 50,
-              symbol_type_width = 12,
-            })
-          end,
-          "Goto Symbol",
-        },
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" }
         },
@@ -469,12 +449,24 @@ require('packer').startup({function(use)
         },
       }
       wk.register(leader, { prefix = "<leader>" })
+
       local leaderleader = {
         h = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
         s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
+
       wk.register({["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" }})
+      wk.register({["<C-k>"] = {
+        function()
+          require("telescope.builtin").lsp_document_symbols({
+            symbols = { "Class", "Function", "Method", "Constructor", "Interface", "Module" },
+            symbol_width = 50,
+            symbol_type_width = 12,
+          })
+        end,
+        "Goto Symbol",
+      }})
     end
   }
   if packer_init_required then

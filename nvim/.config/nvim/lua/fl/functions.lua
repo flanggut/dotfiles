@@ -51,9 +51,11 @@ M.generate_compile_commands = function()
     on_exit = function(j, return_val)
       M.compile_commands_running[filename] = false
       if return_val == 0 then
-        -- M.restart_all_lsp_servers()
+        vim.schedule(function ()
+          vim.cmd "LspRestart"
+        end)
       else
-       notify("Compile commands error. \n" .. table.concat(j:stderr_result(), "\n"), "error")
+        notify("Compile commands error. \n" .. table.concat(j:stderr_result(), "\n"), "error")
       end
     end,
     enable_recording = true,

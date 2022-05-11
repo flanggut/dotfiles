@@ -1,6 +1,8 @@
 local nvim_lsp = require ('lspconfig')
 local util = require('lspconfig.util')
 
+require("nvim-lsp-installer").setup()
+
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -14,7 +16,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('i', '<C-h>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<leader>sa', "<cmd>lua require'telescope.builtin'.lsp_code_actions(require'telescope.themes'.get_cursor())<CR>", opts)
+  buf_set_keymap('n', '<leader>sa', "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
   buf_set_keymap('n', '<leader>sr', "<cmd>lua require'telescope.builtin'.lsp_references()<cr>", opts)
   buf_set_keymap('n', '<leader>sy', "<cmd>lua require'telescope.builtin'.lsp_document_symbols({symbol_width = 50, symbol_type_width = 12})<cr>", opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
@@ -109,26 +111,14 @@ else
   }
 end
 
--- Setup LSPINSTALL servers
-local function on_server_ready(server)
-  local default_opts = {
+-- setup lua
+nvim_lsp['sumneko_lua'].setup(require('lua-dev').setup{
+  lspconfig = {
     capabilities = capabilities,
     on_attach = on_attach
   }
-  local luadev_opts = require('lua-dev').setup{
-    lspconfig = {
-      capabilities = capabilities,
-      on_attach = on_attach
-    }
-  }
-  if server.name == "sumneko_lua" then
-    server:setup(luadev_opts)
-  else
-    server:setup(default_opts)
-  end
-  vim.cmd [[ do User LspAttachBuffers ]]
-end
-require("nvim-lsp-installer").on_server_ready(on_server_ready)
+}
+)
 
 -- Setup null-ls
 local nls = require("null-ls")
