@@ -53,6 +53,7 @@ alias rg="rg --no-ignore-messages --max-columns=160 -S"
 alias ...="cd ../.."
 
 alias xtrace="xcrun xctrace record --template 'Time Profiler' --launch --"
+alias xtracemem="xcrun xctrace record --template 'Allocations' --launch --"
 
 function zp
   if test "$history[1]" != "zp"
