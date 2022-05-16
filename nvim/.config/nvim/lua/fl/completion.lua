@@ -1,10 +1,39 @@
 local cmp = require('cmp')
 local luasnip = require('luasnip')
+local strings = require('plenary.strings')
 
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
+
+local icons = {
+    Text = "",
+    Method = "",
+    Function = "",
+    Constructor = "⌘",
+    Field = "ﰠ",
+    Variable = "",
+    Class = "ﴯ",
+    Interface = "",
+    Module = "",
+    Property = "ﰠ",
+    Unit = "塞",
+    Value = "",
+    Enum = "",
+    Keyword = "廓",
+    Snippet = "",
+    Color = "",
+    File = "",
+    Reference = "",
+    Folder = "",
+    EnumMember = "",
+    Constant = "",
+    Struct = "פּ",
+    Event = "",
+    Operator = "",
+    TypeParameter = "",
+}
 
 cmp.setup {
   experimental = {
@@ -27,21 +56,14 @@ cmp.setup {
     end
   },
   formatting = {
-    format = function(entry, vim_item)
-      local lspkind_format = require'lspkind'.cmp_format({
-        with_text = true,
-        menu = {
-          nvim_lua = "[api]",
-          nvim_lsp = "[lsp]",
-          luasnip = "[snp]",
-          buffer = "[buf]",
-          path = "[pth]",
-        },
-        maxwidth = 60
-      })
-      vim_item.abbr = vim_item.abbr:gsub("^%s+", "")
-      return lspkind_format(entry, vim_item)
-    end
+        fields = { "kind", "abbr", "menu" },
+        format = function(_, vim_item)
+            vim_item.menu = vim_item.kind
+            vim_item.kind = icons[vim_item.kind]
+            vim_item.abbr = vim_item.abbr:gsub("^%s+", "")
+            vim_item.abbr = " " .. strings.truncate(vim_item.abbr, 60)
+            return vim_item
+        end,
   },
   mapping = {
     ["<C-e>"] = cmp.mapping.close(),

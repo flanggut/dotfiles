@@ -112,21 +112,6 @@ M.signify = {
   end,
 }
 
-local gps = require("nvim-gps")
-M.gps = {
-  name = 'gps',
-  hl_colors = {
-    white = { 'white', 'NormalBg' },
-  },
-  width = breakpoint_width,
-  text = function(_)
-    if gps.is_available() then
-      return gps.get_location()
-    end
-    return ''
-  end
-}
-
 local quickfix = {
   filetypes = { 'qf', 'Trouble' },
   active = {
@@ -171,8 +156,6 @@ local default = {
     M.lsp_diag,
     { ' ', {'white', 'NormalBg'} },
     M.file,
-    { ' ', {'white', 'NormalBg'} },
-    M.gps,
     { basic_components.divider, '' },
     M.file_right,
     { ' ', {'white', 'NormalBg'} },

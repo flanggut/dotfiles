@@ -1,5 +1,31 @@
 require('telescope').setup{
+  picker = {
+        hidden = false,
+  },
   defaults = {
+    prompt_prefix = "     ",
+    selection_caret = "  ",
+    entry_prefix = "  ",
+    initial_mode = "insert",
+    selection_strategy = "reset",
+    sorting_strategy = "ascending",
+    layout_strategy = "horizontal",
+    layout_config = {
+      horizontal = {
+        prompt_position = "top",
+        preview_width = 0.55,
+        results_width = 0.8,
+      },
+      vertical = {
+        mirror = false,
+      },
+      width = 0.8,
+      height = 0.8,
+      preview_cutoff = 120,
+    },
+    winblend = 0,
+    scroll_strategy = "cycle",
+    color_devicons = true,
     mappings = {
       i = {
         ["<esc>"] = require('telescope.actions').close,
@@ -28,21 +54,13 @@ require('telescope').setup{
       relative = strings.truncate(relative, #relative - #tail + 1)
       return string.format("%s  %s", filename, relative)
     end,
-    winblend = 0,
-
-    layout_strategy = "horizontal",
-    layout_config = {
-      height = 0.7,
-      prompt_position = "top",
-    },
-
-    selection_strategy = "reset",
-    sorting_strategy = "ascending",
-    scroll_strategy = "cycle",
-    color_devicons = true,
   },
   pickers = {
     buffers = require('telescope.themes').get_cursor({
+      layout_config = {
+        width = 100,
+        height = 25,
+      },
       sort_mru=true,
       sort_lastused=true,
       previewer=false,

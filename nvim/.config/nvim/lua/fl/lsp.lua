@@ -1,7 +1,7 @@
 local nvim_lsp = require ('lspconfig')
 local util = require('lspconfig.util')
 
-require("nvim-lsp-installer").setup()
+-- require'nvim-lsp-installer'.setup()
 
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -34,8 +34,8 @@ local on_attach = function(client, bufnr)
 
   vim.cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
 
-  require 'lsp_signature'.on_attach({bind = true, floating_window = false, hint_prefix = '  '})
-  require 'illuminate'.on_attach(client)
+  require'lsp_signature'.on_attach({bind = true, floating_window = false, hint_prefix = '  '})
+  require'illuminate'.on_attach(client)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()

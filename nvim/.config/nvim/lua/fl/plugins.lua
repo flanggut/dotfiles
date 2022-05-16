@@ -36,6 +36,12 @@ require('packer').startup({function(use)
       require'fl.treesitter'
     end
   }
+  use {
+    'nvim-treesitter/nvim-treesitter-context',
+    config = function ()
+      require'treesitter-context'.setup{}
+    end
+  }
   use 'nvim-treesitter/nvim-treesitter-refactor'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'nvim-treesitter/playground'
@@ -75,14 +81,13 @@ require('packer').startup({function(use)
     event = 'BufReadPre',
     requires = {
       'ray-x/lsp_signature.nvim',
-      'williamboman/nvim-lsp-installer',
       'folke/lua-dev.nvim',
       'jose-elias-alvarez/null-ls.nvim',
+      'RRethy/vim-illuminate',
     },
     wants = {
       'lua-dev.nvim',
       'cmp-nvim-lsp',
-      'nvim-lsp-installer',
       'null-ls.nvim'
     },
     config = function()
@@ -92,19 +97,8 @@ require('packer').startup({function(use)
 
   -- statusline
   use {
-    "SmiteshP/nvim-gps",
-    opt = true,
-    event = 'BufReadPre',
-    requires = 'nvim-treesitter/nvim-treesitter',
-    config = function ()
-      require('nvim-gps').setup()
-    end
-  }
-  use {
     'windwp/windline.nvim',
-    opt = true,
-    after = 'nvim-gps',
-    requires = {'kyazdani42/nvim-web-devicons', opt = true},
+    requires = {'kyazdani42/nvim-web-devicons'},
     config = function ()
       require'fl.statusline'
     end
@@ -145,15 +139,15 @@ require('packer').startup({function(use)
             updateevents = "TextChanged,TextChangedI",
           }
           require('fl.snippets').load()
-          vim.cmd([[
-          command! ReloadSnippets lua R('fl.snippets').load()
-          command! ClearSnippetCache lua require'cmp_luasnip'.clear_cache()
-          augroup reload_snippets
-          au!
-          au BufWritePost snippets.lua ReloadSnippets
-          au BufWritePost snippets.lua ClearSnippetCache
-          augroup END
-          ]])
+          local snippets_group = vim.api.nvim_create_augroup('ReloadSnippetsOnWrite', {clear = true})
+          vim.api.nvim_create_autocmd('BufWritePost', {
+            pattern = 'snippets.lua',
+            callback = function ()
+              R('fl.snippets').load()
+              require'cmp_luasnip'.clear_cache()
+            end,
+            group = snippets_group,
+          })
         end
       },
     },
@@ -186,13 +180,13 @@ require('packer').startup({function(use)
       local alpha = require'alpha'
       local startify = require'alpha.themes.startify'
       startify.section.top_buttons.val = {
-        startify.button( "l", "  Open last session", ":lua require'persistence'.load()<CR>"),
-        startify.button( "e", "  New file", ":ene <CR>"),
-        startify.button( "o", "  Neorg", ":Neorg workspace meta<CR>"),
+        startify.button( "l", "  Open last session", ":lua require'persistence'.load()<CR>", {}),
+        startify.button( "e", "  New file", ":ene <CR>", {}),
+        startify.button( "o", "  Neorg", ":Neorg workspace meta<CR>", {}),
       }
       startify.section.bottom_buttons.val = {
-        startify.button( "c", "  Edit config" , ":e ~/.config/nvim/lua/fl/plugins.lua<CR>"),
-        startify.button( "q", "  Quit neovim" , ":qa<CR>"),
+        startify.button( "c", "  Edit config" , ":e ~/.config/nvim/lua/fl/plugins.lua<CR>", {}),
+        startify.button( "q", "  Quit neovim" , ":qa<CR>", {}),
       }
       alpha.setup(startify.opts)
       vim.api.nvim_set_keymap('n', '<C-s>', '<cmd>Alpha<CR>', {noremap = true})
@@ -289,6 +283,17 @@ require('packer').startup({function(use)
       }
     end
   }
+  use {
+    'lukas-reineke/indent-blankline.nvim',
+    config = function ()
+      vim.g.indentLine_enabled = 1
+      vim.g.indentLine_char = '│'
+      vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
+      vim.g.indent_blankline_char_highlight = 'LineNr'
+      vim.g.indent_blankline_show_trailing_blankline_indent = false
+    end
+  }
+
 
   -- comments
   use { 'numToStr/Comment.nvim',
@@ -326,16 +331,6 @@ require('packer').startup({function(use)
     end
   }
 
-  -- Illuminate variables
-  use {
-    'RRethy/vim-illuminate',
-    opt = true,
-    event = 'BufRead',
-    config = function ()
-      vim.g.Illuminate_ftblacklist = {'nerdtree', 'startify', 'dashboard'}
-    end
-  }
-
   -- documentation generator
   use {
     'danymat/neogen',
@@ -345,20 +340,6 @@ require('packer').startup({function(use)
       require'neogen'.setup {
         enabled = true
       }
-    end
-  }
-
-  -- lsp kind symbols
-  use {'onsails/lspkind-nvim', config = function() require('lspkind').init {} end }
-
-  use {
-    'lukas-reineke/indent-blankline.nvim',
-    config = function ()
-      vim.g.indentLine_enabled = 1
-      vim.g.indentLine_char = '│'
-      vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
-      vim.g.indent_blankline_char_highlight = 'LineNr'
-      vim.g.indent_blankline_show_trailing_blankline_indent = false
     end
   }
 
