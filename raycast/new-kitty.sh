@@ -14,6 +14,6 @@
 
 pushd ~
 
-kitty --single-instance &
+/Users/flanggut/homebrew/bin/kitty --single-instance &
 
 popd
