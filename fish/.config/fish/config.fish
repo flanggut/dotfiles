@@ -3,7 +3,6 @@
 if not functions -q fisher
     echo "curl -sL https://git.io/fisher | source"
     echo fisher install jorgebucaran/fisher
-    echo fisher install jethrokuan/z
     echo fisher install IlanCosman/tide@v5
 end
 
@@ -11,7 +10,9 @@ end
 #      Global Configs      #
 set -gx SHELL fish
 set -gx EDITOR nvim
+set -gx LANG en_US.UTF-8
 set -gx LC_ALL en_US.UTF-8
+set -gx LC_CTYPE en_US.UTF-8
 set -gx NNN_NO_AUTOSELECT 1
 
 set -g tide_cmd_duration_threshold 100
