@@ -49,6 +49,13 @@ require('packer').startup({function(use)
   use 'mizlan/iswap.nvim'
   use 'mfussenegger/nvim-ts-hint-textobject'
 
+  use {
+    'nvim-lua/plenary.nvim',
+    config = function ()
+      require'plenary.filetype'.add_file("fl")
+    end
+  }
+
   -- telescope
   use {
     'nvim-telescope/telescope.nvim',
@@ -78,7 +85,7 @@ require('packer').startup({function(use)
   use {
     'neovim/nvim-lspconfig',
     opt = true,
-    event = 'BufReadPre',
+    event = 'BufRead',
     requires = {
       'ray-x/lsp_signature.nvim',
       'folke/lua-dev.nvim',
@@ -88,7 +95,8 @@ require('packer').startup({function(use)
     wants = {
       'lua-dev.nvim',
       'cmp-nvim-lsp',
-      'null-ls.nvim'
+      'null-ls.nvim',
+      'nvim-cmp'
     },
     config = function()
       require'fl.lsp'
@@ -169,7 +177,10 @@ require('packer').startup({function(use)
         case_insensitive = true,
       }
       require('leap').set_default_keymaps(true)
-      vim.api.nvim_set_keymap('n', 'f', "<cmd>lua require('leap').leap {['target-windows'] = { vim.fn.getwininfo(vim.fn.win_getid())[1] }}<CR>", {})
+      local function leap_bidirectional()
+        require'leap'.leap { ['target-windows'] = { vim.api.nvim_get_current_win() } }
+      end
+      vim.keymap.set('n', 'f', leap_bidirectional, { silent = true })
     end
   }
 
@@ -317,7 +328,12 @@ require('packer').startup({function(use)
         replace_netrw = 1,
         layout = { window = { width= 0.6, height= 0.7, xoffset= 0.95, highlight= 'Debug'} },
       })
-      vim.api.nvim_set_keymap('n', '<c-n>', '<cmd>NnnPicker %:p<cr>', {silent = true, noremap = true})
+      local function nnn_pick()
+        local path = vim.fn.expand('%:p', nil, nil)
+        local nnn_command = path == '' and 'NnnPicker' or ('NnnPicker' .. path)
+        vim.api.nvim_command(nnn_command)
+      end
+      vim.keymap.set('n', '<c-n>', nnn_pick, {silent = true})
     end,
   }
 
@@ -327,7 +343,6 @@ require('packer').startup({function(use)
     after = 'nvim-cmp',
     config = function ()
       require'nvim-autopairs'.setup()
-      require'cmp'.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
     end
   }
 
@@ -434,6 +449,7 @@ require('packer').startup({function(use)
       local leaderleader = {
         h = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
         s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
+        l = { "<cmd>LspRestart<CR>", "Restart LSP servers" },
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
 
@@ -460,4 +476,3 @@ end,
     },
   }
 })
-require("plenary.filetype").add_file("fl")
