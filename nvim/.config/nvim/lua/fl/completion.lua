@@ -40,7 +40,7 @@ cmp.setup {
     ghost_text = true,
   },
   completion = {
-    completeopt = 'menu,menuone,noinsert',
+    completeopt = 'menu,menuone,noselect',
   },
   sources = {
     { name = 'luasnip' },
@@ -67,7 +67,7 @@ cmp.setup {
   mapping = {
     ["<C-e>"] = cmp.mapping.close(),
     ["<C-f>"] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Insert,
+      behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
     ["<C-y>"] = cmp.mapping.confirm {
@@ -81,7 +81,6 @@ cmp.setup {
     ['<C-l>'] = function(fallback)
       if luasnip.expand_or_jumpable() then
         luasnip.expand_or_jump()
-        -- vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
       else
         fallback()
       end
@@ -91,7 +90,6 @@ cmp.setup {
         cmp.select_next_item()
       elseif luasnip.expand_or_jumpable() then
         luasnip.expand_or_jump()
-        -- vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), '')
       elseif has_words_before() then
         cmp.complete()
       else
@@ -103,7 +101,6 @@ cmp.setup {
         cmp.select_prev_item()
       elseif luasnip.jumpable(-1) then
         luasnip.jump(-1)
-        -- vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), '')
       else
         fallback()
       end
