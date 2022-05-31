@@ -193,7 +193,6 @@ require('packer').startup({function(use)
       startify.section.top_buttons.val = {
         startify.button( "l", "  Open last session", ":lua require'persistence'.load()<CR>", {}),
         startify.button( "e", "  New file", ":ene <CR>", {}),
-        startify.button( "o", "  Neorg", ":Neorg workspace meta<CR>", {}),
       }
       startify.section.bottom_buttons.val = {
         startify.button( "c", "  Edit config" , ":e ~/.config/nvim/lua/fl/plugins.lua<CR>", {}),

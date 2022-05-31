@@ -44,11 +44,10 @@ cmp.setup {
   },
   sources = {
     { name = 'luasnip' },
-    { name = 'nvim_lua' },
     { name = 'nvim_lsp' },
+    { name = 'nvim_lua' },
     { name = 'buffer', keyword_length = 4 },
     { name = 'path' },
-    { name = 'neorg' },
   },
   snippet = {
     expand = function(args)
