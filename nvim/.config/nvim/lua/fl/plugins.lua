@@ -1,13 +1,13 @@
 -- Auto install packer.nvim if not exists
-local packer_install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+local packer_install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 local packer_init_required = vim.fn.isdirectory(packer_install_path) == 0
 
 if packer_init_required then
-  vim.fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', packer_install_path})
+  vim.fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', packer_install_path })
   vim.api.nvim_command('packadd packer.nvim')
 end
 
-local packer_group = vim.api.nvim_create_augroup('PackerAutoCompile', {clear = true})
+local packer_group = vim.api.nvim_create_augroup('PackerAutoCompile', { clear = true })
 vim.api.nvim_create_autocmd('BufWritePost', {
   pattern = 'plugins.lua',
   command = 'source <afile> | PackerCompile',
@@ -15,14 +15,14 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 })
 
 -- Start up packer, sync packages afterwards if required
-require('packer').startup({function(use)
+require('packer').startup({ function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
   -- Theme
   use {
     'sainnhe/gruvbox-material',
-    config = function ()
+    config = function()
       vim.cmd [[colorscheme gruvbox-material]]
     end
   }
@@ -32,14 +32,14 @@ require('packer').startup({function(use)
   use {
     'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate',
-    config = function ()
-      require'fl.treesitter'
+    config = function()
+      require 'fl.treesitter'
     end
   }
   use {
     'nvim-treesitter/nvim-treesitter-context',
-    config = function ()
-      require'treesitter-context'.setup{}
+    config = function()
+      require 'treesitter-context'.setup {}
     end
   }
   use 'nvim-treesitter/nvim-treesitter-refactor'
@@ -51,8 +51,8 @@ require('packer').startup({function(use)
 
   use {
     'nvim-lua/plenary.nvim',
-    config = function ()
-      require'plenary.filetype'.add_file("fl")
+    config = function()
+      require 'plenary.filetype'.add_file("fl")
     end
   }
 
@@ -66,18 +66,18 @@ require('packer').startup({function(use)
       'nvim-telescope/telescope-symbols.nvim',
       'nvim-telescope/telescope-z.nvim'
     },
-    config = function ()
-      require'fl.telescope'
-      vim.keymap.set("n", "F", "<cmd>Telescope current_buffer_fuzzy_find<cr>", {silent = true, noremap = true})
+    config = function()
+      require 'fl.telescope'
+      vim.keymap.set("n", "F", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { silent = true, noremap = true })
     end
   }
-  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
   -- notify
   use {
     'rcarriga/nvim-notify',
-    config = function ()
-      vim.notify = require'notify'
+    config = function()
+      vim.notify = require 'notify'
     end
   }
 
@@ -85,40 +85,30 @@ require('packer').startup({function(use)
   use {
     'neovim/nvim-lspconfig',
     opt = true,
-    event = 'BufRead',
+    event = "BufReadPre",
     requires = {
-      'ray-x/lsp_signature.nvim',
-      'folke/lua-dev.nvim',
-      'jose-elias-alvarez/null-ls.nvim',
-      'RRethy/vim-illuminate',
+      { 'ray-x/lsp_signature.nvim', opt = true },
+      { 'folke/lua-dev.nvim', opt = true },
+      { 'jose-elias-alvarez/null-ls.nvim', opt = true },
+      { 'RRethy/vim-illuminate', opt = true },
     },
     wants = {
+      'lsp_signature.nvim',
       'lua-dev.nvim',
-      'cmp-nvim-lsp',
       'null-ls.nvim',
-      'nvim-cmp'
+      'vim-illuminate',
     },
     config = function()
-      require'fl.lsp'
+      require 'fl.lsp'
     end,
   }
-
-  -- statusline
-  use {
-    'windwp/windline.nvim',
-    requires = {'kyazdani42/nvim-web-devicons'},
-    config = function ()
-      require'fl.statusline'
-    end
-  }
-
   -- lsp status fidget
   use {
     'j-hui/fidget.nvim',
     opt = true,
     event = 'BufReadPre',
-    config = function ()
-      require'fidget'.setup{
+    config = function()
+      require 'fidget'.setup {
         text = {
           spinner = 'dots'
         }
@@ -130,87 +120,97 @@ require('packer').startup({function(use)
   use {
     'hrsh7th/nvim-cmp',
     opt = true,
-    event = 'BufRead',
+    event = 'InsertEnter',
+    config = function()
+      require('fl.completion')
+    end,
     wants = { 'LuaSnip' },
     requires = {
-      {'hrsh7th/cmp-buffer'},
-      {'hrsh7th/cmp-path'},
-      {'hrsh7th/cmp-nvim-lsp'},
-      {'hrsh7th/cmp-nvim-lua'},
-      {'hrsh7th/cmp-cmdline'},
-      {'saadparwaiz1/cmp_luasnip'},
+      { 'hrsh7th/cmp-nvim-lsp', opt = true, module = 'cmp_nvim_lsp' },
+      { 'hrsh7th/cmp-buffer', opt = true },
+      { 'hrsh7th/cmp-path', opt = true },
+      { 'saadparwaiz1/cmp_luasnip', opt = true },
       {
         'L3MON4D3/LuaSnip',
-        config = function ()
+        opt = true,
+        config = function()
           require('luasnip').config.set_config {
             history = true,
             updateevents = "TextChanged,TextChangedI",
           }
           require('fl.snippets').load()
-          local snippets_group = vim.api.nvim_create_augroup('ReloadSnippetsOnWrite', {clear = true})
+          local snippets_group = vim.api.nvim_create_augroup('ReloadSnippetsOnWrite', { clear = true })
           vim.api.nvim_create_autocmd('BufWritePost', {
             pattern = 'snippets.lua',
-            callback = function ()
+            callback = function()
               R('fl.snippets').load()
-              require'cmp_luasnip'.clear_cache()
+              require 'cmp_luasnip'.clear_cache()
             end,
             group = snippets_group,
           })
         end
       },
     },
-    config = function ()
-      require('fl.completion')
+  }
+
+  -- statusline
+  use {
+    'windwp/windline.nvim',
+    requires = { 'kyazdani42/nvim-web-devicons' },
+    config = function()
+      require 'fl.statusline'
     end
   }
 
   -- dressing, better default ui
   use {
     'stevearc/dressing.nvim',
+    opt = true,
     event = 'BufReadPre'
   }
 
   use {
     'ggandor/leap.nvim',
-    config = function ()
+    config = function()
       require('leap').setup {
         case_insensitive = true,
       }
       require('leap').set_default_keymaps(true)
       local function leap_bidirectional()
-        require'leap'.leap { ['target-windows'] = { vim.api.nvim_get_current_win() } }
+        require 'leap'.leap { ['target-windows'] = { vim.api.nvim_get_current_win() } }
       end
+
       vim.keymap.set('n', 'f', leap_bidirectional, { silent = true })
     end
   }
 
   -- alpha startscreen
   use { 'goolord/alpha-nvim',
-    requires = { 'kyazdani42/nvim-web-devicons' } ,
-    config = function ()
-      local alpha = require'alpha'
-      local startify = require'alpha.themes.startify'
+    requires = { 'kyazdani42/nvim-web-devicons' },
+    config = function()
+      local alpha = require 'alpha'
+      local startify = require 'alpha.themes.startify'
       startify.section.top_buttons.val = {
-        startify.button( "l", "  Open last session", ":lua require'persistence'.load()<CR>", {}),
-        startify.button( "e", "  New file", ":ene <CR>", {}),
+        startify.button("l", "  Open last session", ":lua require'persistence'.load()<CR>", {}),
+        startify.button("e", "  New file", ":ene <CR>", {}),
       }
       startify.section.bottom_buttons.val = {
-        startify.button( "c", "  Edit config" , ":e ~/.config/nvim/lua/fl/plugins.lua<CR>", {}),
-        startify.button( "q", "  Quit neovim" , ":qa<CR>", {}),
+        startify.button("c", "  Edit config", ":e ~/.config/nvim/lua/fl/plugins.lua<CR>", {}),
+        startify.button("q", "  Quit neovim", ":qa<CR>", {}),
       }
       alpha.setup(startify.opts)
-      vim.keymap.set('n', '<C-s>', '<cmd>Alpha<CR>', {noremap = true})
+      vim.keymap.set('n', '<C-s>', '<cmd>Alpha<CR>', { noremap = true })
     end
   }
 
   -- bufferline
   use {
     'akinsho/bufferline.nvim',
-    requires = {'kyazdani42/nvim-web-devicons'},
+    requires = { 'kyazdani42/nvim-web-devicons' },
     opt = true,
-    event = "BufReadPre",
+    event = "BufRead",
     config = function()
-      require('bufferline').setup{
+      require('bufferline').setup {
         options = {
           show_close_icon = false,
           show_buffer_close_icons = false,
@@ -243,15 +243,15 @@ require('packer').startup({function(use)
     opt = true,
     event = 'BufRead',
     config = function()
-      require('neoscroll').setup({easing_function = 'circular',})
+      require('neoscroll').setup({ easing_function = 'circular', })
     end
   }
   use {
     'edluffy/specs.nvim',
     opt = true,
     after = 'neoscroll.nvim',
-    config = function ()
-      require'specs'.setup {
+    config = function()
+      require 'specs'.setup {
         show_jumps = true,
         min_jump = 5,
         popup = {
@@ -285,7 +285,7 @@ require('packer').startup({function(use)
     opt = true,
     event = 'BufReadPre',
     config = function()
-      require('mini.indentscope').setup{
+      require('mini.indentscope').setup {
         symbol = '│',
         draw = {
           animation = function() return 10 end,
@@ -295,10 +295,12 @@ require('packer').startup({function(use)
   }
   use {
     'lukas-reineke/indent-blankline.nvim',
-    config = function ()
+    opt = true,
+    event = 'BufReadPre',
+    config = function()
       vim.g.indentLine_enabled = 1
       vim.g.indentLine_char = '│'
-      vim.g.indentLine_fileType = {'c', 'cpp', 'lua', 'python', 'vim'}
+      vim.g.indentLine_fileType = { 'c', 'cpp', 'lua', 'python', 'vim' }
       vim.g.indent_blankline_char_highlight = 'LineNr'
       vim.g.indent_blankline_show_trailing_blankline_indent = false
     end
@@ -310,9 +312,9 @@ require('packer').startup({function(use)
     opt = true,
     keys = { '<space>x' },
     config = function()
-      require('Comment').setup{}
-      vim.keymap.set('n', '<space>x', 'gcc', {silent = true})
-      vim.keymap.set('x', '<space>x', 'gc', {silent = true})
+      require('Comment').setup {}
+      vim.keymap.set('n', '<space>x', 'gcc', { silent = true })
+      vim.keymap.set('x', '<space>x', 'gc', { silent = true })
     end
   }
 
@@ -325,14 +327,15 @@ require('packer').startup({function(use)
         command = 'nnn -o -A',
         set_default_mappings = 0,
         replace_netrw = 1,
-        layout = { window = { width= 0.6, height= 0.7, xoffset= 0.95, highlight= 'Debug'} },
+        layout = { window = { width = 0.6, height = 0.7, xoffset = 0.95, highlight = 'Debug' } },
       })
       local function nnn_pick()
         local path = vim.fn.expand('%:p', nil, nil)
         local nnn_command = path == '' and 'NnnPicker' or ('NnnPicker' .. path)
         vim.api.nvim_command(nnn_command)
       end
-      vim.keymap.set('n', '<c-n>', nnn_pick, {silent = true})
+
+      vim.keymap.set('n', '<c-n>', nnn_pick, { silent = true })
     end,
   }
 
@@ -340,8 +343,8 @@ require('packer').startup({function(use)
     'windwp/nvim-autopairs',
     opt = true,
     after = 'nvim-cmp',
-    config = function ()
-      require'nvim-autopairs'.setup()
+    config = function()
+      require 'nvim-autopairs'.setup()
     end
   }
 
@@ -350,8 +353,8 @@ require('packer').startup({function(use)
     'danymat/neogen',
     opt = true,
     event = 'BufRead',
-    config = function ()
-      require'neogen'.setup {
+    config = function()
+      require 'neogen'.setup {
         enabled = true
       }
     end
@@ -359,12 +362,12 @@ require('packer').startup({function(use)
 
   use {
     'christoomey/vim-tmux-navigator',
-    config = function ()
+    config = function()
       vim.g.tmux_navigator_no_mappings = 1
-      vim.keymap.set('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {noremap= true, silent = true})
-      vim.keymap.set('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {noremap= true, silent = true})
-      vim.keymap.set('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {noremap= true, silent = true})
-      vim.keymap.set('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {noremap= true, silent = true})
+      vim.keymap.set('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', { noremap = true, silent = true })
     end
   }
 
@@ -373,34 +376,34 @@ require('packer').startup({function(use)
     'numtostr/FTerm.nvim',
     opt = true,
     keys = { '<A-i>' },
-    config = function ()
+    config = function()
       local shell = '/bin/fish'
       if vim.fn.has('mac') == 1 then
         shell = '/usr/local/bin/fish'
       end
-      require'FTerm'.setup({
-        cmd = shell,
-        border = 'double',
-        dimensions  = {
+      require 'FTerm'.setup({
+        cmd        = shell,
+        border     = 'double',
+        dimensions = {
           height = 0.8,
           width = 0.8,
           x = 0.9,
           y = 0.7
         },
       })
-      vim.keymap.set('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true, noremap = true})
-      vim.keymap.set('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true, noremap = true})
+      vim.keymap.set('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', { silent = true, noremap = true })
+      vim.keymap.set('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', { silent = true, noremap = true })
     end
   }
 
   -- the usual
-  use 'tpope/vim-repeat'
-  use 'tpope/vim-surround'
-  use 'kevinhwang91/nvim-bqf'
-  use 'tversteeg/registers.nvim'
-  use { 'tweekmonster/startuptime.vim', cmd = 'StartupTime' }
-  use { 'mhinz/vim-signify', event = 'BufRead', }
-  use { 'tpope/vim-scriptease', cmd = { 'Messages', 'Verbose', 'Time' }, }
+  use { 'tpope/vim-repeat', opt = true, event = 'BufRead', }
+  use { 'tpope/vim-surround', opt = true, event = 'BufRead', }
+  use { 'kevinhwang91/nvim-bqf', opt = true, event = 'BufRead', }
+  use { 'tversteeg/registers.nvim', opt = true, event = 'BufRead', }
+  use { 'tweekmonster/startuptime.vim', opt = true, cmd = 'StartupTime' }
+  use { 'mhinz/vim-signify', opt = true, event = 'BufRead', }
+  use { 'tpope/vim-scriptease', opt = true, cmd = { 'Messages', 'Verbose', 'Time' }, }
 
   -- keys
   use {
@@ -452,8 +455,8 @@ require('packer').startup({function(use)
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
 
-      wk.register({["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" }})
-      wk.register({["<C-k>"] = {
+      wk.register({ ["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" } })
+      wk.register({ ["<C-k>"] = {
         function()
           require("telescope.builtin").lsp_document_symbols({
             symbols = { "Class", "Function", "Method", "Constructor", "Interface", "Module" },
@@ -462,16 +465,16 @@ require('packer').startup({function(use)
           })
         end,
         "Goto Symbol",
-      }})
+      } })
     end
   }
   if packer_init_required then
-    require'packer'.sync()
+    require 'packer'.sync()
   end
 end,
-  config = {
-    display = {
-      open_fn = require('packer.util').float,
-    },
-  }
+config = {
+  display = {
+    open_fn = require('packer.util').float,
+  },
+}
 })
