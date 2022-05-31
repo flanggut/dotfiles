@@ -68,7 +68,7 @@ require('packer').startup({function(use)
     },
     config = function ()
       require'fl.telescope'
-      vim.api.nvim_set_keymap("n", "F", "<cmd>Telescope current_buffer_fuzzy_find<cr>", {silent = true, noremap = true})
+      vim.keymap.set("n", "F", "<cmd>Telescope current_buffer_fuzzy_find<cr>", {silent = true, noremap = true})
     end
   }
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
@@ -199,7 +199,7 @@ require('packer').startup({function(use)
         startify.button( "q", "  Quit neovim" , ":qa<CR>", {}),
       }
       alpha.setup(startify.opts)
-      vim.api.nvim_set_keymap('n', '<C-s>', '<cmd>Alpha<CR>', {noremap = true})
+      vim.keymap.set('n', '<C-s>', '<cmd>Alpha<CR>', {noremap = true})
     end
   }
 
@@ -230,10 +230,10 @@ require('packer').startup({function(use)
         }
       }
 
-      vim.api.nvim_set_keymap('n', 'gh', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', 'gl', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', 'gj', ':BufferLinePick<CR>', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', 'gq', ':BufferLinePickClose<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', 'gh', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', 'gl', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', 'gj', ':BufferLinePick<CR>', { noremap = true, silent = true })
+      vim.keymap.set('n', 'gq', ':BufferLinePickClose<CR>', { noremap = true, silent = true })
     end
   }
 
@@ -311,8 +311,8 @@ require('packer').startup({function(use)
     keys = { '<space>x' },
     config = function()
       require('Comment').setup{}
-      vim.api.nvim_set_keymap('n', '<space>x', 'gcc', {silent = true})
-      vim.api.nvim_set_keymap('x', '<space>x', 'gc', {silent = true})
+      vim.keymap.set('n', '<space>x', 'gcc', {silent = true})
+      vim.keymap.set('x', '<space>x', 'gc', {silent = true})
     end
   }
 
@@ -361,10 +361,10 @@ require('packer').startup({function(use)
     'christoomey/vim-tmux-navigator',
     config = function ()
       vim.g.tmux_navigator_no_mappings = 1
-      vim.api.nvim_set_keymap('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {noremap= true, silent = true})
-      vim.api.nvim_set_keymap('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {noremap= true, silent = true})
-      vim.api.nvim_set_keymap('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {noremap= true, silent = true})
-      vim.api.nvim_set_keymap('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {noremap= true, silent = true})
+      vim.keymap.set('n', '<M-h>', '<cmd>TmuxNavigateLeft<cr>', {noremap= true, silent = true})
+      vim.keymap.set('n', '<M-j>', '<cmd>TmuxNavigateDown<cr>', {noremap= true, silent = true})
+      vim.keymap.set('n', '<M-k>', '<cmd>TmuxNavigateUp<cr>', {noremap= true, silent = true})
+      vim.keymap.set('n', '<M-l>', '<cmd>TmuxNavigateRight<cr>', {noremap= true, silent = true})
     end
   }
 
@@ -388,8 +388,8 @@ require('packer').startup({function(use)
           y = 0.7
         },
       })
-      vim.api.nvim_set_keymap('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true, noremap = true})
-      vim.api.nvim_set_keymap('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true, noremap = true})
+      vim.keymap.set('n', '<A-i>', '<cmd>lua require("FTerm").toggle()<CR>', {silent = true, noremap = true})
+      vim.keymap.set('t', '<A-i>', '<C-\\><C-n><cmd>lua require("FTerm").toggle()<CR>', {silent = true, noremap = true})
     end
   }
 
