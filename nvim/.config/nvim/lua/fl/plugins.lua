@@ -68,7 +68,6 @@ require('packer').startup({ function(use)
     },
     config = function()
       require 'fl.telescope'
-      vim.keymap.set("n", "F", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { silent = true, noremap = true })
     end
   }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
@@ -175,12 +174,14 @@ require('packer').startup({ function(use)
       require('leap').setup {
         case_insensitive = true,
       }
-      require('leap').set_default_keymaps(true)
       local function leap_bidirectional()
         require 'leap'.leap { ['target-windows'] = { vim.api.nvim_get_current_win() } }
       end
-
-      vim.keymap.set('n', 'f', leap_bidirectional, { silent = true })
+      vim.keymap.set('n', 's', leap_bidirectional, { silent = true })
+      vim.keymap.set('n', 'f', '<Plug>(leap-forward)', { silent = true })
+      vim.keymap.set('n', 'F', '<Plug>(leap-backward)', { silent = true })
+      vim.keymap.set('x', 'f', '<Plug>(leap-forward)', { silent = true })
+      vim.keymap.set('x', 'F', '<Plug>(leap-backward)', { silent = true })
     end
   }
 
@@ -313,8 +314,8 @@ require('packer').startup({ function(use)
     keys = { '<space>x' },
     config = function()
       require('Comment').setup {}
-      vim.keymap.set('n', '<space>x', 'gcc', { silent = true })
-      vim.keymap.set('x', '<space>x', 'gc', { silent = true })
+      vim.keymap.set('n', '<space>x', '<plug>(comment_toggle_current_linewise)', { silent = true })
+      vim.keymap.set('x', '<space>x', '<plug>(comment_toggle_linewise_visual)', { silent = true })
     end
   }
 
