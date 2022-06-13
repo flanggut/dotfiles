@@ -64,14 +64,14 @@ end
 
 M.myfiles = function(opts)
   if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-    require('telescope.builtin').find_files({hidden=true})
+    require('telescope.builtin').find_files()
   else
     opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
 
     local myles_search = require 'telescope.finders'.new_job(
       function(prompt)
         if not prompt or prompt == "" or string.len(prompt) < 7 then
-          return vim.tbl_flatten { 'find', '.', '-type', 'f', '-maxdepth', '1' }
+          return vim.tbl_flatten { 'find', '.', '-not', '-path', '*/.*', '-type', 'f', '-maxdepth', '1' }
         end
         return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
       end,
