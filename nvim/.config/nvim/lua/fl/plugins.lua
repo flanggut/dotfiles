@@ -429,10 +429,16 @@ require('packer').startup({ function(use)
         q = { "<cmd>bdelete!<CR>", "Close Buffer" },
         s = {
           name = "+search",
+          c = { "<cmd>lua require('telescope.builtin').commands()<cr>", "Vim Commands" },
           d = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },
+          e = { "<cmd>lua require('telescope.builtin').symbols()<cr>", "Emoji" },
           f = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Buffer Fuzzy" },
           h = { "<cmd>Telescope command_history<cr>", "Command History" },
           H = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
+          l = { "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>", "Previous Files" },
+          p = { "<cmd>lua require('telescope.builtin').registers()<cr>", "Registers" },
+          q = { "<cmd>lua require('telescope.builtin').quickfix()<cr>", "Quickfix" },
+          t = { "<cmd>lua require('telescope.builtin').treesitter()<cr>", "Treesitter" },
           s = { "<cmd>Telescope treesitter<cr>", "Treesitter" },
           v = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/.local/share/nvim/site/pack/packer/'})<cr>", "Vim Plugins" },
           y = {
@@ -445,6 +451,7 @@ require('packer').startup({ function(use)
             end,
             "Goto Symbol",
           },
+          z = { "<cmd>lua require'telescope'.extensions.z.list()<CR>", "Z" },
         },
       }
       wk.register(leader, { prefix = "<leader>" })
@@ -456,7 +463,6 @@ require('packer').startup({ function(use)
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
 
-      wk.register({ ["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" } })
       wk.register({ ["<C-k>"] = {
         function()
           require("telescope.builtin").lsp_document_symbols({
@@ -467,6 +473,8 @@ require('packer').startup({ function(use)
         end,
         "Goto Symbol",
       } })
+      wk.register({ ["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" } })
+      wk.register({ ["<C-p>"] = { "<cmd>lua R('fl.functions').myfiles({})<cr>", "Files" } })
     end
   }
   if packer_init_required then

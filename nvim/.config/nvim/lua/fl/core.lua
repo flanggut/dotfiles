@@ -98,50 +98,55 @@ vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
 })
 
 -------------------- Basic Keybinds ------------------------
-local function map(mode, lhs, rhs, opts) -- map keybind
-  local options = {noremap = true}
-  if opts then options = vim.tbl_extend('force', options, opts) end
-  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
-
 --Remap space as leader key
-vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
+vim.keymap.set('', '<Space>', '<Nop>', { noremap = true, silent = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 --Remap for dealing with word wrap
-vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", { noremap = true, expr = true, silent = true })
-vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = true, silent = true })
+vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { noremap = true, expr = true, silent = true })
+vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = true, silent = true })
 
-map('n', '<esc><esc>', '<cmd>nohlsearch<CR>')
-map('n', '<leader>l', "<C-^>")
-map('n', '-', '^')
-map('n', '+', '$')
+-- remove highlight from search
+vim.keymap.set('n', '<esc><esc>', '<cmd>nohlsearch<CR>')
 
+-- toggle two most recent files
+vim.keymap.set('n', '<leader>l', "<C-^>")
+
+-- goto line start/end
+vim.keymap.set('n', '-', '^')
+vim.keymap.set('n', '+', '$')
 
 -- Y yank until the end of line  (note: this is now a default on master)
-map('n', 'Y', 'y$')
--- yank to clipboard
-map('n', '<leader>y', [["+y]])
-map('v', '<leader>y', [["+y]])
+vim.keymap.set('n', 'Y', 'y$', {noremap = true})
 
-map('n', '<leader>co', [[<cmd>copen<CR>]])
-map('n', '<leader>cc', [[<cmd>cclose<CR>]])
+-- yank to clipboard
+vim.keymap.set('n', '<leader>y', [["+y]], {noremap = true})
+vim.keymap.set('v', '<leader>y', [["+y]], {noremap = true})
+
+-- open/close quickfix list
+vim.keymap.set('n', '<leader>co', [[<cmd>copen<CR>]], {noremap = true})
+vim.keymap.set('n', '<leader>cc', [[<cmd>cclose<CR>]], {noremap = true})
+
 -- search and replace visual selection
-map('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]])
+vim.keymap.set('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]], {noremap = true})
+
 -- toggle fold
-map('n', '<leader>F', "za", {noremap=false})
+vim.keymap.set('n', '<leader>F', "za", {noremap=false})
+
 -- better star search
-map('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false, silent=true})
+vim.keymap.set('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false, silent=true})
+
 -- move visual selection up or down
-map('v', '<C-j>', [[:m '>+1<CR>gv=gv]], {noremap = true})
-map('v', '<C-k>', [[:m '<-2<CR>gv=gv]], {noremap = true})
--- undo breakpoints
-map('i', ',', ',<c-g>u', {noremap = true})
-map('i', '.', '.<c-g>u', {noremap = true})
-map('i', '(', '(<c-g>u', {noremap = true})
-map('i', '<', '<<c-g>u', {noremap = true})
+vim.keymap.set('v', '<C-j>', [[:m '>+1<CR>gv=gv]], {noremap = true})
+vim.keymap.set('v', '<C-k>', [[:m '<-2<CR>gv=gv]], {noremap = true})
+
+-- undo breakpoints on several keys in insert mode
+vim.keymap.set('i', ',', ',<c-g>u', {noremap = true})
+vim.keymap.set('i', '.', '.<c-g>u', {noremap = true})
+vim.keymap.set('i', '(', '(<c-g>u', {noremap = true})
+vim.keymap.set('i', '<', '<<c-g>u', {noremap = true})
 
 -- Unmap common typos
-map('n', 'q:', "<nop>", {noremap=true})
-map('n', 'Q', "<nop>", {noremap=true})
+vim.keymap.set('n', 'q:', "<nop>", {noremap=true})
+vim.keymap.set('n', 'Q', "<nop>", {noremap=true})

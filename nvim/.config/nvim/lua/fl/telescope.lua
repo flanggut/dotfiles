@@ -76,22 +76,3 @@ require('telescope').setup{
 }
 require'telescope'.load_extension('fzf')
 require'telescope'.load_extension('z')
-
-local function map(mode, lhs, rhs, opts) -- map keybind
-  local options = {noremap = true}
-  if opts then options = vim.tbl_extend('force', options, opts) end
-  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
-map('n', '<leader>sb', "<cmd>lua require('telescope.builtin').symbols()<cr>")
-map('n', '<leader>sc', "<cmd>lua require('telescope.builtin').commands()<cr>")
-map('n', '<leader>sf', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-map('n', '<leader>sl', "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>")
-map('n', '<leader>sp', "<cmd>lua require('telescope.builtin').registers()<cr>")
-map('n', '<leader>sq', "<cmd>lua require('telescope.builtin').quickfix()<cr>")
-map('n', '<leader>st', "<cmd>lua require('telescope.builtin').treesitter()<cr>")
-map('n', '<leader>sz', "<cmd>lua require'telescope'.extensions.z.list()<CR>", {silent=true})
-
-map('n', '<C-p>', ':lua R("fl.functions").myfiles({})<CR>', {noremap = true, silent = true})
-map('n', '<leader>mg', ':lua R("fl.functions").mygrep({list_files_only=false})<CR>', {noremap = true, silent = true})
-map('n', '<leader>ml', ':lua R("fl.functions").mygrep({list_files_only=true})<CR>', {noremap = true, silent = true})
-
