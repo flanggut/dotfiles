@@ -139,8 +139,11 @@ nls.setup({
   debounce = 150,
   save_after_format = false,
   sources = {
+    nls.builtins.diagnostics.jsonlint,
+    nls.builtins.diagnostics.shellcheck,
     nls.builtins.formatting.black,
     nls.builtins.formatting.fish_indent,
+    nls.builtins.formatting.json_tool,
   },
   on_attach = on_attach,
 })
