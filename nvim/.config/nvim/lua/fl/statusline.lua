@@ -28,7 +28,7 @@ M.vi_mode = {
   name = 'vi_mode',
   hl_colors = colors_mode,
   text = function()
-    if vim.fn.has('macunix') then
+    if vim.fn.has('macunix') == 1 then
       return {
         { '  ', state.mode[2] },
         { helper.separators.slant_left_2, state.mode[2] },
