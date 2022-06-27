@@ -1,7 +1,7 @@
 local nvim_lsp = require('lspconfig')
 local util = require('lspconfig.util')
 
-local on_attach = function(client, bufnr)
+local default_on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -48,13 +48,13 @@ nvim_lsp['clangd'].setup {
     "clangd", "--background-index", "--completion-style=detailed", "--suggest-missing-includes",
     "--header-insertion=never", "-j=8"
   },
-  on_attach = on_attach
+  on_attach = default_on_attach
 }
 
 -- Rust
 nvim_lsp['rust_analyzer'].setup {
   capabilities = capabilities,
-  on_attach = on_attach
+  on_attach = default_on_attach
 }
 
 -- BUCK
@@ -62,7 +62,7 @@ local found_buckls_config, _ = pcall(require, 'lspconfig.server_configurations.b
 if found_buckls_config then
   nvim_lsp['buckls'].setup {
     capabilities = capabilities,
-    on_attach = on_attach
+    on_attach = default_on_attach
   }
 end
 
@@ -73,7 +73,7 @@ if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
     on_attach = function(client, bufnr)
       client.resolved_capabilities.document_formatting = false
       client.resolved_capabilities.document_range_formatting = false
-      on_attach(client, bufnr)
+      default_on_attach(client, bufnr)
     end
   }
 else
@@ -90,7 +90,11 @@ else
         "--log-file",
         "/tmp/flanggut-logs/pyls.log"
       },
-      on_attach = on_attach,
+      on_attach = function(client, bufnr)
+        client.resolved_capabilities.document_formatting = false
+        client.resolved_capabilities.document_range_formatting = false
+        default_on_attach(client, bufnr)
+      end,
       capabilities = capabilities,
       filetypes = { "python" },
       root_dir = util.root_pattern(".buckconfig"),
@@ -128,7 +132,7 @@ end
 nvim_lsp['sumneko_lua'].setup(require('lua-dev').setup {
   lspconfig = {
     capabilities = capabilities,
-    on_attach = on_attach
+    on_attach = default_on_attach
   }
 }
 )
@@ -139,11 +143,12 @@ nls.setup({
   debounce = 150,
   save_after_format = false,
   sources = {
+    nls.builtins.diagnostics.flake8,
     nls.builtins.diagnostics.jsonlint,
     nls.builtins.diagnostics.shellcheck,
     nls.builtins.formatting.black,
     nls.builtins.formatting.fish_indent,
     nls.builtins.formatting.json_tool,
   },
-  on_attach = on_attach,
+  on_attach = default_on_attach,
 })

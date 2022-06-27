@@ -64,18 +64,22 @@ end
 
 M.myfiles = function(opts)
   if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-    require('telescope.builtin').find_files()
+    if string.find(vim.fn.expand(vim.loop.cwd()), "dotfiles") then
+      require('telescope.builtin').find_files({ hidden = true })
+    else
+      require('telescope.builtin').find_files()
+    end
   else
     opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
 
     local myles_search = require 'telescope.finders'.new_job(
-      function(prompt)
-        if not prompt or prompt == "" or string.len(prompt) < 7 then
-          return vim.tbl_flatten { 'find', '.', '-not', '-path', '*/.*', '-type', 'f', '-maxdepth', '1' }
-        end
-        return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
-      end,
-      opts.entry_maker or require 'telescope.make_entry'.gen_from_file(opts), 25, opts.cwd
+    function(prompt)
+      if not prompt or prompt == "" or string.len(prompt) < 7 then
+        return vim.tbl_flatten { 'find', '.', '-not', '-path', '*/.*', '-type', 'f', '-maxdepth', '1' }
+      end
+      return vim.tbl_flatten { 'arc', 'myles', '--list', '-n', '25', prompt }
+    end,
+    opts.entry_maker or require 'telescope.make_entry'.gen_from_file(opts), 25, opts.cwd
     )
     require 'telescope.pickers'.new(opts, {
       prompt_title = "Myles",
