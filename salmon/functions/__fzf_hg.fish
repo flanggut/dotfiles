@@ -20,7 +20,7 @@ function __fzf_hg
   --bind "ctrl-g:execute(hg graft (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
   --bind "ctrl-h:execute(hg rebase -s (echo {} | cut -c -9) -d . )+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
   --bind "ctrl-p:execute(hg pull)+reload($FZF_DEFAULT_COMMAND)+refresh-preview" \
-  --bind "ctrl-r:execute(hg rebase -s (echo {} | cut -c -9) -d . )+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
+  --bind "ctrl-r:execute(hg rebase -s (echo {} | cut -c -9) -d stable )+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
   --bind "ctrl-o:execute(hg show --color always (echo {} | cut -c -9) | less -R)" \
   --bind "ctrl-n:execute(jf s -n -r (echo {} | cut -c -9))+execute(hg show --stat (echo {} | cut -c -9))+abort" \
   --bind "ctrl-t:execute(hg rebase -s (pbpaste) -d (echo {} | cut -c -9))+reload($FZF_DEFAULT_COMMAND)+refresh-preview+clear-query" \
