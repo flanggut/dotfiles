@@ -16,6 +16,13 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 
 -- Start up packer, sync packages afterwards if required
 require('packer').startup({ function(use)
+  -- local plugins
+  if vim.fn.isdirectory(vim.env.META_SCRIPTS) ~= 0 then
+    use {
+      vim.env.META_SCRIPTS .. 'neovim/metadiff'
+    }
+  end
+
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
@@ -128,6 +135,7 @@ require('packer').startup({ function(use)
       { 'hrsh7th/cmp-nvim-lsp', opt = true, module = 'cmp_nvim_lsp' },
       { 'hrsh7th/cmp-buffer', opt = true },
       { 'hrsh7th/cmp-path', opt = true },
+      { 'hrsh7th/cmp-nvim-lua', opt = true },
       { 'saadparwaiz1/cmp_luasnip', opt = true },
       {
         'L3MON4D3/LuaSnip',
@@ -172,11 +180,17 @@ require('packer').startup({ function(use)
     'ggandor/leap.nvim',
     config = function()
       require('leap').setup {
-        case_insensitive = true,
+        case_sensitive = false,
+        character_classes = {
+          "()[]<>.!@#$%^&*=-+~",
+          "=-+*",
+          "\"'`"
+        },
       }
       local function leap_bidirectional()
         require 'leap'.leap { ['target-windows'] = { vim.api.nvim_get_current_win() } }
       end
+
       vim.keymap.set('n', 's', leap_bidirectional, { silent = true })
       vim.keymap.set('n', 'f', '<Plug>(leap-forward)', { silent = true })
       vim.keymap.set('n', 'F', '<Plug>(leap-backward)', { silent = true })
@@ -199,7 +213,14 @@ require('packer').startup({ function(use)
         startify.button("c", "  Edit config", ":e ~/.config/nvim/lua/fl/plugins.lua<CR>", {}),
         startify.button("q", "  Quit neovim", ":qa<CR>", {}),
       }
-      alpha.setup(startify.opts)
+      local mru_ignore_ext = { "gitcommit" }
+      local mru_ignore = function(path, ext)
+        return (vim.tbl_contains(mru_ignore_ext, ext)) or
+        (string.find(path, "COMMIT_EDITMSG")) or
+        (string.find(path, "commit.hg"))
+      end
+      startify.mru_opts.ignore = mru_ignore
+      alpha.setup(startify.config)
       vim.keymap.set('n', '<C-s>', '<cmd>Alpha<CR>', { noremap = true })
     end
   }
@@ -331,7 +352,8 @@ require('packer').startup({ function(use)
         layout = { window = { width = 0.6, height = 0.7, xoffset = 0.95, highlight = 'Debug' } },
       })
       local function nnn_pick()
-        local path = vim.fn.expand('%:p', nil, nil)
+        ---@diagnostic disable-next-line: missing-parameter
+        local path = vim.fn.expand('%:p')
         local nnn_command = path == '' and 'NnnPicker' or ('NnnPicker' .. path)
         vim.api.nvim_command(nnn_command)
       end
@@ -422,6 +444,14 @@ require('packer').startup({ function(use)
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
+        m = {
+          i = {
+            function()
+              require 'metadiff'.diff_picker({})
+            end,
+            "Diff Picker"
+          },
+        },
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" }
         },
@@ -435,12 +465,14 @@ require('packer').startup({ function(use)
           f = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Buffer Fuzzy" },
           h = { "<cmd>Telescope command_history<cr>", "Command History" },
           H = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
-          l = { "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>", "Previous Files" },
+          l = { "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>",
+            "Previous Files" },
           p = { "<cmd>lua require('telescope.builtin').registers()<cr>", "Registers" },
           q = { "<cmd>lua require('telescope.builtin').quickfix()<cr>", "Quickfix" },
           t = { "<cmd>lua require('telescope.builtin').treesitter()<cr>", "Treesitter" },
           s = { "<cmd>Telescope treesitter<cr>", "Treesitter" },
-          v = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/.local/share/nvim/site/pack/packer/'})<cr>", "Vim Plugins" },
+          v = { "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/.local/share/nvim/site/pack/packer/'})<cr>",
+            "Vim Plugins" },
           y = {
             function()
               require("telescope.builtin").lsp_document_symbols({
@@ -481,9 +513,9 @@ require('packer').startup({ function(use)
     require 'packer'.sync()
   end
 end,
-config = {
-  display = {
-    open_fn = require('packer.util').float,
-  },
-}
+  config = {
+    display = {
+      open_fn = require('packer.util').float,
+    },
+  }
 })

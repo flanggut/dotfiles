@@ -47,6 +47,7 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'buffer', keyword_length = 4 },
     { name = 'path' },
+    { name = 'nvim_lua' },
   },
   snippet = {
     expand = function(args)
