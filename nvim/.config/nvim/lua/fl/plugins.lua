@@ -182,20 +182,11 @@ require('packer').startup({ function(use)
       require('leap').setup {
         case_sensitive = false,
         character_classes = {
-          "()[]<>.!@#$%^&*=-+~",
-          "=-+*",
-          "\"'`"
+          ".!@#$%^&*=-+~|*",
+          "\"'`()[]<>{}"
         },
       }
-      local function leap_bidirectional()
-        require 'leap'.leap { ['target-windows'] = { vim.api.nvim_get_current_win() } }
-      end
-
-      vim.keymap.set('n', 's', leap_bidirectional, { silent = true })
-      vim.keymap.set('n', 'f', '<Plug>(leap-forward)', { silent = true })
-      vim.keymap.set('n', 'F', '<Plug>(leap-backward)', { silent = true })
-      vim.keymap.set('x', 'f', '<Plug>(leap-forward)', { silent = true })
-      vim.keymap.set('x', 'F', '<Plug>(leap-backward)', { silent = true })
+      require('leap').set_default_keymaps()
     end
   }
 
@@ -215,9 +206,10 @@ require('packer').startup({ function(use)
       }
       local mru_ignore_ext = { "gitcommit" }
       local mru_ignore = function(path, ext)
-        return (vim.tbl_contains(mru_ignore_ext, ext)) or
-        (string.find(path, "COMMIT_EDITMSG")) or
-        (string.find(path, "commit.hg"))
+        return vim.tbl_contains(mru_ignore_ext, ext) or
+        path:find "COMMIT_EDITMSG" or
+        path:find "histedit.hg" or
+        path:find "commit.hg"
       end
       startify.mru_opts.ignore = mru_ignore
       alpha.setup(startify.config)
@@ -419,9 +411,18 @@ require('packer').startup({ function(use)
     end
   }
 
+  -- surround plugin of choice
+  use {
+    "kylechui/nvim-surround",
+    opt = true,
+    event = 'BufRead',
+    config = function()
+        require("nvim-surround").setup{}
+    end
+  }
+
   -- the usual
   use { 'tpope/vim-repeat', opt = true, event = 'BufRead', }
-  use { 'tpope/vim-surround', opt = true, event = 'BufRead', }
   use { 'kevinhwang91/nvim-bqf', opt = true, event = 'BufRead', }
   use { 'tversteeg/registers.nvim', opt = true, event = 'BufRead', }
   use { 'tweekmonster/startuptime.vim', opt = true, cmd = 'StartupTime' }
@@ -439,7 +440,8 @@ require('packer').startup({ function(use)
           s = { "<cmd>ISwapWith<CR>", "Swap argument with other" }
         },
         c = {
-          d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" }
+          d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
+          D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" }
         },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },

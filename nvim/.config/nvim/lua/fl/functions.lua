@@ -30,15 +30,21 @@ M.restart_all_lsp_servers = function()
 end
 
 M.compile_commands_running = {}
-M.generate_compile_commands = function()
+M.generate_compile_commands = function(all_files)
   local Job = require'plenary.job'
   local Path = require 'plenary.path'
   local notify = require'notify'
-  local filename = vim.fn.expand('%:p')
-  local tail = string.match(filename, "[^" .. Path.path.sep .. "]*$")
+  local filename = string(vim.fn.expand('%:p'))
+  local tail = "all files"
+  local args = {}
+  if not all_files and filename then
+    args = { filename }
+    tail = string.match(filename, "[^" .. Path.path.sep .. "]*$")
+  end
+  filename= filename or "all"
   Job:new({
     command = 'commands_for_file.py',
-    args = { filename },
+    args = args,
     cwd = '~/fbsource',
     on_start = function()
       M.compile_commands_running[filename] = true
@@ -63,8 +69,9 @@ M.generate_compile_commands = function()
 end
 
 M.myfiles = function(opts)
-  if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-    if string.find(vim.fn.expand(vim.loop.cwd()), "dotfiles") then
+  local cwd = vim.fn.expand(vim.loop.cwd()) or "~"
+  if not string.find(cwd, "fbsource") then
+    if string.find(cwd, "dotfiles") then
       require('telescope.builtin').find_files({ hidden = true })
     else
       require('telescope.builtin').find_files()
