@@ -26,6 +26,13 @@ require('packer').startup({ function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
+  use {
+    'miversen33/import.nvim',
+    config = function ()
+      require 'import'
+    end
+  }
+
   -- Theme
   use {
     'sainnhe/gruvbox-material',
@@ -233,10 +240,10 @@ require('packer').startup({ function(use)
         },
         highlights = {
           buffer_selected = {
-            gui = "bold"
+            bold = true
           },
           fill = {
-            guibg = {
+            bg = {
               attribute = "bg",
               highlight = "Normal"
             }
@@ -327,7 +334,7 @@ require('packer').startup({ function(use)
     keys = { '<space>x' },
     config = function()
       require('Comment').setup {}
-      vim.keymap.set('n', '<space>x', '<plug>(comment_toggle_current_linewise)', { silent = true })
+      vim.keymap.set('n', '<space>x', '<plug>(comment_toggle_linewise_current)', { silent = true })
       vim.keymap.set('x', '<space>x', '<plug>(comment_toggle_linewise_visual)', { silent = true })
     end
   }

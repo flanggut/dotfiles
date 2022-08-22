@@ -34,7 +34,7 @@ M.generate_compile_commands = function(all_files)
   local Job = require'plenary.job'
   local Path = require 'plenary.path'
   local notify = require'notify'
-  local filename = string(vim.fn.expand('%:p'))
+  local filename = vim.fn.expand('%:p')
   local tail = "all files"
   local args = {}
   if not all_files and filename then
