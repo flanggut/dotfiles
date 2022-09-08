@@ -33,21 +33,6 @@ alias ll="tree -C | less -r"
 alias mru="ls -t | head -5"
 alias p3="python3"
 
-alias dff="hg diff | delta | less -r"
-alias show="hg diff -r .^ | delta | less -r"
-alias shows="hg show --stat"
-alias sshow="hg st -m"
-alias sl="hg fsl"
-alias ssl="hg fssl"
-alias histe="hg histedit"
-alias hgn="hg next"
-alias hgp="hg prev"
-alias jfs="jf s"
-alias jfs2="jf s -r .^..."
-alias jfs3="jf s -r .^^..."
-alias jfs4="jf s -r .^^^..."
-alias jfs5="jf s -r .^^^^..."
-
 alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin /usr/local/bin"
 
 alias rg="rg --no-ignore-messages --max-columns=160 -S"
@@ -57,19 +42,74 @@ alias xtrace="xcrun xctrace record --template 'Time Profiler' --launch --"
 alias xtracemem="xcrun xctrace record --template 'Allocations' --launch --"
 
 function zp
-  if test "$history[1]" != "zp"
-    eval $history[1]
-  else
-    eval $history[2]
-  end
+    if test "$history[1]" != zp
+        eval $history[1]
+    else
+        eval $history[2]
+    end
+end
+
+############################
+#     Git + HG commands    #
+alias shows="hg show --stat"
+alias sshow="hg st -m"
+alias ssl="hg fssl"
+alias histe="hg histedit"
+alias hgn="hg next"
+alias hgp="hg prev"
+alias jfs="jf s"
+alias jfa="jf a"
+alias jfs2="jf s -r .^..."
+alias jfs3="jf s -r .^^..."
+alias jfs4="jf s -r .^^^..."
+alias jfs5="jf s -r .^^^^..."
+
+function ci
+    if test -d .git
+        git ci
+    else
+        hg ci
+    end
+end
+
+function dff
+    if test -d .git
+        git diff | delta | less -r
+    else
+        hg diff | delta | less -r
+    end
+end
+
+function sl
+    if test -d .git
+        git sl
+    else
+        hg fsl
+    end
+end
+
+function show
+    if test -d .git
+        git show | delta | less -r
+    else
+        hg diff -r .^ | delta | less -r
+    end
+end
+
+function st
+    if test -d .git
+        git st
+    else
+        hg st
+    end
 end
 
 ############################
 #       Mac Specifics      #
 switch (uname)
-  case Darwin
-    alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
-    alias fll="rg --files | rg"
+    case Darwin
+        alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+        alias fll="rg --files | rg"
 end
 
 ############################
