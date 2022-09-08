@@ -64,6 +64,16 @@ cmp.setup {
             return vim_item
         end,
   },
+  sorting = {
+		priority_weight = 1.0,
+		comparators = {
+		  cmp.config.compare.locality,
+		  cmp.config.compare.recently_used,
+		  cmp.config.compare.score,
+		  cmp.config.compare.offset,
+		  cmp.config.compare.order,
+		},
+	},
   mapping = {
     ["<C-e>"] = cmp.mapping.close(),
     ["<C-f>"] = cmp.mapping.confirm {

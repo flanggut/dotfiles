@@ -28,7 +28,7 @@ require('packer').startup({ function(use)
 
   use {
     'miversen33/import.nvim',
-    config = function ()
+    config = function()
       require 'import'
     end
   }
@@ -60,7 +60,6 @@ require('packer').startup({ function(use)
   use 'nvim-treesitter/nvim-treesitter-textobjects'
   use 'nvim-treesitter/playground'
   use 'RRethy/nvim-treesitter-textsubjects'
-  use 'mizlan/iswap.nvim'
   use 'mfussenegger/nvim-ts-hint-textobject'
 
   use {
@@ -132,8 +131,6 @@ require('packer').startup({ function(use)
   -- nvim-cmp and snippets
   use {
     'hrsh7th/nvim-cmp',
-    opt = true,
-    event = 'InsertEnter',
     config = function()
       require('fl.completion')
     end,
@@ -143,10 +140,9 @@ require('packer').startup({ function(use)
       { 'hrsh7th/cmp-buffer', opt = true },
       { 'hrsh7th/cmp-path', opt = true },
       { 'hrsh7th/cmp-nvim-lua', opt = true },
-      { 'saadparwaiz1/cmp_luasnip', opt = true },
+      { 'saadparwaiz1/cmp_luasnip' },
       {
         'L3MON4D3/LuaSnip',
-        opt = true,
         config = function()
           require('luasnip').config.set_config {
             history = true,
@@ -189,12 +185,25 @@ require('packer').startup({ function(use)
       require('leap').setup {
         case_sensitive = false,
         character_classes = {
-          ".!@#$%^&*=-+~|*",
+          "!@#$%^&=-+~|*",
           "\"'`()[]<>{}"
         },
+        special_keys = {
+          next_match = ';',
+        }
       }
       require('leap').set_default_keymaps()
-    end
+    end,
+    requires = {
+      {
+        'ggandor/lightspeed.nvim',
+        config = function()
+          require 'lightspeed'.setup {
+            repeat_ft_with_target_char = true
+          }
+        end
+      }
+    }
   }
 
   -- alpha startscreen
@@ -214,9 +223,9 @@ require('packer').startup({ function(use)
       local mru_ignore_ext = { "gitcommit" }
       local mru_ignore = function(path, ext)
         return vim.tbl_contains(mru_ignore_ext, ext) or
-        path:find "COMMIT_EDITMSG" or
-        path:find "histedit.hg" or
-        path:find "commit.hg"
+            path:find "COMMIT_EDITMSG" or
+            path:find "histedit.hg" or
+            path:find "commit.hg"
       end
       startify.mru_opts.ignore = mru_ignore
       alpha.setup(startify.config)
@@ -312,6 +321,7 @@ require('packer').startup({ function(use)
           animation = function() return 10 end,
         }
       }
+      require('mini.ai').setup {}
     end
   }
   use {
@@ -341,8 +351,6 @@ require('packer').startup({ function(use)
 
   -- NNN
   use { 'mcchrish/nnn.vim',
-    opt = true,
-    keys = { '<c-n>' },
     config = function()
       require('nnn').setup({
         command = 'nnn -o -A',
@@ -401,11 +409,11 @@ require('packer').startup({ function(use)
     config = function()
       local shell = '/bin/fish'
       if vim.fn.has('mac') == 1 then
-        shell = '/usr/local/bin/fish'
+        shell = '~/homebrew/bin/fish'
       end
       require 'FTerm'.setup({
         cmd        = shell,
-        border     = 'double',
+        border     = 'rounded',
         dimensions = {
           height = 0.8,
           width = 0.8,
@@ -424,7 +432,7 @@ require('packer').startup({ function(use)
     opt = true,
     event = 'BufRead',
     config = function()
-        require("nvim-surround").setup{}
+      require("nvim-surround").setup {}
     end
   }
 
