@@ -43,11 +43,14 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- C++
+local clangd_binary = 'clangd'
+if vim.fn.isdirectory('/Users/flanggut/homebrew/opt/llvm') ~= 0 then
+  clangd_binary = '/Users/flanggut/homebrew/opt/llvm/bin/clangd'
+end
 nvim_lsp['clangd'].setup {
   capabilities = capabilities,
   cmd = {
-    "clangd", "--background-index", "--completion-style=detailed", "--suggest-missing-includes",
-    "--header-insertion=never", "-j=8"
+    clangd_binary, "--background-index", "--completion-style=detailed", "--header-insertion=never"
   },
   on_attach = default_on_attach
 }

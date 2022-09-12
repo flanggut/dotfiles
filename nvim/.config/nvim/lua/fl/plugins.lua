@@ -180,30 +180,16 @@ require('packer').startup({ function(use)
   }
 
   use {
-    'ggandor/leap.nvim',
+    'ggandor/lightspeed.nvim',
     config = function()
-      require('leap').setup {
-        case_sensitive = false,
-        character_classes = {
-          "!@#$%^&=-+~|*",
-          "\"'`()[]<>{}"
-        },
-        special_keys = {
-          next_match = ';',
-        }
+      require 'lightspeed'.setup {
+        ignore_case = true,
+        repeat_ft_with_target_char = true
       }
-      require('leap').set_default_keymaps()
-    end,
-    requires = {
-      {
-        'ggandor/lightspeed.nvim',
-        config = function()
-          require 'lightspeed'.setup {
-            repeat_ft_with_target_char = true
-          }
-        end
-      }
-    }
+    end
+  }
+  use {
+    'ggandor/leap.nvim'
   }
 
   -- alpha startscreen
@@ -461,6 +447,7 @@ require('packer').startup({ function(use)
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
+        k = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" },
         m = {
           i = {
             function()
@@ -472,7 +459,7 @@ require('packer').startup({ function(use)
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" }
         },
-        p = { "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", "Python" },
+        p = { "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", "Runner" },
         q = { "<cmd>bdelete!<CR>", "Close Buffer" },
         s = {
           name = "+search",
@@ -512,6 +499,7 @@ require('packer').startup({ function(use)
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
 
+      wk.register({ ["L"] = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" } })
       wk.register({ ["<C-k>"] = {
         function()
           require("telescope.builtin").lsp_document_symbols({
