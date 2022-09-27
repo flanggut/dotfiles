@@ -61,6 +61,12 @@ require('packer').startup({ function(use)
   use 'nvim-treesitter/playground'
   use 'RRethy/nvim-treesitter-textsubjects'
   use 'mfussenegger/nvim-ts-hint-textobject'
+  use {
+    'mizlan/iswap.nvim',
+    config = function ()
+      require('iswap').setup{}
+    end
+  }
 
   use {
     'nvim-lua/plenary.nvim',
@@ -175,8 +181,6 @@ require('packer').startup({ function(use)
   -- dressing, better default ui
   use {
     'stevearc/dressing.nvim',
-    opt = true,
-    event = 'BufReadPre'
   }
 
   use {
@@ -376,6 +380,15 @@ require('packer').startup({ function(use)
     end
   }
 
+  -- godbolt
+  use {
+    'krady21/compiler-explorer.nvim',
+    opt = true,
+    cmd = {'CECompile', 'CEFormat' , 'CEAddLibrary' , 'CEShowTooltip'},
+    requires = { 'nvim-lua/plenary.nvim' },
+  }
+
+  -- TMUX integration
   use {
     'christoomey/vim-tmux-navigator',
     config = function()

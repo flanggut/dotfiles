@@ -1,5 +1,24 @@
 local M = {}
 
+local format_line_ending = {
+  ['unix'] = '\n',
+  ['dos'] = '\r\n',
+  ['mac'] = '\r',
+}
+
+local function buf_get_line_ending(bufnr)
+  return format_line_ending[vim.api.nvim_buf_get_option(bufnr, 'fileformat')] or '\n'
+end
+
+local function buf_get_full_text(bufnr)
+  local line_ending = buf_get_line_ending(bufnr)
+  local text = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, true), line_ending)
+  if vim.api.nvim_buf_get_option(bufnr, 'eol') then
+    text = text .. line_ending
+  end
+  return text
+end
+
 M.is_tmux = function()
   return os.getenv('TMUX') ~= nil
 end
@@ -56,9 +75,23 @@ M.generate_compile_commands = function(all_files)
     on_exit = function(j, return_val)
       M.compile_commands_running[filename] = false
       if return_val == 0 then
-        vim.schedule(function()
-          vim.cmd "LspRestart"
-        end)
+        vim.defer_fn(function()
+          local uri = vim.uri_from_fname(filename)
+          local bufnr = vim.uri_to_bufnr(uri)
+          for _, client in ipairs(vim.lsp.buf_get_clients(bufnr)) do
+            if client and client.name == "clangd" then
+              client.notify('textDocument/didChange', {
+                textDocument = {
+                  uri = uri,
+                  version = vim.lsp.util.buf_versions[bufnr] + 1,
+                },
+                contentChanges = {
+                  { text = " " .. buf_get_full_text(bufnr) },
+                },
+              })
+            end
+          end
+        end, 5000)
       else
         notify("Compile commands error. \n" .. table.concat(j:stderr_result(), "\n"), "error")
       end
