@@ -86,7 +86,7 @@ M.generate_compile_commands = function(all_files)
                   version = vim.lsp.util.buf_versions[bufnr] + 1,
                 },
                 contentChanges = {
-                  { text = " " .. buf_get_full_text(bufnr) },
+                  { text = buf_get_full_text(bufnr) },
                 },
               })
             end
