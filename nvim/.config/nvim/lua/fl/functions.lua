@@ -185,6 +185,17 @@ M.open_in_browser = function()
   }):start()
 end
 
+M.tmux_prev2 = function()
+  if M.is_tmux() then
+    local command = "send -t -1 C-c"
+    M.tmux_execute(command)
+    command = "send -t -1 C-p C-p Enter"
+    require 'notify' ("tmux " .. command, "info")
+    M.tmux_execute(command)
+    return
+  end
+end
+
 M.file_runner = function()
   -- Default tmux handler.
   if M.is_tmux() then

@@ -1,6 +1,14 @@
 local nvim_lsp = require('lspconfig')
 local util = require('lspconfig.util')
 
+-- autocommands for formatting
+vim.cmd([[
+  au BufWritePre *.cpp,*.h lua vim.lsp.buf.format{timeout = 1000}
+]])
+
+-- setup neodev first
+require 'neodev'.setup({})
+
 local default_on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
@@ -22,17 +30,6 @@ local default_on_attach = function(client, bufnr)
     "<cmd>lua require'telescope.builtin'.lsp_document_symbols({symbol_width = 50, symbol_type_width = 12})<cr>", opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
 
-  -- Set some keybinds conditional on server capabilities
-  if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-    vim.cmd([[
-    au BufWritePre *.cpp,*.h lua vim.lsp.buf.formatting_sync(nil, 1000)
-    ]])
-  end
-  if client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("v", "<leader>f", "<cmd>lua vim.lsp.buf.range_formatting()<CR>", opts)
-  end
-
   vim.cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
 
   require 'lsp_signature'.on_attach({ bind = true, floating_window = false, hint_prefix = '  ' })
@@ -40,7 +37,7 @@ local default_on_attach = function(client, bufnr)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- C++
 local clangd_binary = 'clangd'
@@ -75,8 +72,8 @@ if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
   nvim_lsp['pyright'].setup {
     capabilities = capabilities,
     on_attach = function(client, bufnr)
-      client.resolved_capabilities.document_formatting = false
-      client.resolved_capabilities.document_range_formatting = false
+      client.server_capabilities.document_formatting = false
+      client.server_capabilities.document_range_formatting = false
       default_on_attach(client, bufnr)
     end
   }
@@ -95,8 +92,8 @@ else
         "/tmp/flanggut-logs/pyls.log"
       },
       on_attach = function(client, bufnr)
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
+        client.server_capabilities.document_formatting = false
+        client.server_capabilities.document_range_formatting = false
         default_on_attach(client, bufnr)
       end,
       capabilities = capabilities,
@@ -131,15 +128,6 @@ else
     }
   end
 end
-
--- setup lua
-nvim_lsp['sumneko_lua'].setup(require('lua-dev').setup {
-  lspconfig = {
-    capabilities = capabilities,
-    on_attach = default_on_attach
-  }
-}
-)
 
 -- Setup null-ls
 local nls = require("null-ls")

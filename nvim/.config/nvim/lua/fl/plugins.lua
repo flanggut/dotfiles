@@ -19,7 +19,11 @@ require('packer').startup({ function(use)
   -- local plugins
   if vim.fn.isdirectory(vim.env.META_SCRIPTS) ~= 0 then
     use {
-      vim.env.META_SCRIPTS .. 'neovim/metadiff'
+      vim.env.META_SCRIPTS,
+      as = "meta.nvim",
+      config = function ()
+        require("meta.hg").setup()
+      end
     }
   end
 
@@ -106,13 +110,13 @@ require('packer').startup({ function(use)
     event = "BufReadPre",
     requires = {
       { 'ray-x/lsp_signature.nvim', opt = true },
-      { 'folke/lua-dev.nvim', opt = true },
+      { 'folke/neodev.nvim', opt = true },
       { 'jose-elias-alvarez/null-ls.nvim', opt = true },
       { 'RRethy/vim-illuminate', opt = true },
     },
     wants = {
       'lsp_signature.nvim',
-      'lua-dev.nvim',
+      'neodev.nvim',
       'null-ls.nvim',
       'vim-illuminate',
     },
@@ -120,6 +124,7 @@ require('packer').startup({ function(use)
       require 'fl.lsp'
     end,
   }
+
   -- lsp status fidget
   use {
     'j-hui/fidget.nvim',
@@ -183,17 +188,27 @@ require('packer').startup({ function(use)
     'stevearc/dressing.nvim',
   }
 
+  -- use {
+  --   'ggandor/lightspeed.nvim',
+  --   config = function()
+  --     require 'lightspeed'.setup {
+  --       ignore_case = true,
+  --       repeat_ft_with_target_char = true
+  --     }
+  --   end
+  -- }
   use {
-    'ggandor/lightspeed.nvim',
+    'ggandor/leap.nvim',
     config = function()
-      require 'lightspeed'.setup {
-        ignore_case = true,
-        repeat_ft_with_target_char = true
-      }
+      require 'leap'.add_default_mappings()
     end
   }
   use {
-    'ggandor/leap.nvim'
+    'ggandor/flit.nvim',
+    requires = { 'ggandor/leap.nvim' },
+    config = function()
+      require 'flit'.setup {}
+    end
   }
 
   -- alpha startscreen
@@ -457,8 +472,10 @@ require('packer').startup({ function(use)
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
           D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" }
         },
+        f = { "<cmd>lua vim.lsp.buf.format()<CR>", "LSP Format" },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
+          s = { "<cmd>ISwapWith<CR>", "Swap argument with other" }
         },
         k = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" },
         m = {
@@ -468,9 +485,10 @@ require('packer').startup({ function(use)
             end,
             "Diff Picker"
           },
+          o = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" },
         },
         o = {
-          p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" }
+          p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
         },
         p = { "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", "Runner" },
         q = { "<cmd>bdelete!<CR>", "Close Buffer" },
