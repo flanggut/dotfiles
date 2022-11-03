@@ -148,9 +148,9 @@ require('packer').startup({ function(use)
     wants = { 'LuaSnip' },
     requires = {
       { 'hrsh7th/cmp-nvim-lsp', opt = true, module = 'cmp_nvim_lsp' },
-      { 'hrsh7th/cmp-buffer', opt = true },
-      { 'hrsh7th/cmp-path', opt = true },
-      { 'hrsh7th/cmp-nvim-lua', opt = true },
+      { 'hrsh7th/cmp-buffer'},
+      { 'hrsh7th/cmp-path'},
+      { 'hrsh7th/cmp-nvim-lua'},
       { 'saadparwaiz1/cmp_luasnip' },
       {
         'L3MON4D3/LuaSnip',
@@ -488,7 +488,7 @@ require('packer').startup({ function(use)
           o = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" },
         },
         o = {
-          p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
+          p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" },
         },
         p = { "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", "Runner" },
         q = { "<cmd>bdelete!<CR>", "Close Buffer" },
@@ -527,6 +527,7 @@ require('packer').startup({ function(use)
         h = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
         s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
         l = { "<cmd>LspRestart<CR>", "Restart LSP servers" },
+        p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
 
