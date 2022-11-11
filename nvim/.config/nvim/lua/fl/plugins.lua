@@ -456,7 +456,6 @@ require('packer').startup({ function(use)
   use { 'tversteeg/registers.nvim', opt = true, event = 'BufRead', }
   use { 'tweekmonster/startuptime.vim', opt = true, cmd = 'StartupTime' }
   use { 'mhinz/vim-signify', opt = true, event = 'BufRead', }
-  use { 'tpope/vim-scriptease', opt = true, cmd = { 'Messages', 'Verbose', 'Time' }, }
 
   -- keys
   use {
