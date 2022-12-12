@@ -27,7 +27,7 @@ zoxide init fish | source
 abbr -a j z
 abbr -a ji zi
 
-alias vim="nvim --listen /tmp/nvimsocket"
+alias vim="nvim"
 alias duh="du -h -d1"
 alias ll="tree -C | less -r"
 alias mru="ls -t | head -5"

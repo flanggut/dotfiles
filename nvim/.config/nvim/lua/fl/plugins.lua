@@ -354,6 +354,13 @@ require('packer').startup({ function(use)
     end
   }
 
+  -- linediff
+  use {
+    'AndrewRadev/linediff.vim',
+    opt = true,
+    cmd = {'Linediff'}
+  }
+
   -- NNN
   use { 'mcchrish/nnn.vim',
     config = function()
