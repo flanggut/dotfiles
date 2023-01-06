@@ -52,5 +52,4 @@ treesitter_config.setup {
     enable = true,
   },
 }
-vim.keymap.set('o', 'm', ':<C-U>lua require("tsht").nodes()<CR>', {noremap = false, silent = true})
 vim.keymap.set('v', 'm', ':lua require("tsht").nodes()<CR>', {noremap = true, silent = true})
