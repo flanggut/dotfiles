@@ -89,7 +89,7 @@ return {
       require'telescope'.load_extension('fzf')
       require'telescope'.load_extension('z')
     end,
-  }
+  },
   -- fzf native
   { 
     'nvim-telescope/telescope-fzf-native.nvim',
