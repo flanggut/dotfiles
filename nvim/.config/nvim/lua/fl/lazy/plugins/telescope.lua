@@ -2,12 +2,37 @@ return {
   -- Telescope
   {
     'nvim-telescope/telescope.nvim',
+    event = "VeryLazy",
     dependencies = {
       'nvim-lua/popup.nvim',
       'nvim-lua/plenary.nvim',
       'nvim-telescope/telescope-fzf-native.nvim',
       'nvim-telescope/telescope-symbols.nvim',
       'nvim-telescope/telescope-z.nvim'
+    },
+    keys = {
+      { "<leader>sc", "<cmd>lua require('telescope.builtin').commands()<cr>", "Vim Commands" },
+      { "<leader>sd", "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },
+      { "<leader>se", "<cmd>lua require('telescope.builtin').symbols()<cr>", "Emoji" },
+      { "<leader>sf", "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Buffer Fuzzy" },
+      { "<leader>sh", "<cmd>Telescope command_history<cr>", "Command History" },
+      { "<leader>sH", "<cmd>Telescope help_tags<cr>", "Help Tags" },
+      { "<leader>sl", "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>", "Previous Files" },
+      { "<leader>sp", "<cmd>lua require('telescope.builtin').registers()<cr>", "Registers" },
+      { "<leader>sq", "<cmd>lua require('telescope.builtin').quickfix()<cr>", "Quickfix" },
+      { "<leader>st", "<cmd>lua require('telescope.builtin').treesitter()<cr>", "Treesitter" },
+      { "<leader>ss", "<cmd>Telescope treesitter<cr>", "Treesitter" },
+      { "<leader>sv", "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/.local/share/nvim/site/pack/packer/'})<cr>", "Vim Plugins" },
+      { "<leader>sy",
+        function()
+          require("telescope.builtin").lsp_document_symbols({
+            symbols = { "Class", "Function", "Method", "Constructor", "Interface", "Module" },
+            symbol_width = 50,
+            symbol_type_width = 12,
+          })
+        end,
+        "Goto Symbol"
+      },
     },
     config = function ()
       require('telescope').setup{

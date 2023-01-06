@@ -2,7 +2,8 @@ return {
   -- Treesitter
   {
     'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate',
+    build = ':TSUpdate',
+    event = "BufReadPost",
     config = function()
       require 'fl.treesitter'
     end
