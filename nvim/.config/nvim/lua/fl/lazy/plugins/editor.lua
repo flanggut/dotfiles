@@ -1,4 +1,41 @@
 return {
+  -- snippets
+  {
+    'L3MON4D3/LuaSnip',
+    config = function()
+      require('luasnip').config.set_config {
+        history = true,
+        updateevents = "TextChanged,TextChangedI",
+      }
+      require('fl.snippets').load()
+      local snippets_group = vim.api.nvim_create_augroup('ReloadSnippetsOnWrite', { clear = true })
+      vim.api.nvim_create_autocmd('BufWritePost', {
+        pattern = 'snippets.lua',
+        callback = function()
+          R('fl.snippets').load()
+          require 'cmp_luasnip'.clear_cache()
+        end,
+        group = snippets_group,
+      })
+    end
+  },
+
+  -- completion
+  {
+    'hrsh7th/nvim-cmp',
+    event = "InsertEnter",
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-nvim-lua',
+      'saadparwaiz1/cmp_luasnip',
+    },
+    config = function()
+      require('fl.completion')
+    end,
+  },
+
   -- which-key
   {
     "folke/which-key.nvim",
@@ -109,6 +146,7 @@ return {
         }
       }
       require('mini.ai').setup {}
+      require("mini.pairs").setup()
     end
   },
 
