@@ -131,11 +131,15 @@ vim.keymap.set('n', '<leader>cc', [[<cmd>cclose<CR>]], {noremap = true})
 -- search and replace visual selection
 vim.keymap.set('v', '<leader>r', [["hy:%s/<C-r>h//gc<left><left><left>]], {noremap = true})
 
+-- better star search
+vim.keymap.set('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false, silent=true})
+
 -- toggle fold
 vim.keymap.set('n', '<leader>F', "za", {noremap=false})
 
--- better star search
-vim.keymap.set('n', '*', [[:let @/= '\<' . expand('<cword>') . '\C\>' <bar> set hls <cr>]], {noremap=false, silent=true})
+-- fold lines matching search string
+vim.keymap.set('n', '<leader>hs', [[:setlocal foldexpr=(getline(v:lnum)=~@/)?0:1 foldmethod=expr foldlevel=0 foldcolumn=2 foldminlines=0<CR><CR>]], {noremap = false, silent = true})
+vim.keymap.set('n', '<leader>Hs', [[:setlocal foldmethod=manual<CR><CR>]], {noremap = false, silent = true})
 
 -- move visual selection up or down
 vim.keymap.set('v', '<C-j>', [[:m '>+1<CR>gv=gv]], {noremap = true})
