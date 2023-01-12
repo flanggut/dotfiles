@@ -16,11 +16,12 @@ return {
     end
   },
   -- Various little helpers.
-  { 'nvim-treesitter/nvim-treesitter-refactor' },
-  { 'nvim-treesitter/nvim-treesitter-textobjects' },
-  { 'nvim-treesitter/playground' },
-  { 'RRethy/nvim-treesitter-textsubjects' },
-  { 'mfussenegger/nvim-ts-hint-textobject' },
+  'nvim-treesitter/nvim-treesitter-refactor',
+  'nvim-treesitter/nvim-treesitter-textobjects',
+  'nvim-treesitter/playground',
+  'RRethy/nvim-treesitter-textsubjects',
+  'mfussenegger/nvim-ts-hint-textobject',
+  -- Swap things around
   {
     'mizlan/iswap.nvim',
     config = function ()
