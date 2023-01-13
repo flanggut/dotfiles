@@ -141,6 +141,7 @@ nls.setup({
     nls.builtins.formatting.black,
     nls.builtins.formatting.fish_indent,
     nls.builtins.formatting.json_tool,
+    nls.builtins.formatting.stylua,
   },
   on_attach = default_on_attach,
 })
