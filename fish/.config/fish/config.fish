@@ -65,7 +65,7 @@ alias jfs4="jf s -r .^^^..."
 alias jfs5="jf s -r .^^^^..."
 
 function ci
-    if test -d .git
+    if [ (git rev-parse --is-inside-work-tree) = "true" ]
         git ci
     else
         hg ci
@@ -73,7 +73,7 @@ function ci
 end
 
 function dff
-    if test -d .git
+    if [ (git rev-parse --is-inside-work-tree) = "true" ]
         git diff | delta | less -r
     else
         hg diff | delta | less -r
@@ -81,7 +81,7 @@ function dff
 end
 
 function sl
-    if test -d .git
+    if [ (git rev-parse --is-inside-work-tree) = "true" ]
         git sl
     else
         hg fsl
@@ -89,7 +89,7 @@ function sl
 end
 
 function show
-    if test -d .git
+    if [ (git rev-parse --is-inside-work-tree) = "true" ]
         git show | delta | less -r
     else
         hg diff -r .^ | delta | less -r
@@ -97,7 +97,7 @@ function show
 end
 
 function st
-    if test -d .git
+    if [ (git rev-parse --is-inside-work-tree) = "true" ]
         git st
     else
         hg st
