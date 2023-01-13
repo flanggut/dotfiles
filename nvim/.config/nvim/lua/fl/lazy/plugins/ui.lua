@@ -188,7 +188,7 @@ return {
         startify.button("e", "  New file", ":ene <CR>", {}),
       }
       startify.section.bottom_buttons.val = {
-        startify.button("c", "  Edit config", ":e ~/.config/nvim/lua/fl/plugins.lua<CR>", {}),
+        startify.button("c", "  Edit config", ":e ~/.config/nvim/lua/fl/lazy/init.lua<CR>", {}),
         startify.button("q", "  Quit neovim", ":qa<CR>", {}),
       }
       local mru_ignore_ext = { "gitcommit" }
