@@ -15,7 +15,7 @@ require("lazy").setup({
   spec = "fl.lazy.plugins",
   defaults = { lazy = true, version = "*" },
   install = { colorscheme = { "gruvbox-material"} },
-  checker = { enabled = true },
+  checker = { enabled = false },
   performance = {
     rtp = {
       disabled_plugins = {
