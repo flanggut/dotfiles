@@ -10,7 +10,7 @@ return {
       "williamboman/mason-lspconfig.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "jose-elias-alvarez/null-ls.nvim",
-      "ray-x/lsp_signature.nvim"
+      "ray-x/lsp_signature.nvim",
     },
     ---@class PluginLspOpts
     opts = {
@@ -44,7 +44,7 @@ return {
       },
     },
     config = function()
-      require 'fl.lsp'
+      require("fl.lsp")
     end,
   },
 

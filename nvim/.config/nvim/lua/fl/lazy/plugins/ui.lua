@@ -1,6 +1,6 @@
 return {
   -- icons
-  'kyazdani42/nvim-web-devicons',
+  "kyazdani42/nvim-web-devicons",
   -- ui components
   "MunifTanjim/nui.nvim",
   -- better vim.notify
@@ -45,52 +45,56 @@ return {
 
   -- bufferline
   {
-    'akinsho/bufferline.nvim',
+    "akinsho/bufferline.nvim",
     event = "BufRead",
     config = function()
-      require('bufferline').setup {
+      require("bufferline").setup({
         options = {
           show_close_icon = false,
           show_buffer_close_icons = false,
-          sort_by = 'relative_directory',
+          sort_by = "relative_directory",
           max_name_length = 35,
         },
         highlights = {
           buffer_selected = {
-            bold = true
+            bold = true,
           },
           fill = {
             bg = {
               attribute = "bg",
-              highlight = "Normal"
-            }
+              highlight = "Normal",
+            },
           },
-        }
-      }
-      vim.keymap.set('n', 'gh', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', 'gl', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', 'gj', ':BufferLinePick<CR>', { noremap = true, silent = true })
-      vim.keymap.set('n', 'gq', ':BufferLinePickClose<CR>', { noremap = true, silent = true })
-    end
+        },
+      })
+      vim.keymap.set("n", "gh", ":BufferLineCyclePrev<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "gl", ":BufferLineCycleNext<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "gj", ":BufferLinePick<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "gq", ":BufferLinePickClose<CR>", { noremap = true, silent = true })
+    end,
   },
 
   -- statusline
   {
-    'nvim-lualine/lualine.nvim',
+    "nvim-lualine/lualine.nvim",
     dependencies = {
-      {'mhinz/vim-signify', event = 'BufRead',},
+      { "mhinz/vim-signify", event = "BufRead" },
     },
     event = "VeryLazy",
     config = function()
       local lualine = require("lualine")
-      local configuration = vim.fn['gruvbox_material#get_configuration']()
-      local palette = vim.fn['gruvbox_material#get_palette'](configuration.background, configuration.foreground, configuration.colors_override)
+      local configuration = vim.fn["gruvbox_material#get_configuration"]()
+      local palette = vim.fn["gruvbox_material#get_palette"](
+        configuration.background,
+        configuration.foreground,
+        configuration.colors_override
+      )
 
       local function os_indicator()
-        if vim.fn.has('macunix') == 1 then
-          return ' '
+        if vim.fn.has("macunix") == 1 then
+          return " "
         else
-          return ' '
+          return " "
         end
       end
 
@@ -104,7 +108,7 @@ return {
 
       local function get_repo_stat(index)
         if vim.g.loaded_signify then
-          local repostats = vim.api.nvim_call_function('sy#repo#get_stats', {bufnr})
+          local repostats = vim.api.nvim_call_function("sy#repo#get_stats", { bufnr })
           if repostats[index] > -1 then
             return repostats[index]
           end
@@ -115,25 +119,25 @@ return {
       local function added()
         local stat = get_repo_stat(1)
         if stat > -1 then
-          return string.format(' %s', stat)
+          return string.format(" %s", stat)
         end
-        return ''
+        return ""
       end
 
       local function modified()
         local stat = get_repo_stat(2)
         if stat > -1 then
-          return string.format('柳%s', stat)
+          return string.format("柳%s", stat)
         end
-        return ''
+        return ""
       end
 
       local function removed()
         local stat = get_repo_stat(3)
         if stat > -1 then
-          return string.format(' %s', stat)
+          return string.format(" %s", stat)
         end
-        return ''
+        return ""
       end
 
       lualine.setup({
@@ -145,44 +149,46 @@ return {
           lualine_a = { os_indicator, "mode" },
           lualine_b = {
             { lsp_names },
-            { "diagnostics", symbols = { error = " ", warn = " " , info = " " , hint = " " } },
+            { "diagnostics", symbols = { error = " ", warn = " ", info = " ", hint = " " } },
           },
           lualine_c = {
             { "filename", padding = { left = 1, right = 1 } },
           },
           lualine_x = {
-            { added, color = {fg = palette.green[1]}, separator = {} },
-            { removed, color = {fg = palette.red[1]}, separator = {} },
-            { modified, color = {fg = palette.blue[1]}, },
+            { added, color = { fg = palette.green[1] }, separator = {} },
+            { removed, color = { fg = palette.red[1] }, separator = {} },
+            { modified, color = { fg = palette.blue[1] } },
             -- { "diff", symbols = {added = " " , removed = " ", modified = "柳"} },
-            'filetype', 'encoding', 'fileformat',
+            "filetype",
+            "encoding",
+            "fileformat",
           },
-        }
+        },
       })
-    end
+    end,
   },
 
   -- lsp status fidget
   {
-    'j-hui/fidget.nvim',
-    event = 'BufReadPre',
+    "j-hui/fidget.nvim",
+    event = "BufReadPre",
     config = function()
-      require 'fidget'.setup {
+      require("fidget").setup({
         text = {
-          spinner = 'dots'
-        }
-      }
-    end
+          spinner = "dots",
+        },
+      })
+    end,
   },
 
   -- alpha startscreen
-  { 
-    'goolord/alpha-nvim',
+  {
+    "goolord/alpha-nvim",
     event = "VimEnter",
 
     config = function()
-      local alpha = require 'alpha'
-      local startify = require 'alpha.themes.startify'
+      local alpha = require("alpha")
+      local startify = require("alpha.themes.startify")
       startify.section.top_buttons.val = {
         startify.button("l", "  Open last session", ":lua require'persistence'.load()<CR>", {}),
         startify.button("e", "  New file", ":ene <CR>", {}),
@@ -193,10 +199,10 @@ return {
       }
       local mru_ignore_ext = { "gitcommit" }
       local mru_ignore = function(path, ext)
-        return vim.tbl_contains(mru_ignore_ext, ext) or
-            path:find "COMMIT_EDITMSG" or
-            path:find "histedit.hg" or
-            path:find "commit.hg"
+        return vim.tbl_contains(mru_ignore_ext, ext)
+          or path:find("COMMIT_EDITMSG")
+          or path:find("histedit.hg")
+          or path:find("commit.hg")
       end
       startify.mru_opts.ignore = mru_ignore
 
@@ -212,23 +218,23 @@ return {
       end
 
       alpha.setup(startify.config)
-      vim.keymap.set('n', '<C-s>', '<cmd>Alpha<CR>', { noremap = true })
-    end
+      vim.keymap.set("n", "<C-s>", "<cmd>Alpha<CR>", { noremap = true })
+    end,
   },
 
   -- Smooth Scrolling
   {
-    'karb94/neoscroll.nvim',
-    event = 'BufRead',
+    "karb94/neoscroll.nvim",
+    event = "BufRead",
     config = function()
-      require('neoscroll').setup({ easing_function = 'circular', })
-    end
+      require("neoscroll").setup({ easing_function = "circular" })
+    end,
   },
   {
-    'edluffy/specs.nvim',
-    event = 'BufRead',
+    "edluffy/specs.nvim",
+    event = "BufRead",
     config = function()
-      require('specs').setup {
+      require("specs").setup({
         show_jumps = true,
         min_jump = 5,
         popup = {
@@ -242,7 +248,7 @@ return {
         },
         ignore_filetypes = {},
         ignore_buftypes = { nofile = true },
-      }
-    end
-  }
+      })
+    end,
+  },
 }

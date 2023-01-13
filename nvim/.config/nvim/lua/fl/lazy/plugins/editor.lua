@@ -1,38 +1,38 @@
 return {
   -- snippets
   {
-    'L3MON4D3/LuaSnip',
+    "L3MON4D3/LuaSnip",
     config = function()
-      require('luasnip').config.set_config {
+      require("luasnip").config.set_config({
         history = true,
         updateevents = "TextChanged,TextChangedI",
-      }
-      require('fl.snippets').load()
-      local snippets_group = vim.api.nvim_create_augroup('ReloadSnippetsOnWrite', { clear = true })
-      vim.api.nvim_create_autocmd('BufWritePost', {
-        pattern = 'snippets.lua',
+      })
+      require("fl.snippets").load()
+      local snippets_group = vim.api.nvim_create_augroup("ReloadSnippetsOnWrite", { clear = true })
+      vim.api.nvim_create_autocmd("BufWritePost", {
+        pattern = "snippets.lua",
         callback = function()
-          R('fl.snippets').load()
-          require 'cmp_luasnip'.clear_cache()
+          R("fl.snippets").load()
+          require("cmp_luasnip").clear_cache()
         end,
         group = snippets_group,
       })
-    end
+    end,
   },
 
   -- completion
   {
-    'hrsh7th/nvim-cmp',
+    "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-nvim-lua',
-      'saadparwaiz1/cmp_luasnip',
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-nvim-lua",
+      "saadparwaiz1/cmp_luasnip",
     },
     config = function()
-      require('fl.completion')
+      require("fl.completion")
     end,
   },
 
@@ -49,16 +49,16 @@ return {
       wk.setup(opts)
       local leader = {
         a = {
-          s = { "<cmd>ISwapWith<CR>", "Swap argument with other" }
+          s = { "<cmd>ISwapWith<CR>", "Swap argument with other" },
         },
         c = {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
-          D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" }
+          D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" },
         },
         f = { "<cmd>lua vim.lsp.buf.format()<CR>", "LSP Format" },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
-          s = { "<cmd>ISwapWith<CR>", "Swap argument with other" }
+          s = { "<cmd>ISwapWith<CR>", "Swap argument with other" },
         },
         k = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" },
         o = {
@@ -68,7 +68,7 @@ return {
         q = { "<cmd>bdelete!<CR>", "Close Buffer" },
         s = {
           name = "+search",
-        }
+        },
       }
       wk.register(leader, { prefix = "<leader>" })
 
@@ -80,7 +80,7 @@ return {
       wk.register(leaderleader, { prefix = "<leader><leader>" })
 
       wk.register({ ["L"] = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" } })
-    end
+    end,
   },
 
   -- easily jump to any location and enhanced f/t motions for Leap
@@ -99,8 +99,8 @@ return {
 
   -- tmux integration
   {
-    'christoomey/vim-tmux-navigator',
-    keys = { 
+    "christoomey/vim-tmux-navigator",
+    keys = {
       { "<M-h>", "<cmd>TmuxNavigateLeft<cr>", desc = "Tmux Left" },
       { "<M-j>", "<cmd>TmuxNavigateDown<cr>", desc = "Tmux Down" },
       { "<M-k>", "<cmd>TmuxNavigateUp<cr>", desc = "Tmux Up" },
@@ -108,7 +108,7 @@ return {
     },
     config = function()
       vim.g.tmux_navigator_no_mappings = 1
-    end
+    end,
   },
 
   -- illuminate
@@ -127,77 +127,79 @@ return {
   },
 
   -- persistence
-  { 
-    'folke/persistence.nvim',
-    event = 'BufRead', -- this will only start session saving when an actual file was opened
+  {
+    "folke/persistence.nvim",
+    event = "BufRead", -- this will only start session saving when an actual file was opened
     config = function()
-      require('persistence').setup()
+      require("persistence").setup()
     end,
   },
 
   -- mini
   {
-    'echasnovski/mini.nvim',
-    event = 'BufRead',
+    "echasnovski/mini.nvim",
+    event = "BufRead",
     config = function()
-      require('mini.indentscope').setup {
-        symbol = '│',
+      require("mini.indentscope").setup({
+        symbol = "│",
         draw = {
-          animation = function() return 10 end,
-        }
-      }
-      require('mini.ai').setup {}
-    end
+          animation = function()
+            return 10
+          end,
+        },
+      })
+      require("mini.ai").setup({})
+    end,
   },
 
   -- indent blankline
   {
-    'lukas-reineke/indent-blankline.nvim',
-    event = 'BufRead',
+    "lukas-reineke/indent-blankline.nvim",
+    event = "BufRead",
     config = function()
       vim.g.indentLine_enabled = 1
-      vim.g.indentLine_char = '│'
-      vim.g.indentLine_fileType = { 'c', 'cpp', 'lua', 'python', 'vim' }
-      vim.g.indent_blankline_char_highlight = 'LineNr'
+      vim.g.indentLine_char = "│"
+      vim.g.indentLine_fileType = { "c", "cpp", "lua", "python", "vim" }
+      vim.g.indent_blankline_char_highlight = "LineNr"
       vim.g.indent_blankline_show_trailing_blankline_indent = false
-    end
+    end,
   },
-  
+
   -- auto pairs
   {
-    'windwp/nvim-autopairs',
-    event = 'BufRead',
+    "windwp/nvim-autopairs",
+    event = "BufRead",
     config = function()
-      require 'nvim-autopairs'.setup()
-    end
+      require("nvim-autopairs").setup()
+    end,
   },
 
   -- comments
-  { 
-    'numToStr/Comment.nvim',
-    event = 'BufRead',
+  {
+    "numToStr/Comment.nvim",
+    event = "BufRead",
     config = function()
-      require('Comment').setup {}
-      vim.keymap.set('n', '<space>x', '<plug>(comment_toggle_linewise_current)', { silent = true })
-      vim.keymap.set('x', '<space>x', '<plug>(comment_toggle_linewise_visual)', { silent = true })
-    end
+      require("Comment").setup({})
+      vim.keymap.set("n", "<space>x", "<plug>(comment_toggle_linewise_current)", { silent = true })
+      vim.keymap.set("x", "<space>x", "<plug>(comment_toggle_linewise_visual)", { silent = true })
+    end,
   },
 
   -- linediff
   {
-    'AndrewRadev/linediff.vim',
-    cmd = 'Linediff'
+    "AndrewRadev/linediff.vim",
+    cmd = "Linediff",
   },
 
   -- nnn
-  { 
-    'mcchrish/nnn.vim',
+  {
+    "mcchrish/nnn.vim",
     config = function()
-      require('nnn').setup({
-        command = 'nnn -o -A',
+      require("nnn").setup({
+        command = "nnn -o -A",
         set_default_mappings = 0,
         replace_netrw = 1,
-        layout = { window = { width = 0.6, height = 0.7, xoffset = 0.95, highlight = 'Debug' } },
+        layout = { window = { width = 0.6, height = 0.7, xoffset = 0.95, highlight = "Debug" } },
       })
     end,
     keys = {
@@ -205,11 +207,11 @@ return {
         "<c-n>",
         function()
           ---@diagnostic disable-next-line: missing-parameter
-          local path = vim.fn.expand('%:p')
-          local nnn_command = path == '' and 'NnnPicker' or ('NnnPicker' .. path)
+          local path = vim.fn.expand("%:p")
+          local nnn_command = path == "" and "NnnPicker" or ("NnnPicker" .. path)
           vim.api.nvim_command(nnn_command)
-        end
+        end,
       },
     },
-  }
+  },
 }
