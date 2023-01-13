@@ -2,7 +2,6 @@ return {
   -- Telescope
   {
     'nvim-telescope/telescope.nvim',
-    event = "VeryLazy",
     dependencies = {
       'nvim-lua/popup.nvim',
       'nvim-lua/plenary.nvim',
@@ -11,6 +10,18 @@ return {
       'nvim-telescope/telescope-z.nvim'
     },
     keys = {
+      { "<C-k>",
+        function()
+          require("telescope.builtin").lsp_document_symbols({
+            symbols = { "Class", "Function", "Method", "Constructor", "Interface", "Module" },
+            symbol_width = 50,
+            symbol_type_width = 12,
+          })
+        end,
+        "Goto Symbol",
+      },
+      { "<C-l>", "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers"},
+      { "<C-p>", "<cmd>lua require('fl.functions').myfiles({})<cr>", "Files"},
       { "<leader>sc", "<cmd>lua require('telescope.builtin').commands()<cr>", "Vim Commands" },
       { "<leader>sd", "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/dotfiles'})<cr>", "Dotfiles" },
       { "<leader>se", "<cmd>lua require('telescope.builtin').symbols()<cr>", "Emoji" },
@@ -33,6 +44,7 @@ return {
         end,
         "Goto Symbol"
       },
+      { "<leader><leader>h", "<cmd>Telescope help_tags<cr>", "Help Tags" },
     },
     config = function ()
       require('telescope').setup{

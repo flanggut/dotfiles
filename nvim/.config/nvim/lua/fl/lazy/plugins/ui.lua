@@ -25,6 +25,7 @@ return {
       end,
     },
   },
+
   -- better vim.ui
   {
     "stevearc/dressing.nvim",
@@ -41,6 +42,7 @@ return {
       end
     end,
   },
+
   -- bufferline
   {
     'akinsho/bufferline.nvim',
@@ -65,13 +67,13 @@ return {
           },
         }
       }
-
       vim.keymap.set('n', 'gh', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
       vim.keymap.set('n', 'gl', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
       vim.keymap.set('n', 'gj', ':BufferLinePick<CR>', { noremap = true, silent = true })
       vim.keymap.set('n', 'gq', ':BufferLinePickClose<CR>', { noremap = true, silent = true })
     end
   },
+
   -- statusline
   {
     'nvim-lualine/lualine.nvim',
@@ -212,5 +214,36 @@ return {
       alpha.setup(startify.config)
       vim.keymap.set('n', '<C-s>', '<cmd>Alpha<CR>', { noremap = true })
     end
+  },
+
+  -- Smooth Scrolling
+  {
+    'karb94/neoscroll.nvim',
+    event = 'BufRead',
+    config = function()
+      require('neoscroll').setup({ easing_function = 'circular', })
+    end
+  },
+  {
+    'edluffy/specs.nvim',
+    event = 'BufRead',
+    config = function()
+      require('specs').setup {
+        show_jumps = true,
+        min_jump = 5,
+        popup = {
+          delay_ms = 0, -- delay before popup displays
+          inc_ms = 20, -- time increments used for fade/resize effects
+          blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+          width = 20,
+          winhl = "PMenu",
+          fader = require("specs").linear_fader,
+          resizer = require("specs").shrink_resizer,
+        },
+        ignore_filetypes = {},
+        ignore_buftypes = { nofile = true },
+      }
+    end
   }
+
 }

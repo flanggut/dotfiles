@@ -73,7 +73,6 @@ return {
       wk.register(leader, { prefix = "<leader>" })
 
       local leaderleader = {
-        h = { "<cmd>Telescope help_tags<cr>", "Help Tags" },
         s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
         l = { "<cmd>LspRestart<CR>", "Restart LSP servers" },
         p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
@@ -81,18 +80,6 @@ return {
       wk.register(leaderleader, { prefix = "<leader><leader>" })
 
       wk.register({ ["L"] = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" } })
-      wk.register({ ["<C-k>"] = {
-        function()
-          require("telescope.builtin").lsp_document_symbols({
-            symbols = { "Class", "Function", "Method", "Constructor", "Interface", "Module" },
-            symbol_width = 50,
-            symbol_type_width = 12,
-          })
-        end,
-        "Goto Symbol",
-      } })
-      wk.register({ ["<C-l>"] = { "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" } })
-      wk.register({ ["<C-p>"] = { "<cmd>lua R('fl.functions').myfiles({})<cr>", "Files" } })
     end
   },
 
@@ -160,7 +147,6 @@ return {
         }
       }
       require('mini.ai').setup {}
-      require("mini.pairs").setup()
     end
   },
 
@@ -174,6 +160,15 @@ return {
       vim.g.indentLine_fileType = { 'c', 'cpp', 'lua', 'python', 'vim' }
       vim.g.indent_blankline_char_highlight = 'LineNr'
       vim.g.indent_blankline_show_trailing_blankline_indent = false
+    end
+  },
+  
+  -- auto pairs
+  {
+    'windwp/nvim-autopairs',
+    event = 'BufRead',
+    config = function()
+      require 'nvim-autopairs'.setup()
     end
   },
 
