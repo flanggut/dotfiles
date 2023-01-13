@@ -9,9 +9,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 -- Set correct filetype for fish
-vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = "*.fish",
-  command = "set filetype=fish"
+  command = "set filetype=fish",
 })
 
 -- Go to last loc when opening a buffer
