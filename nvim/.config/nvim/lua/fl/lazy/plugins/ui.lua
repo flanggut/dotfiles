@@ -74,38 +74,105 @@ return {
   },
   -- statusline
   {
-    "nvim-lualine/lualine.nvim",
+    'nvim-lualine/lualine.nvim',
+    dependencies = {
+      {'mhinz/vim-signify', event = 'BufRead',},
+    },
     event = "VeryLazy",
     config = function()
       local lualine = require("lualine")
-      -- local navic = require("nvim-navic")
-      -- local symbols = require("lazyvim.config.settings")
+      local configuration = vim.fn['gruvbox_material#get_configuration']()
+      local palette = vim.fn['gruvbox_material#get_palette'](configuration.background, configuration.foreground, configuration.colors_override)
+
+      local function os_indicator()
+        if vim.fn.has('macunix') == 1 then
+          return ' '
+        else
+          return ' '
+        end
+      end
+
+      local function lsp_names()
+        names = ""
+        for _, client in ipairs(vim.lsp.get_active_clients()) do
+          names = client.name
+        end
+        return names
+      end
+
+      local function get_repo_stat(index)
+        if vim.g.loaded_signify then
+          local repostats = vim.api.nvim_call_function('sy#repo#get_stats', {bufnr})
+          if repostats[index] > -1 then
+            return repostats[index]
+          end
+        end
+        return -1
+      end
+
+      local function added()
+        local stat = get_repo_stat(1)
+        if stat > -1 then
+          return string.format(' %s', stat)
+        end
+        return ''
+      end
+
+      local function modified()
+        local stat = get_repo_stat(2)
+        if stat > -1 then
+          return string.format('柳%s', stat)
+        end
+        return ''
+      end
+
+      local function removed()
+        local stat = get_repo_stat(3)
+        if stat > -1 then
+          return string.format(' %s', stat)
+        end
+        return ''
+      end
+
       lualine.setup({
         options = {
           globalstatus = true,
           disabled_filetypes = { statusline = { "lazy", "alpha" } },
         },
         sections = {
-          lualine_a = { "mode" },
+          lualine_a = { os_indicator, "mode" },
           lualine_b = {
-          --   { "branch" },
-          --   {
-          --     "diff",
-          --     symbols = { added = symbols.icons.git.added, modified = symbols.icons.git.modified, removed = symbols.icons.git.removed }, -- changes diff symbols
-          --   },
+            { lsp_names },
+            { "diagnostics", symbols = { error = " ", warn = " " , info = " " , hint = " " } },
           },
           lualine_c = {
-            {
-              "diagnostics",
-              -- symbols = { error = symbols.icons.diagnostics.Error, warn = symbols.icons.diagnostics.Warn, info = symbols.icons.diagnostics.Info, hint = symbols.icons.diagnostics.Hint }
-            },
             { "filename", padding = { left = 1, right = 1 } },
-            -- { navic.get_location, cond = navic.is_available }
+          },
+          lualine_x = {
+            { added, color = {fg = palette.green[1]}, separator = {} },
+            { removed, color = {fg = palette.red[1]}, separator = {} },
+            { modified, color = {fg = palette.blue[1]}, },
+            -- { "diff", symbols = {added = " " , removed = " ", modified = "柳"} },
+            'filetype', 'encoding', 'fileformat',
           },
         }
       })
     end
   },
+
+  -- lsp status fidget
+  {
+    'j-hui/fidget.nvim',
+    event = 'BufReadPre',
+    config = function()
+      require 'fidget'.setup {
+        text = {
+          spinner = 'dots'
+        }
+      }
+    end
+  },
+
   -- alpha startscreen
   { 
     'goolord/alpha-nvim',

@@ -110,6 +110,20 @@ return {
     end,
   },
 
+  -- tmux integration
+  {
+    'christoomey/vim-tmux-navigator',
+    keys = { 
+      { "<M-h>", "<cmd>TmuxNavigateLeft<cr>", desc = "Tmux Left" },
+      { "<M-j>", "<cmd>TmuxNavigateDown<cr>", desc = "Tmux Down" },
+      { "<M-k>", "<cmd>TmuxNavigateUp<cr>", desc = "Tmux Up" },
+      { "<M-l>", "<cmd>TmuxNavigateRight<cr>", desc = "Tmux Right" },
+    },
+    config = function()
+      vim.g.tmux_navigator_no_mappings = 1
+    end
+  },
+
   -- illuminate
   {
     "RRethy/vim-illuminate",

@@ -10,6 +10,7 @@ return {
       "williamboman/mason-lspconfig.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "jose-elias-alvarez/null-ls.nvim",
+      "ray-x/lsp_signature.nvim"
     },
     ---@class PluginLspOpts
     opts = {
