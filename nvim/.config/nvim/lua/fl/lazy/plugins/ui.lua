@@ -185,27 +185,41 @@ return {
   {
     "goolord/alpha-nvim",
     event = "VimEnter",
-
-    config = function()
+    keys = {
+      { "<C-s>", "<cmd>Alpha<CR>" },
+    },
+    opts = function()
       local alpha = require("alpha")
-      local startify = require("alpha.themes.startify")
-      startify.section.top_buttons.val = {
-        startify.button("l", "  Open last session", ":lua require'persistence'.load()<CR>", {}),
-        startify.button("e", "  New file", ":ene <CR>", {}),
+      local dashboard = require("alpha.themes.dashboard")
+      dashboard.section.buttons.val = {
+        dashboard.button("f", " " .. " Find file", [[:lua require("fl.functions").myfiles({}) <cr>]]),
+        dashboard.button(
+          "l",
+          " " .. " Local file",
+          [[:lua require("telescope.builtin").oldfiles({include_current_session=true, cwd_only=true, previewer=false}) <cr>]]
+        ),
+        dashboard.button("m", " " .. " MRU", ":Telescope oldfiles <CR>"),
+        dashboard.button("s", "勒" .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
+        dashboard.button(
+          "c",
+          " " .. " Config",
+          [[:lua require("telescope.builtin").find_files({cwd="~/.config/nvim/"}) <cr>]]
+        ),
+        dashboard.button("L", "鈴" .. " Lazy", ":Lazy<CR>"),
+        dashboard.button("q", " " .. " Quit", ":qa<CR>"),
       }
-      startify.section.bottom_buttons.val = {
-        startify.button("c", "  Edit config", ":e ~/.config/nvim/lua/fl/lazy/init.lua<CR>", {}),
-        startify.button("q", "  Quit neovim", ":qa<CR>", {}),
-      }
-      local mru_ignore_ext = { "gitcommit" }
-      local mru_ignore = function(path, ext)
-        return vim.tbl_contains(mru_ignore_ext, ext)
-          or path:find("COMMIT_EDITMSG")
-          or path:find("histedit.hg")
-          or path:find("commit.hg")
+      for _, button in ipairs(dashboard.section.buttons.val) do
+        button.opts.hl = "AlphaButtons"
+        button.opts.hl_shortcut = "AlphaShortcut"
       end
-      startify.mru_opts.ignore = mru_ignore
-
+      dashboard.section.footer.opts.hl = "Type"
+      dashboard.section.header.opts.hl = "AlphaHeader"
+      dashboard.section.buttons.opts.hl = "AlphaButtons"
+      dashboard.opts.layout[1].val = 8
+      return dashboard
+    end,
+    config = function(_, dashboard)
+      vim.b.miniindentscope_disable = true
       -- close Lazy and re-open when the dashboard is ready
       if vim.o.filetype == "lazy" then
         vim.cmd.close()
@@ -217,8 +231,17 @@ return {
         })
       end
 
-      alpha.setup(startify.config)
-      vim.keymap.set("n", "<C-s>", "<cmd>Alpha<CR>", { noremap = true })
+      require("alpha").setup(dashboard.opts)
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "LazyVimStarted",
+        callback = function()
+          local stats = require("lazy").stats()
+          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+          dashboard.section.footer.val = "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
+          pcall(vim.cmd.AlphaRedraw)
+        end,
+      })
     end,
   },
 
