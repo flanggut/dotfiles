@@ -99,15 +99,24 @@ return {
 
   -- tmux integration
   {
-    "christoomey/vim-tmux-navigator",
+    "aserowy/tmux.nvim",
     keys = {
-      { "<M-h>", "<cmd>TmuxNavigateLeft<cr>", desc = "Tmux Left" },
-      { "<M-j>", "<cmd>TmuxNavigateDown<cr>", desc = "Tmux Down" },
-      { "<M-k>", "<cmd>TmuxNavigateUp<cr>", desc = "Tmux Up" },
-      { "<M-l>", "<cmd>TmuxNavigateRight<cr>", desc = "Tmux Right" },
+      { "<M-h>", [[<cmd>lua require("tmux").move_left()<cr>]], desc = "Tmux Left" },
+      { "<M-j>", [[<cmd>lua require("tmux").move_bottom()<cr>]], desc = "Tmux Down" },
+      { "<M-k>", [[<cmd>lua require("tmux").move_up()<cr>]], desc = "Tmux Up" },
+      { "<M-l>", [[<cmd>lua require("tmux").move_right()<cr>]], desc = "Tmux Right" },
     },
     config = function()
-      vim.g.tmux_navigator_no_mappings = 1
+      return require("tmux").setup({
+        navigation = {
+          -- enables default keybindings (C-hjkl) for normal mode
+          enable_default_keybindings = false,
+        },
+        resize = {
+          -- enables default keybindings (A-hjkl) for normal mode
+          enable_default_keybindings = false,
+        },
+      })
     end,
   },
 
