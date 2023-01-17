@@ -64,8 +64,15 @@ alias jfs3="jf s -r .^^..."
 alias jfs4="jf s -r .^^^..."
 alias jfs5="jf s -r .^^^^..."
 
+function is_inside_git
+    set -l repo_info (command git rev-parse --git-dir --is-inside-git-dir --is-bare-repository --is-inside-work-tree HEAD 2>/dev/null)
+    test -n "$repo_info"
+    or return 1
+    return 0
+end
+
 function ci
-    if [ (git rev-parse --is-inside-work-tree) = "true" ]
+    if is_inside_git
         git ci
     else
         hg ci
@@ -73,7 +80,7 @@ function ci
 end
 
 function dff
-    if [ (git rev-parse --is-inside-work-tree) = "true" ]
+    if is_inside_git
         git diff | delta | less -r
     else
         hg diff | delta | less -r
@@ -81,7 +88,7 @@ function dff
 end
 
 function sl
-    if [ (git rev-parse --is-inside-work-tree) = "true" ]
+    if is_inside_git
         git sl
     else
         hg fsl
@@ -89,7 +96,7 @@ function sl
 end
 
 function show
-    if [ (git rev-parse --is-inside-work-tree) = "true" ]
+    if is_inside_git 
         git show | delta | less -r
     else
         hg diff -r .^ | delta | less -r
@@ -97,7 +104,7 @@ function show
 end
 
 function st
-    if [ (git rev-parse --is-inside-work-tree) = "true" ]
+    if is_inside_git
         git st
     else
         hg st
