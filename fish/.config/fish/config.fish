@@ -27,27 +27,22 @@ zoxide init fish | source
 abbr -a j z
 abbr -a ji zi
 
+# This expands .. to cd ../, ... to cd ../../ and .... to cd ../../../ and so on.
+function multicd
+    echo cd (string repeat -n (math (string length -- $argv[1]) - 1) ../)
+end
+abbr --add dotdot --regex '^\.\.+$' --function multicd
+
 alias vim="nvim"
 alias duh="du -h -d1"
 alias ll="tree -C | less -r"
 alias mru="ls -t | head -5"
 alias p3="python3"
 
-alias brewown="sudo chown -R (whoami) /usr/local/lib /usr/local/sbin /usr/local/bin"
-
 alias rg="rg --no-ignore-messages --max-columns=160 -S"
-alias ...="cd ../.."
 
 alias xtrace="xcrun xctrace record --template 'Time Profiler' --launch --"
 alias xtracemem="xcrun xctrace record --template 'Allocations' --launch --"
-
-function zp
-    if test "$history[1]" != zp
-        eval $history[1]
-    else
-        eval $history[2]
-    end
-end
 
 ############################
 #     Git + HG commands    #
