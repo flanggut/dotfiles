@@ -65,12 +65,16 @@ return {
   -- Show context for large scopes
   {
     "nvim-treesitter/nvim-treesitter-context",
+    event = "BufReadPost",
     config = function()
       require("treesitter-context").setup({})
     end,
   },
   -- Various little helpers.
-  "nvim-treesitter/nvim-treesitter-refactor",
+  {
+    "nvim-treesitter/nvim-treesitter-refactor",
+    keys = { "<leader>rr" },
+  },
   "nvim-treesitter/nvim-treesitter-textobjects",
   "nvim-treesitter/playground",
   "RRethy/nvim-treesitter-textsubjects",

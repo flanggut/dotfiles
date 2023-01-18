@@ -97,6 +97,15 @@ return {
     end,
   },
 
+  -- search/replace in multiple files
+  {
+    "windwp/nvim-spectre",
+    -- stylua: ignore
+    keys = {
+      { "<leader>sg", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
+    },
+  },
+
   -- tmux integration
   {
     "aserowy/tmux.nvim",
