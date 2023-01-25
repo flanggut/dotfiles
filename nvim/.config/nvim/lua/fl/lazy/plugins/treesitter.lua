@@ -82,6 +82,9 @@ return {
   -- Swap things around
   {
     "mizlan/iswap.nvim",
+    keys = {
+      {"<leader>is", "<cmd>ISwapWith<cr>", desc = "Swap argument with other"}
+    },
     config = function()
       require("iswap").setup({})
     end,

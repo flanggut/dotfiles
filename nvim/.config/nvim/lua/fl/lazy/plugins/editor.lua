@@ -48,9 +48,6 @@ return {
       local wk = require("which-key")
       wk.setup(opts)
       local leader = {
-        a = {
-          s = { "<cmd>ISwapWith<CR>", "Swap argument with other" },
-        },
         c = {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
           D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" },
@@ -58,7 +55,6 @@ return {
         f = { "<cmd>lua vim.lsp.buf.format()<CR>", "LSP Format" },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
-          s = { "<cmd>ISwapWith<CR>", "Swap argument with other" },
         },
         k = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" },
         o = {
