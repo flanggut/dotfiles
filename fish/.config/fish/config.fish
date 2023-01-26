@@ -44,6 +44,11 @@ alias rg="rg --no-ignore-messages --max-columns=160 -S"
 alias xtrace="xcrun xctrace record --template 'Time Profiler' --launch --"
 alias xtracemem="xcrun xctrace record --template 'Allocations' --launch --"
 
+function waitfordevice
+  adb wait-for-device root
+  while [ (adb shell -x "getprop sys.boot_completed") != "1" ]; sleep 2 ; end
+end
+
 ############################
 #     Git + HG commands    #
 alias shows="hg show --stat"
