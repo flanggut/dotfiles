@@ -1,11 +1,6 @@
 local nvim_lsp = require('lspconfig')
 local util = require('lspconfig.util')
 
--- autocommands for formatting
-vim.cmd([[
-  au BufWritePre *.cpp,*.h lua vim.lsp.buf.format{timeout = 1000}
-]])
-
 -- setup neodev first
 require 'neodev'.setup({})
 
