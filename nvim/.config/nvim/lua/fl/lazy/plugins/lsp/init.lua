@@ -14,6 +14,7 @@ return {
     },
     ---@class PluginLspOpts
     opts = {
+      autoformat = true,
       ---@type lspconfig.options
       servers = {
         jsonls = {},
@@ -43,10 +44,33 @@ return {
         -- ["*"] = function(server, opts) end,
       },
     },
-    config = function()
+    config = function(plugin, opts)
+      -- setup autoformat
+      require("fl.lazy.plugins.lsp.format").autoformat = opts.autoformat
+      require("fl.lazy.util").on_attach(function(client, buffer)
+        require("fl.lazy.plugins.lsp.format").on_attach(client, buffer)
+      end)
+
       require("fl.lsp")
     end,
   },
+
+  -- formatters
+  -- {
+  --   "jose-elias-alvarez/null-ls.nvim",
+  --   event = "BufReadPre",
+  --   dependencies = { "mason.nvim" },
+  --   opts = function()
+  --     local nls = require("null-ls")
+  --     return {
+  --       sources = {
+  --         -- nls.builtins.formatting.prettierd,
+  --         nls.builtins.formatting.stylua,
+  --         nls.builtins.diagnostics.flake8,
+  --       },
+  --     }
+  --   end,
+  -- },
 
   -- mason
   {

@@ -52,7 +52,6 @@ return {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
           D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" },
         },
-        f = { "<cmd>lua vim.lsp.buf.format()<CR>", "LSP Format" },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
