@@ -203,7 +203,7 @@ return {
         dashboard.button(
           "c",
           " " .. " Config",
-          [[:lua require("telescope.builtin").find_files({cwd="~/.config/nvim/"}) <cr>]]
+          [[:lua require("telescope.builtin").find_files({cwd="~/.config/nvim/", follow = true, hidden = true}) <cr>]]
         ),
         dashboard.button("L", "鈴" .. " Lazy", ":Lazy<CR>"),
         dashboard.button("q", " " .. " Quit", ":qa<CR>"),

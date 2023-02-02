@@ -22,7 +22,7 @@ return {
         end,
         "Goto Symbol",
       },
-      { "<C-l>", "<cmd>lua require('telescope.builtin').buffers()<cr>", "Buffers" },
+      { "<C-l>", "<cmd>Telescope buffers<cr>", "Buffers" },
       { "<C-p>", "<cmd>lua require('fl.functions').myfiles({})<cr>", "Files" },
       { "<leader>sc", "<cmd>lua require('telescope.builtin').commands()<cr>", "Vim Commands" },
       {
