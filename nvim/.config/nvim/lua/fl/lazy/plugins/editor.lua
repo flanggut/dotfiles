@@ -39,7 +39,7 @@ return {
   -- which-key
   {
     "folke/which-key.nvim",
-    event = "VeryLazy",
+    event = "BufRead",
     opts = {
       plugins = { spelling = true },
       key_labels = { ["<leader>"] = "SPC" },
