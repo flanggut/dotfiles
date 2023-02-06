@@ -1,101 +1,75 @@
-local cmp = require('cmp')
-local luasnip = require('luasnip')
-local strings = require('plenary.strings')
+local cmp = require("cmp")
+local luasnip = require("luasnip")
+local strings = require("plenary.strings")
 
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local icons = {
-    Text = "",
-    Method = "",
-    Function = "",
-    Constructor = "⌘",
-    Field = "ﰠ",
-    Variable = "",
-    Class = "ﴯ",
-    Interface = "",
-    Module = "",
-    Property = "ﰠ",
-    Unit = "塞",
-    Value = "",
-    Enum = "",
-    Keyword = "廓",
-    Snippet = "",
-    Color = "",
-    File = "",
-    Reference = "",
-    Folder = "",
-    EnumMember = "",
-    Constant = "",
-    Struct = "פּ",
-    Event = "",
-    Operator = "",
-    TypeParameter = "",
-}
+local icons = require("fl.lazy.config.symbols").icons
 
-cmp.setup {
+cmp.setup({
   experimental = {
     ghost_text = true,
   },
   completion = {
-    completeopt = 'menu,menuone,noselect',
+    completeopt = "menu,menuone,noselect",
   },
   sources = {
-    { name = 'luasnip' },
-    { name = 'nvim_lsp' },
-    { name = 'buffer', keyword_length = 4 },
-    { name = 'path' },
-    { name = 'nvim_lua' },
+    { name = "luasnip" },
+    { name = "nvim_lsp" },
+    { name = "buffer", keyword_length = 4 },
+    { name = "path" },
+    { name = "nvim_lua" },
   },
   snippet = {
     expand = function(args)
-      require'luasnip'.lsp_expand(args.body)
-    end
+      require("luasnip").lsp_expand(args.body)
+    end,
   },
   formatting = {
-        fields = { "kind", "abbr", "menu" },
-        format = function(_, vim_item)
-            vim_item.menu = vim_item.kind
-            vim_item.kind = icons[vim_item.kind]
-            vim_item.abbr = vim_item.abbr:gsub("^%s+", "")
-            vim_item.abbr = " " .. strings.truncate(vim_item.abbr, 60)
-            return vim_item
-        end,
+    fields = { "kind", "abbr", "menu" },
+    format = function(_, vim_item)
+      vim_item.menu = vim_item.kind
+      vim_item.kind = icons[vim_item.kind]
+      vim_item.abbr = vim_item.abbr:gsub("^%s+", "")
+      vim_item.abbr = " " .. strings.truncate(vim_item.abbr, 60)
+      return vim_item
+    end,
   },
   sorting = {
-		priority_weight = 1.0,
-		comparators = {
-		  cmp.config.compare.locality,
-		  cmp.config.compare.recently_used,
-		  cmp.config.compare.score,
-		  cmp.config.compare.offset,
-		  cmp.config.compare.order,
-		},
-	},
+    priority_weight = 1.0,
+    comparators = {
+      cmp.config.compare.locality,
+      cmp.config.compare.recently_used,
+      cmp.config.compare.score,
+      cmp.config.compare.offset,
+      cmp.config.compare.order,
+    },
+  },
   mapping = {
     ["<C-e>"] = cmp.mapping.close(),
-    ["<C-f>"] = cmp.mapping.confirm {
+    ["<C-f>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
-    },
-    ["<C-y>"] = cmp.mapping.confirm {
+    }),
+    ["<C-y>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
-    },
-    ["<CR>"] = cmp.mapping.confirm {
+    }),
+    ["<CR>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
-    },
-    ['<C-l>'] = function(fallback)
+    }),
+    ["<C-l>"] = function(fallback)
       if luasnip.expand_or_jumpable() then
         luasnip.expand_or_jump()
       else
         fallback()
       end
     end,
-    ['<C-j>'] = function(fallback)
+    ["<C-j>"] = function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
       elseif luasnip.expand_or_jumpable() then
@@ -106,7 +80,7 @@ cmp.setup {
         fallback()
       end
     end,
-    ['<C-k>'] = function(fallback)
+    ["<C-k>"] = function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
       elseif luasnip.jumpable(-1) then
@@ -116,7 +90,7 @@ cmp.setup {
       end
     end,
   },
-}
+})
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
 -- cmp.setup.cmdline('/', {
@@ -133,4 +107,3 @@ cmp.setup {
 --     { name = 'cmdline' }
 --   })
 -- })
-

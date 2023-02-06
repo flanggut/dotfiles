@@ -1,6 +1,10 @@
 local nvim_lsp = require("lspconfig")
 local util = require("lspconfig.util")
 
+-- vim.lsp.set_log_level("debug")
+local on_show_message = vim.lsp.handlers["window/showMessage"]
+vim.lsp.handlers["window/showStatus"] = vim.lsp.with(on_show_message, {})
+
 -- setup neodev first
 require("neodev").setup({})
 
@@ -60,6 +64,11 @@ nvim_lsp["clangd"].setup({
 
 -- Rust
 nvim_lsp["rust_analyzer"].setup({
+  capabilities = capabilities,
+  on_attach = default_on_attach,
+})
+
+nvim_lsp["buckls"].setup({
   capabilities = capabilities,
   on_attach = default_on_attach,
 })
