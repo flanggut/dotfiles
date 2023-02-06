@@ -6,6 +6,9 @@ if not functions -q fisher
     echo fisher install IlanCosman/tide@v5
 end
 
+# Generated for envman. Do not edit.
+test -s "$HOME/.config/envman/load.fish"; and source "$HOME/.config/envman/load.fish"
+
 ############################
 #      Global Configs      #
 set -gx SHELL fish
@@ -45,8 +48,10 @@ alias xtrace="xcrun xctrace record --template 'Time Profiler' --launch --"
 alias xtracemem="xcrun xctrace record --template 'Allocations' --launch --"
 
 function waitfordevice
-  adb wait-for-device root
-  while [ (adb shell -x "getprop sys.boot_completed") != "1" ]; sleep 2 ; end
+    adb wait-for-device root
+    while [ (adb shell -x "getprop sys.boot_completed") != 1 ]
+        sleep 2
+    end
 end
 
 ############################
@@ -96,7 +101,7 @@ function sl
 end
 
 function show
-    if is_inside_git 
+    if is_inside_git
         git show | delta | less -r
     else
         hg diff -r .^ | delta | less -r
