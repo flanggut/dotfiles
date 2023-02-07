@@ -76,6 +76,16 @@ return {
     end,
   },
 
+  -- trail blazer
+  {
+    "LeonHeidelbach/trailblazer.nvim",
+    config = function()
+      require("trailblazer").setup({
+        -- your custom config goes here
+      })
+    end,
+  },
+
   -- search/replace in multiple files
   {
     "windwp/nvim-spectre",
