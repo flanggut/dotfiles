@@ -44,7 +44,7 @@ return {
         -- ["*"] = function(server, opts) end,
       },
     },
-    config = function(plugin, opts)
+    config = function(_, opts)
       -- general setup
       -- vim.lsp.set_log_level("debug")
       local on_show_message = vim.lsp.handlers["window/showMessage"]
@@ -93,8 +93,24 @@ return {
         require("illuminate").on_attach(client)
       end
 
+      local servers = opts.servers
       local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require("cmp_nvim_lsp").default_capabilities()
+      capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
+      local function setup(server)
+        local server_opts = vim.tbl_deep_extend("force", {
+          capabilities = vim.deepcopy(capabilities),
+          on_attach = vim.deepcopy(default_on_attach),
+        }, servers[server] or {})
+        nvim_lsp[server].setup(server_opts)
+      end
+
+      for server, server_opts in pairs(servers) do
+        if server_opts then
+          server_opts = server_opts == true and {} or server_opts
+          setup(server)
+        end
+      end
 
       -- C++
       local clangd_binary = "clangd"
@@ -111,17 +127,6 @@ return {
         },
         on_attach = default_on_attach,
       })
-
-      -- Rust
-      nvim_lsp["rust_analyzer"].setup({
-        capabilities = capabilities,
-        on_attach = default_on_attach,
-      })
-
-      -- nvim_lsp["buckls"].setup({
-      --   capabilities = capabilities,
-      --   on_attach = default_on_attach,
-      -- })
 
       -- Python
       if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
@@ -217,7 +222,7 @@ return {
       },
     },
     ---@param opts MasonSettings | {ensure_installed: string[]}
-    config = function(plugin, opts)
+    config = function(_, opts)
       require("mason").setup(opts)
       local mr = require("mason-registry")
       for _, tool in ipairs(opts.ensure_installed) do
