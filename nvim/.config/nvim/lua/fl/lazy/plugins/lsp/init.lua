@@ -56,9 +56,11 @@ return {
       require("fl.lazy.util").on_attach(function(client, buffer)
         require("fl.lazy.plugins.lsp.format").on_attach(client, buffer)
         require("fl.lazy.plugins.lsp.keymaps").on_attach(client, buffer)
+        require("lsp_signature").on_attach({ bind = true, floating_window = false, hint_prefix = "  " }, buffer)
       end)
 
       local lspconfig = require("lspconfig")
+      local lsputil = require("lspconfig.util")
       local servers = opts.servers
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
@@ -93,13 +95,13 @@ return {
       })
 
       -- Python
+      ---@diagnostic disable-next-line: param-type-mismatch
       if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
         lspconfig["pyright"].setup({
           capabilities = capabilities,
-          on_attach = function(client, bufnr)
+          on_attach = function(client, _)
             client.server_capabilities.document_formatting = false
             client.server_capabilities.document_range_formatting = false
-            default_on_attach(client, bufnr)
           end,
         })
       else
@@ -107,6 +109,7 @@ return {
         vim.g.python_host_prog = "/usr/local/bin/python2"
 
         if vim.env.PYLS_PATH == nil or vim.env.PYLS_PATH == "" then
+          ---@diagnostic disable-next-line: param-type-mismatch
           vim.notify("$PYLS_PATH not defined in environment. Cannot start python LSP.", "error")
         else
           lspconfig["pylsp"].setup({
@@ -122,7 +125,7 @@ return {
             end,
             capabilities = capabilities,
             filetypes = { "python" },
-            root_dir = util.root_pattern(".buckconfig"),
+            root_dir = lsputil.root_pattern(".buckconfig"),
             single_file_support = false,
             settings = {
               pyls = {
@@ -168,6 +171,15 @@ return {
           nls.builtins.formatting.stylua,
         },
       })
+    end,
+  },
+
+  -- lsp saga
+  {
+    "glepnir/lspsaga.nvim",
+    cmd = "Lspsaga",
+    config = function()
+      require("lspsaga").setup({})
     end,
   },
 

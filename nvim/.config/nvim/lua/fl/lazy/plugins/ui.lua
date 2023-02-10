@@ -198,7 +198,11 @@ return {
           " " .. " Local file",
           [[:lua require("telescope.builtin").oldfiles({include_current_session=true, cwd_only=true, previewer=false}) <cr>]]
         ),
-        dashboard.button("m", " " .. " MRU", ":Telescope oldfiles <CR>"),
+        dashboard.button(
+          "m",
+          " " .. " MRU",
+          [[:lua require("telescope.builtin").oldfiles({include_current_session=true, previewer=false}) <cr>]]
+        ),
         dashboard.button("s", "勒" .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
         dashboard.button(
           "c",

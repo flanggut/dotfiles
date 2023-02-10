@@ -9,12 +9,12 @@ function M.get()
   -- stylua: ignore
   M._keys = M._keys
     or {
-      { "<C-j>", vim.lsp.buf.definition },
+      { "<C-j>", "<cmd>Lspsaga goto_definition<CR>" },
       { "<c-k>", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help", has = "signatureHelp" },
-      { "K", vim.lsp.buf.hover },
+      { "K", "<cmd>Lspsaga hover_doc ++keep<CR>" },
       { "<leader>e", vim.diagnostic.goto_next },
       { "<leader>E", vim.diagnostic.open_float },
-      { "<leader>sa", vim.lsp.buf.code_action, has = "codeAction" },
+      { "<leader>sa", "<cmd>Lspsaga code_action<CR>", has = "codeAction" },
       { "<leader>sr", require("telescope.builtin").lsp_references },
       { "<leader>rn", vim.lsp.buf.rename, has = "rename" },
       { "<leader>sy", function() require("telescope.builtin").lsp_document_symbols({ symbol_width = 50, symbol_type_width = 12 }) end, },
