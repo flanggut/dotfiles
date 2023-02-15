@@ -12,13 +12,14 @@ return {
       "jose-elias-alvarez/null-ls.nvim",
       "ray-x/lsp_signature.nvim",
     },
+    version = false,
     ---@class PluginLspOpts
     opts = {
       autoformat = true,
       ---@type lspconfig.options
       servers = {
         jsonls = {},
-        sumneko_lua = {
+        lua_ls = {
           settings = {
             Lua = {
               workspace = {

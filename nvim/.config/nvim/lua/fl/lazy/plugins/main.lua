@@ -31,5 +31,5 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 return {
-  { "folke/lazy.nvim", version = false },
+  { "folke/lazy.nvim" },
 }
