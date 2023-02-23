@@ -144,6 +144,7 @@ return {
         options = {
           globalstatus = true,
           disabled_filetypes = { statusline = { "lazy", "alpha" } },
+          section_separators = { left = "", right = "" },
         },
         sections = {
           lualine_a = { os_indicator, "mode" },
