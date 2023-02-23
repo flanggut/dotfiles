@@ -54,6 +54,10 @@ function waitfordevice
     end
 end
 
+function lc
+    adb logcat | tee ~/tmp/logcat.log | grep -E -e " F " -e MIXED
+end
+
 ############################
 #     Git + HG commands    #
 alias shows="hg show --stat"
