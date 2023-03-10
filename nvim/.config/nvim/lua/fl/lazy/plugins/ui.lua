@@ -69,7 +69,6 @@ return {
       })
       vim.keymap.set("n", "gh", ":BufferLineCyclePrev<CR>", { noremap = true, silent = true })
       vim.keymap.set("n", "gl", ":BufferLineCycleNext<CR>", { noremap = true, silent = true })
-      vim.keymap.set("n", "gj", ":BufferLinePick<CR>", { noremap = true, silent = true })
       vim.keymap.set("n", "gq", ":BufferLinePickClose<CR>", { noremap = true, silent = true })
     end,
   },

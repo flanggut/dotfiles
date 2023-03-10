@@ -73,7 +73,7 @@ return {
   -- Various little helpers.
   {
     "nvim-treesitter/nvim-treesitter-refactor",
-    keys = { "<leader>rr" },
+    event = "BufReadPost",
   },
   "nvim-treesitter/nvim-treesitter-textobjects",
   "nvim-treesitter/playground",
@@ -83,7 +83,7 @@ return {
   {
     "mizlan/iswap.nvim",
     keys = {
-      {"<leader>is", "<cmd>ISwapWith<cr>", desc = "Swap argument with other"}
+      { "<leader>is", "<cmd>ISwapWith<cr>", desc = "Swap argument with other" },
     },
     config = function()
       require("iswap").setup({})

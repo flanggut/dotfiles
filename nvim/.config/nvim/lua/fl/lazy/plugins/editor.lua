@@ -234,6 +234,18 @@ return {
     cmd = "Linediff",
   },
 
+  -- split join
+  {
+    "Wansmer/treesj",
+    cmd = "TSJToggle",
+    keys = {
+      { "gj", [[<cmd>TSJToggle<cr>]], desc = "Split/Join TS node" },
+    },
+    config = function()
+      require("treesj").setup({ use_default_keymaps = false })
+    end,
+  },
+
   -- nnn
   {
     "mcchrish/nnn.vim",
