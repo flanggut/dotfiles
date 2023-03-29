@@ -9,7 +9,7 @@ function M.get()
   -- stylua: ignore
   M._keys = M._keys
     or {
-      { "<C-j>", "<cmd>Lspsaga goto_definition<CR>" },
+      { "<C-j>", "<cmd>lua vim.lsp.buf.definition()<CR>" },
       { "<c-k>", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help", has = "signatureHelp" },
       { "K", "<cmd>Lspsaga hover_doc ++keep<CR>" },
       { "<leader>e", vim.diagnostic.goto_next },

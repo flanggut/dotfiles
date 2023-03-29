@@ -18,3 +18,5 @@
 [core]
   excludesfile = ~/.gitignore
   editor = nvim
+[credential]
+	helper = osxkeychain
