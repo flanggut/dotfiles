@@ -94,12 +94,12 @@ return {
       local plugin = require("lazy.core.config").spec.plugins["mini.surround"]
       local opts = require("lazy.core.plugin").values(plugin, "opts", false)
       local mappings = {
-        { opts.mappings.add, desc = "Add surrounding", mode = { "n", "v" } },
-        { opts.mappings.delete, desc = "Delete surrounding" },
-        { opts.mappings.find, desc = "Find right surrounding" },
-        { opts.mappings.find_left, desc = "Find left surrounding" },
-        { opts.mappings.highlight, desc = "Highlight surrounding" },
-        { opts.mappings.replace, desc = "Replace surrounding" },
+        { opts.mappings.add,            desc = "Add surrounding",                     mode = { "n", "v" } },
+        { opts.mappings.delete,         desc = "Delete surrounding" },
+        { opts.mappings.find,           desc = "Find right surrounding" },
+        { opts.mappings.find_left,      desc = "Find left surrounding" },
+        { opts.mappings.highlight,      desc = "Highlight surrounding" },
+        { opts.mappings.replace,        desc = "Replace surrounding" },
         { opts.mappings.update_n_lines, desc = "Update `MiniSurround.config.n_lines`" },
       }
       ---@diagnostic disable-next-line: missing-parameter
@@ -107,12 +107,12 @@ return {
     end,
     opts = {
       mappings = {
-        add = "gza", -- Add surrounding in Normal and Visual modes
-        delete = "gzd", -- Delete surrounding
-        find = "gzf", -- Find surrounding (to the right)
-        find_left = "gzF", -- Find surrounding (to the left)
-        highlight = "gzh", -- Highlight surrounding
-        replace = "gzr", -- Replace surrounding
+        add = "gza",            -- Add surrounding in Normal and Visual modes
+        delete = "gzd",         -- Delete surrounding
+        find = "gzf",           -- Find surrounding (to the right)
+        find_left = "gzF",      -- Find surrounding (to the left)
+        highlight = "gzh",      -- Highlight surrounding
+        replace = "gzr",        -- Replace surrounding
         update_n_lines = "gzn", -- Update `n_lines`
       },
     },
@@ -135,10 +135,10 @@ return {
   {
     "aserowy/tmux.nvim",
     keys = {
-      { "<M-h>", [[<cmd>lua require("tmux").move_left()<cr>]], desc = "Tmux Left" },
+      { "<M-h>", [[<cmd>lua require("tmux").move_left()<cr>]],   desc = "Tmux Left" },
       { "<M-j>", [[<cmd>lua require("tmux").move_bottom()<cr>]], desc = "Tmux Down" },
-      { "<M-k>", [[<cmd>lua require("tmux").move_up()<cr>]], desc = "Tmux Up" },
-      { "<M-l>", [[<cmd>lua require("tmux").move_right()<cr>]], desc = "Tmux Right" },
+      { "<M-k>", [[<cmd>lua require("tmux").move_up()<cr>]],     desc = "Tmux Up" },
+      { "<M-l>", [[<cmd>lua require("tmux").move_right()<cr>]],  desc = "Tmux Right" },
     },
     config = function()
       return require("tmux").setup({
@@ -157,7 +157,8 @@ return {
   -- illuminate
   {
     "RRethy/vim-illuminate",
-    event = "BufRead",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    event = "BufWinEnter",
     opts = { delay = 200 },
     config = function(_, opts)
       require("illuminate").configure(opts)
