@@ -98,7 +98,7 @@ return {
       end
 
       local function lsp_names()
-        names = ""
+        local names = ""
         for _, client in ipairs(vim.lsp.get_active_clients()) do
           names = client.name
         end
@@ -126,7 +126,7 @@ return {
       local function modified()
         local stat = get_repo_stat(2)
         if stat > -1 then
-          return string.format("柳%s", stat)
+          return string.format(" %s", stat)
         end
         return ""
       end
@@ -155,8 +155,8 @@ return {
             { "filename", padding = { left = 1, right = 1 } },
           },
           lualine_x = {
-            { added, color = { fg = palette.green[1] }, separator = {} },
-            { removed, color = { fg = palette.red[1] }, separator = {} },
+            { added,    color = { fg = palette.green[1] }, separator = {} },
+            { removed,  color = { fg = palette.red[1] },   separator = {} },
             { modified, color = { fg = palette.blue[1] } },
             -- { "diff", symbols = {added = " " , removed = " ", modified = "柳"} },
             "filetype",
@@ -192,7 +192,7 @@ return {
       local alpha = require("alpha")
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.buttons.val = {
-        dashboard.button("f", " " .. " Find file", [[:lua require("fl.functions").myfiles({}) <cr>]]),
+        dashboard.button("f", " " .. " Find file", [[:lua require("fl.functions").myfiles({}) <cr>]]),
         dashboard.button(
           "l",
           " " .. " Local file",
@@ -200,16 +200,16 @@ return {
         ),
         dashboard.button(
           "m",
-          " " .. " MRU",
+          " " .. " MRU",
           [[:lua require("telescope.builtin").oldfiles({include_current_session=true, previewer=false}) <cr>]]
         ),
-        dashboard.button("s", "勒" .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
+        dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
         dashboard.button(
           "c",
           " " .. " Config",
           [[:lua require("telescope.builtin").find_files({cwd="~/.config/nvim/", follow = true, hidden = true}) <cr>]]
         ),
-        dashboard.button("L", "鈴" .. " Lazy", ":Lazy<CR>"),
+        dashboard.button("L", "󰒲 " .. " Lazy", ":Lazy<CR>"),
         dashboard.button("q", " " .. " Quit", ":qa<CR>"),
       }
       for _, button in ipairs(dashboard.section.buttons.val) do
@@ -266,8 +266,8 @@ return {
         min_jump = 5,
         popup = {
           delay_ms = 0, -- delay before popup displays
-          inc_ms = 20, -- time increments used for fade/resize effects
-          blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+          inc_ms = 20,  -- time increments used for fade/resize effects
+          blend = 10,   -- starting blend, between 0-100 (fully transparent), see :h winblend
           width = 20,
           winhl = "PMenu",
           fader = require("specs").linear_fader,
