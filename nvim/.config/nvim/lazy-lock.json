@@ -50,7 +50,6 @@
   "telescope.nvim": { "branch": "master", "commit": "c1a2af0af69e80e14e6b226d3957a064cd080805" },
   "tmux.nvim": { "branch": "main", "commit": "57220071739c723c3a318e9d529d3e5045f503b8" },
   "trailblazer.nvim": { "branch": "main", "commit": "674bb6254a376a234d0d243366224122fc064eab" },
-  "treesj": { "branch": "main", "commit": "b1e2976c2d7ba922371cc7f3ab08b75136c27231" },
   "vim-signify": { "branch": "master", "commit": "379db4ad0bd381d2cc8d43c22a15b80f7604283d" },
   "which-key.nvim": { "branch": "main", "commit": "e271c28118998c93a14d189af3395812a1aa646c" }
 }
