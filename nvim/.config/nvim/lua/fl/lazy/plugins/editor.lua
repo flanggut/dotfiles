@@ -154,22 +154,6 @@ return {
     end,
   },
 
-  -- illuminate
-  {
-    "RRethy/vim-illuminate",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    event = "BufWinEnter",
-    opts = { delay = 200 },
-    config = function(_, opts)
-      require("illuminate").configure(opts)
-    end,
-    -- stylua: ignore
-    keys = {
-      { "]]", function() require("illuminate").goto_next_reference(false) end, desc = "Next Reference", },
-      { "[[", function() require("illuminate").goto_prev_reference(false) end, desc = "Prev Reference" },
-    },
-  },
-
   -- persistence
   {
     "folke/persistence.nvim",
@@ -184,15 +168,10 @@ return {
     "echasnovski/mini.nvim",
     event = "BufRead",
     config = function()
-      require("mini.indentscope").setup({
-        symbol = "│",
-        draw = {
-          animation = function()
-            return 10
-          end,
-        },
-      })
       require("mini.ai").setup({})
+      require('mini.cursorword').setup({
+        delay = 150,
+      })
     end,
   },
 
@@ -201,11 +180,12 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     event = "BufRead",
     config = function()
-      vim.g.indentLine_enabled = 1
-      vim.g.indentLine_char = "│"
-      vim.g.indentLine_fileType = { "c", "cpp", "lua", "python", "vim" }
-      vim.g.indent_blankline_char_highlight = "LineNr"
-      vim.g.indent_blankline_show_trailing_blankline_indent = false
+      require("indent_blankline").setup {
+        space_char_blankline = " ",
+        show_current_context = true,
+        show_current_context_start = true,
+        char_highlight = "LineNr"
+      }
     end,
   },
 
