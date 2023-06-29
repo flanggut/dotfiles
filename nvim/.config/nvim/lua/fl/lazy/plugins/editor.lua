@@ -166,6 +166,7 @@ return {
   -- mini
   {
     "echasnovski/mini.nvim",
+    version = false,
     event = "BufRead",
     config = function()
       require("mini.ai").setup({})

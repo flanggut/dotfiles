@@ -177,6 +177,7 @@ return {
   -- lsp status fidget
   {
     "j-hui/fidget.nvim",
+    tag = "legacy",
     event = "BufReadPre",
     config = function()
       require("fidget").setup({
@@ -195,7 +196,6 @@ return {
       { "<C-s>", "<cmd>Alpha<CR>" },
     },
     opts = function()
-      local alpha = require("alpha")
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.buttons.val = {
         dashboard.button("f", " " .. " Find file", [[:lua require("fl.functions").myfiles({}) <cr>]]),
