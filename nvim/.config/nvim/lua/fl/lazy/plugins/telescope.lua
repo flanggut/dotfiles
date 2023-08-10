@@ -9,6 +9,7 @@ return {
       "nvim-telescope/telescope-symbols.nvim",
       "nvim-telescope/telescope-z.nvim",
     },
+    event = "VimEnter",
     cmd = "Telescope",
     keys = {
       {

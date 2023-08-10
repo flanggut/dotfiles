@@ -77,27 +77,52 @@ return {
   -- },
 
   -- trail blazer
-  -- {
-  --   "LeonHeidelbach/trailblazer.nvim",
-  --   config = function()
-  --     require("trailblazer").setup({
-  --       -- your custom config goes here
-  --     })
-  --   end,
-  -- },
-  --
+  {
+    "LeonHeidelbach/trailblazer.nvim",
+    keys = {
+      { "mm", [[<cmd>TrailBlazerNewTrailMark<cr>]], desc = "New Trail Mark" },
+      { "mp", [[<cmd>TrailBlazerTrackBack<cr>]],    desc = "Pop Trail Mark" },
+      {
+        "mk",
+        function()
+          require("trailblazer").move_to_nearest(nil, "up", nil)
+        end,
+        desc = "Nearest Trail Mark Up",
+      },
+      {
+        "ml",
+        function()
+          require("trailblazer").move_to_nearest(nil, "down", nil)
+        end,
+        desc = "Nearest Trail Mark Down",
+      },
+    },
+    config = function()
+      require("trailblazer").setup({
+        -- your custom config goes here
+      })
+    end,
+  },
 
   {
     "folke/flash.nvim",
     event = "VeryLazy",
     ---@type Flash.Config
-    opts = {},
+    opts = {
+      modes = {
+        search = {
+          enabled = false,
+        },
+      },
+    },
     keys = {
       {
         "s",
         mode = { "n", "x", "o" },
         function()
-          require("flash").jump()
+          require("flash").jump({
+            mode = "fuzzy",
+          })
         end,
         desc = "Flash",
       },
@@ -144,12 +169,12 @@ return {
       local plugin = require("lazy.core.config").spec.plugins["mini.surround"]
       local opts = require("lazy.core.plugin").values(plugin, "opts", false)
       local mappings = {
-        { opts.mappings.add, desc = "Add surrounding", mode = { "n", "v" } },
-        { opts.mappings.delete, desc = "Delete surrounding" },
-        { opts.mappings.find, desc = "Find right surrounding" },
-        { opts.mappings.find_left, desc = "Find left surrounding" },
-        { opts.mappings.highlight, desc = "Highlight surrounding" },
-        { opts.mappings.replace, desc = "Replace surrounding" },
+        { opts.mappings.add,            desc = "Add surrounding",                     mode = { "n", "v" } },
+        { opts.mappings.delete,         desc = "Delete surrounding" },
+        { opts.mappings.find,           desc = "Find right surrounding" },
+        { opts.mappings.find_left,      desc = "Find left surrounding" },
+        { opts.mappings.highlight,      desc = "Highlight surrounding" },
+        { opts.mappings.replace,        desc = "Replace surrounding" },
         { opts.mappings.update_n_lines, desc = "Update `MiniSurround.config.n_lines`" },
       }
       ---@diagnostic disable-next-line: missing-parameter
@@ -157,12 +182,12 @@ return {
     end,
     opts = {
       mappings = {
-        add = "gza", -- Add surrounding in Normal and Visual modes
-        delete = "gzd", -- Delete surrounding
-        find = "gzf", -- Find surrounding (to the right)
-        find_left = "gzF", -- Find surrounding (to the left)
-        highlight = "gzh", -- Highlight surrounding
-        replace = "gzr", -- Replace surrounding
+        add = "gza",            -- Add surrounding in Normal and Visual modes
+        delete = "gzd",         -- Delete surrounding
+        find = "gzf",           -- Find surrounding (to the right)
+        find_left = "gzF",      -- Find surrounding (to the left)
+        highlight = "gzh",      -- Highlight surrounding
+        replace = "gzr",        -- Replace surrounding
         update_n_lines = "gzn", -- Update `n_lines`
       },
     },
@@ -185,10 +210,10 @@ return {
   {
     "aserowy/tmux.nvim",
     keys = {
-      { "<M-h>", [[<cmd>lua require("tmux").move_left()<cr>]], desc = "Tmux Left" },
+      { "<M-h>", [[<cmd>lua require("tmux").move_left()<cr>]],   desc = "Tmux Left" },
       { "<M-j>", [[<cmd>lua require("tmux").move_bottom()<cr>]], desc = "Tmux Down" },
-      { "<M-k>", [[<cmd>lua require("tmux").move_up()<cr>]], desc = "Tmux Up" },
-      { "<M-l>", [[<cmd>lua require("tmux").move_right()<cr>]], desc = "Tmux Right" },
+      { "<M-k>", [[<cmd>lua require("tmux").move_up()<cr>]],     desc = "Tmux Up" },
+      { "<M-l>", [[<cmd>lua require("tmux").move_right()<cr>]],  desc = "Tmux Right" },
     },
     config = function()
       return require("tmux").setup({
@@ -258,11 +283,22 @@ return {
   -- comments
   {
     "numToStr/Comment.nvim",
-    event = "BufRead",
+    keys = {
+      {
+        "<space>x",
+        mode = { "n" },
+        "<plug>(comment_toggle_linewise_current)",
+        desc = "Comment",
+      },
+      {
+        "<space>x",
+        mode = { "x" },
+        "<plug>(comment_toggle_linewise_visual)",
+        desc = "Comment",
+      },
+    },
     config = function()
-      require("Comment").setup({})
-      vim.keymap.set("n", "<space>x", "<plug>(comment_toggle_linewise_current)", { silent = true })
-      vim.keymap.set("x", "<space>x", "<plug>(comment_toggle_linewise_visual)", { silent = true })
+      require("Comment").setup()
     end,
   },
 

@@ -6,14 +6,14 @@ return {
     dependencies = {
       { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
       "hrsh7th/cmp-nvim-lsp",
-      "jose-elias-alvarez/null-ls.nvim",
+      -- "jose-elias-alvarez/null-ls.nvim",
       "ray-x/lsp_signature.nvim",
     },
     version = false,
     ---@class PluginLspOpts
     opts = {
       autoformat = true,
-      ---@type lspconfig.options
+      -- -@type lspconfig.options
       servers = {
         jsonls = {},
         lua_ls = {
@@ -31,7 +31,7 @@ return {
       },
       -- you can do any additional lsp server setup here
       -- return true if you don't want this server to be setup with lspconfig
-      ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
+      -- -@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
       setup = {
         -- example to setup with typescript.nvim
         -- tsserver = function(_, opts)
@@ -155,18 +155,54 @@ return {
       end
 
       -- Setup null-ls
-      local nls = require("null-ls")
-      nls.setup({
-        debounce = 150,
-        save_after_format = false,
-        sources = {
-          nls.builtins.diagnostics.flake8,
-          nls.builtins.diagnostics.jsonlint,
-          nls.builtins.diagnostics.shellcheck,
-          nls.builtins.formatting.black,
-          nls.builtins.formatting.fish_indent,
-          nls.builtins.formatting.json_tool,
-          nls.builtins.formatting.stylua,
+      -- local nls = require("null-ls")
+      -- nls.setup({
+      --   debounce = 150,
+      --   save_after_format = false,
+      --   sources = {
+      --     nls.builtins.diagnostics.flake8,
+      --     nls.builtins.diagnostics.jsonlint,
+      --     nls.builtins.diagnostics.shellcheck,
+      --     nls.builtins.formatting.black,
+      --     nls.builtins.formatting.fish_indent,
+      --     nls.builtins.formatting.json_tool,
+      --     nls.builtins.formatting.stylua,
+      --   },
+      -- })
+
+      -- efm langserver
+      require("lspconfig").efm.setup({
+        filetypes = { "fish", "json", "lua" },
+        init_options = { documentFormatting = true },
+        settings = {
+          rootMarkers = { ".git/", ".hg/" },
+          languages = {
+            fish = {
+              {
+                lintCommand = "fish --no-execute ${INPUT}",
+                lintIgnoreExitCode = true,
+                lintFormats = { "%.%#(line %l): %m" },
+              },
+            },
+            json = {
+              {
+                lintCommand = "jsonlint -c",
+                lintStdin = true,
+                lintFormats = {
+                  "line %l, col %c, found: %m",
+                },
+              },
+              { formatCommand = "prettier --parser json", formatStdin = true },
+            },
+            lua = {
+              {
+                formatCanRange = true,
+                formatCommand = "stylua --color Never -",
+                formatStdin = true,
+                rootMarkers = { "stylua.toml", ".stylua.toml" },
+              },
+            },
+          },
         },
       })
     end,
