@@ -202,18 +202,18 @@ return {
         dashboard.button(
           "l",
           " " .. " Local file",
-          [[:lua require("telescope.builtin").oldfiles({include_current_session=true, cwd_only=true, previewer=false}) <cr>]]
+          ":Telescope oldfiles include_current_session=true cwd_only=true previewer=false <CR>"
         ),
         dashboard.button(
           "m",
           " " .. " MRU",
-          [[:lua require("telescope.builtin").oldfiles({include_current_session=true, previewer=false}) <cr>]]
+          ":Telescope oldfiles include_current_session=true previewer=false <CR>"
         ),
         dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
         dashboard.button(
           "c",
           " " .. " Config",
-          [[:lua require("telescope.builtin").find_files({cwd="~/.config/nvim/", follow = true, hidden = true}) <cr>]]
+          ":Telescope find_files cwd=~/.config/nvim/ follow=true hidden=true <CR>"
         ),
         dashboard.button("L", "󰒲 " .. " Lazy", ":Lazy<CR>"),
         dashboard.button("q", " " .. " Quit", ":qa<CR>"),
