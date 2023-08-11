@@ -15,7 +15,6 @@ return {
       autoformat = true,
       -- -@type lspconfig.options
       servers = {
-        jsonls = {},
         lua_ls = {
           settings = {
             Lua = {
@@ -46,6 +45,7 @@ return {
       -- general setup
       vim.cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
       -- vim.lsp.set_log_level("debug")
+
       local on_show_message = vim.lsp.handlers["window/showMessage"]
       vim.lsp.handlers["window/showStatus"] = vim.lsp.with(on_show_message, {})
 
@@ -57,12 +57,12 @@ return {
         require("lsp_signature").on_attach({ bind = true, floating_window = false, hint_prefix = "  " }, buffer)
       end)
 
+      -- setup default servers
       local lspconfig = require("lspconfig")
       local lsputil = require("lspconfig.util")
       local servers = opts.servers
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-
       local function setup(server)
         local server_opts = vim.tbl_deep_extend("force", {
           capabilities = vim.deepcopy(capabilities),
@@ -154,30 +154,19 @@ return {
         end
       end
 
-      -- Setup null-ls
-      -- local nls = require("null-ls")
-      -- nls.setup({
-      --   debounce = 150,
-      --   save_after_format = false,
-      --   sources = {
-      --     nls.builtins.diagnostics.flake8,
-      --     nls.builtins.diagnostics.jsonlint,
-      --     nls.builtins.diagnostics.shellcheck,
-      --     nls.builtins.formatting.black,
-      --     nls.builtins.formatting.fish_indent,
-      --     nls.builtins.formatting.json_tool,
-      --     nls.builtins.formatting.stylua,
-      --   },
-      -- })
-
       -- efm langserver
       require("lspconfig").efm.setup({
-        filetypes = { "fish", "json", "lua" },
+        filetypes = { "fish", "json", "lua", "python", "sh" },
         init_options = { documentFormatting = true },
+        lintDebounce = "1s",
         settings = {
           rootMarkers = { ".git/", ".hg/" },
           languages = {
             fish = {
+              {
+                formatCommand = "fish_indent",
+                formatStdin = true,
+              },
               {
                 lintCommand = "fish --no-execute ${INPUT}",
                 lintIgnoreExitCode = true,
@@ -196,10 +185,31 @@ return {
             },
             lua = {
               {
-                formatCanRange = true,
                 formatCommand = "stylua --color Never -",
                 formatStdin = true,
                 rootMarkers = { "stylua.toml", ".stylua.toml" },
+              },
+            },
+            python = {
+              {
+                formatCommand = "black --no-color -q -",
+                formatStdin = true,
+              },
+            },
+            sh = {
+              {
+                formatCommand = "shfmt -ci -s -bn",
+                formatStdin = true,
+              },
+              {
+                prefix = "shellcheck",
+                lintCommand = "shellcheck --color=never --format=gcc -",
+                lintStdin = true,
+                lintFormats = {
+                  "%f:%l:%c: %trror: %m",
+                  "%f:%l:%c: %tarning: %m",
+                  "%f:%l:%c: %tote: %m",
+                },
               },
             },
           },
