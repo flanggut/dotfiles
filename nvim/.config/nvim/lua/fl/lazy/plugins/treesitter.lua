@@ -7,6 +7,7 @@ return {
     event = { "BufReadPost", "BufNewFile" },
     config = function()
       local treesitter_config = require("nvim-treesitter.configs")
+      ---@diagnostic disable-next-line: missing-fields
       treesitter_config.setup({
         auto_install = true,
         highlight = { enable = true },

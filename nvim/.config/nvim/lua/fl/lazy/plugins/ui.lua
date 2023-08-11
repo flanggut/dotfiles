@@ -49,6 +49,7 @@ return {
     event = "BufRead",
     config = function()
       require("bufferline").setup({
+        ---@diagnostic disable-next-line: missing-fields
         options = {
           show_close_icon = false,
           show_buffer_close_icons = false,
@@ -56,10 +57,13 @@ return {
           max_name_length = 35,
         },
         highlights = {
+          ---@diagnostic disable-next-line: missing-fields
           buffer_selected = {
             bold = true,
           },
+          ---@diagnostic disable-next-line: missing-fields
           fill = {
+            ---@diagnostic disable-next-line: assign-type-mismatch
             bg = {
               attribute = "bg",
               highlight = "Normal",
@@ -72,12 +76,6 @@ return {
       vim.keymap.set("n", "gq", ":BufferLinePickClose<CR>", { noremap = true, silent = true })
     end,
   },
-
-  -- winbar
-  -- {
-  --   "Bekaboo/dropbar.nvim",
-  --   event = "VeryLazy",
-  -- },
 
   -- statusline
   {
@@ -106,14 +104,18 @@ return {
       local function lsp_names()
         local names = ""
         for _, client in ipairs(vim.lsp.get_active_clients()) do
-          names = client.name
+          if names == "" then
+            names = client.name
+          else
+            names = names .. ", " .. client.name
+          end
         end
         return names
       end
 
       local function get_repo_stat(index)
         if vim.g.loaded_signify then
-          local repostats = vim.api.nvim_call_function("sy#repo#get_stats", { bufnr })
+          local repostats = vim.api.nvim_call_function("sy#repo#get_stats", {})
           if repostats[index] > -1 then
             return repostats[index]
           end
@@ -155,7 +157,7 @@ return {
           lualine_a = { os_indicator, "mode" },
           lualine_b = {
             { lsp_names },
-            { "diagnostics", symbols = { error = " ", warn = " ", info = " ", hint = " " } },
+            { "diagnostics", symbols = require("fl.lazy.config.symbols").icons.diagnostics },
           },
           lualine_c = {
             { "filename", padding = { left = 1, right = 1 } },
