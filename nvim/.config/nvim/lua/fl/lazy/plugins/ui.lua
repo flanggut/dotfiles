@@ -50,7 +50,16 @@ return {
     event = "VeryLazy",
     opts = {
       cmdline = {
-        view = "hover",
+        view = "cmdline_popup",
+        opts = {
+          relative = "cursor",
+          anchor = "auto",
+          position = { row = 2, col = 0 },
+          size = {
+            width = "auto",
+            height = "auto",
+          },
+        },
       },
       lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
