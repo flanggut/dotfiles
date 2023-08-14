@@ -60,6 +60,38 @@ return {
             height = "auto",
           },
         },
+        format = {
+          search_down = {
+            view = "cmdline",
+            opts = {
+              relative = "editor",
+              anchor = "NW",
+              position = {
+                row = "100%",
+                col = 0,
+              },
+              size = {
+                height = "auto",
+                width = "100%",
+              },
+            },
+          },
+          search_up = {
+            view = "cmdline",
+            opts = {
+              relative = "editor",
+              anchor = "NW",
+              position = {
+                row = "100%",
+                col = 0,
+              },
+              size = {
+                height = "auto",
+                width = "100%",
+              },
+            },
+          },
+        },
       },
       lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -86,7 +118,6 @@ return {
         },
       },
       presets = {
-        bottom_search = true,
         long_message_to_split = true,
         inc_rename = false,
       },
