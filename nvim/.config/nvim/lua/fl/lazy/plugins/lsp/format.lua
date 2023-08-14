@@ -21,7 +21,7 @@ function M.format()
       -- if have_nls then
       -- return client.name == "null-ls"
       -- end
-      return client.name ~= "null-ls"
+      return client.name ~= "lua_ls"
     end,
   }, {}))
 end
