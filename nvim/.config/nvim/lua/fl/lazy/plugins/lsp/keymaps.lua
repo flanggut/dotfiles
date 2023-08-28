@@ -14,7 +14,7 @@ function M.get()
       { "K", "<cmd>Lspsaga hover_doc<CR>" },
       { "<leader>e", vim.diagnostic.goto_next },
       { "<leader>E", vim.diagnostic.open_float },
-      { "<leader>sa", "<cmd>Lspsaga code_action<CR>", has = "codeAction" },
+      { "<leader>sa", vim.lsp.buf.code_action, has = "codeAction" },
       { "<leader>sr", require("telescope.builtin").lsp_references },
       { "<leader>rn", vim.lsp.buf.rename, has = "rename" },
       { "<leader>sy", function() require("telescope.builtin").lsp_document_symbols({ symbol_width = 50, symbol_type_width = 12 }) end, },

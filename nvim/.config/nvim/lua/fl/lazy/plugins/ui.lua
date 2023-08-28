@@ -1,6 +1,6 @@
 return {
   -- icons
-  { "kyazdani42/nvim-web-devicons" },
+  { "nvim-tree/nvim-web-devicons" },
   -- ui components
   { "MunifTanjim/nui.nvim", event = "VeryLazy" },
 

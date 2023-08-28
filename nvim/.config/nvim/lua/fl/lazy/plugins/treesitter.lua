@@ -56,9 +56,6 @@ return {
             },
           },
         },
-        playground = {
-          enable = true,
-        },
       })
       vim.keymap.set("v", "m", ':lua require("tsht").nodes()<CR>', { noremap = true, silent = true })
     end,
@@ -77,7 +74,6 @@ return {
     event = "BufReadPost",
   },
   "nvim-treesitter/nvim-treesitter-textobjects",
-  "nvim-treesitter/playground",
   "RRethy/nvim-treesitter-textsubjects",
   "mfussenegger/nvim-ts-hint-textobject",
   -- Swap things around

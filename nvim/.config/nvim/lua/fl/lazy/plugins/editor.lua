@@ -31,6 +31,7 @@ return {
       wk.register(leader, { prefix = "<leader>" })
 
       local leaderleader = {
+        c = { "<cmd>TroubleToggle<CR>", "Reload snippets" },
         s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
         l = { "<cmd>LspRestart<CR>", "Restart LSP servers" },
         p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
@@ -39,6 +40,20 @@ return {
 
       wk.register({ ["L"] = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" } })
     end,
+  },
+
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    event = "VeryLazy",
+    opts = {
+      auto_close = true,
+      mode = "document_diagnostics",
+    },
+    -- stylua: ignore
+    keys = {
+      { "gR",function() require("trouble").open("lsp_references") end, desc = "Trouble lsp references", },
+    },
   },
 
   -- snippets
@@ -106,9 +121,7 @@ return {
         "s",
         mode = { "n", "x", "o" },
         function()
-          require("flash").jump({
-            mode = "fuzzy",
-          })
+          require("flash").jump({ mode = "fuzzy" })
         end,
         desc = "Flash",
       },
@@ -195,11 +208,12 @@ return {
   -- tmux integration
   {
     "aserowy/tmux.nvim",
+    -- stylua: ignore
     keys = {
-      { "<M-h>", [[<cmd>lua require("tmux").move_left()<cr>]], desc = "Tmux Left" },
-      { "<M-j>", [[<cmd>lua require("tmux").move_bottom()<cr>]], desc = "Tmux Down" },
-      { "<M-k>", [[<cmd>lua require("tmux").move_up()<cr>]], desc = "Tmux Up" },
-      { "<M-l>", [[<cmd>lua require("tmux").move_right()<cr>]], desc = "Tmux Right" },
+      { "<M-h>", function() require("tmux").move_left() end, desc = "Tmux Left" },
+      { "<M-j>", function() require("tmux").move_bottom() end, desc = "Tmux Down" },
+      { "<M-k>", function() require("tmux").move_top() end, desc = "Tmux Up" },
+      { "<M-l>", function() require("tmux").move_right() end, desc = "Tmux Right" },
     },
     config = function()
       return require("tmux").setup({
@@ -210,6 +224,20 @@ return {
         resize = {
           -- enables default keybindings (A-hjkl) for normal mode
           enable_default_keybindings = false,
+        },
+      })
+    end,
+  },
+
+  -- terminal
+  {
+    "numToStr/FTerm.nvim",
+    config = function()
+      require("FTerm").setup({
+        border = "double",
+        dimensions = {
+          height = 0.9,
+          width = 0.9,
         },
       })
     end,

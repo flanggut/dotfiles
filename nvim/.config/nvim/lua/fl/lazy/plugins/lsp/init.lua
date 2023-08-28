@@ -6,7 +6,6 @@ return {
     dependencies = {
       { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
       "hrsh7th/cmp-nvim-lsp",
-      -- "jose-elias-alvarez/null-ls.nvim",
       "ray-x/lsp_signature.nvim",
     },
     version = false,
@@ -213,19 +212,6 @@ return {
               },
             },
           },
-        },
-      })
-    end,
-  },
-
-  -- lsp saga
-  {
-    "glepnir/lspsaga.nvim",
-    cmd = "Lspsaga",
-    config = function()
-      require("lspsaga").setup({
-        symbol_in_winbar = {
-          enable = false,
         },
       })
     end,

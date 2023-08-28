@@ -27,7 +27,7 @@ vim.wo.foldnestmax = 1
 
 vim.wo.number = true
 
-vim.wo.signcolumn = "yes"
+vim.wo.signcolumn = "yes:3"
 
 vim.opt.shada = { "!", "'500", "<50", "s10", "h" }
 vim.opt.swapfile = false
