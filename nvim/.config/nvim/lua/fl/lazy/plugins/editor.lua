@@ -10,6 +10,8 @@ return {
     config = function(_, opts)
       local wk = require("which-key")
       wk.setup(opts)
+
+      -- leader
       local leader = {
         c = {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
@@ -18,7 +20,6 @@ return {
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
-        k = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" },
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" },
         },
@@ -30,6 +31,7 @@ return {
       }
       wk.register(leader, { prefix = "<leader>" })
 
+      -- leader leader
       local leaderleader = {
         c = { "<cmd>TroubleToggle<CR>", "Reload snippets" },
         s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
@@ -37,8 +39,6 @@ return {
         p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
-
-      wk.register({ ["L"] = { "<cmd>lua R('fl.functions').leap_identifiers()<CR>", "Leap Identifiers" } })
     end,
   },
 
@@ -231,16 +231,9 @@ return {
 
   -- terminal
   {
-    "numToStr/FTerm.nvim",
-    config = function()
-      require("FTerm").setup({
-        border = "double",
-        dimensions = {
-          height = 0.9,
-          width = 0.9,
-        },
-      })
-    end,
+    "akinsho/toggleterm.nvim",
+    version = "*",
+    opts = {},
   },
 
   -- persistence

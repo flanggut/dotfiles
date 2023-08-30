@@ -94,12 +94,38 @@ return {
       -- Python
       ---@diagnostic disable-next-line: param-type-mismatch
       if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-        lspconfig["pyright"].setup({
-          capabilities = capabilities,
-          on_attach = function(client, _)
-            client.server_capabilities.document_formatting = false
-            client.server_capabilities.document_range_formatting = false
-          end,
+        -- lspconfig["pyright"].setup({
+        --   capabilities = capabilities,
+        --   on_attach = function(client, _)
+        --     client.server_capabilities.document_formatting = false
+        --     client.server_capabilities.document_range_formatting = false
+        --   end,
+        -- })
+        lspconfig["pylsp"].setup({
+          settings = {
+            pylsp = {
+              plugins = {
+                black = {
+                  cache_config = true,
+                  enabled = true,
+                  line_length = 119,
+                },
+                flake8 = {
+                  enabled = true,
+                  maxLineLength = 119,
+                },
+                mypy = {
+                  enabled = true,
+                },
+                pycodestyle = {
+                  enabled = false,
+                },
+                pyflakes = {
+                  enabled = false,
+                },
+              },
+            },
+          },
         })
       else
         vim.g.python3_host_prog = "/usr/local/bin/python3"
@@ -155,7 +181,7 @@ return {
 
       -- efm langserver
       require("lspconfig").efm.setup({
-        filetypes = { "fish", "json", "lua", "python", "sh" },
+        filetypes = { "fish", "json", "lua", "sh" },
         init_options = { documentFormatting = true },
         lintDebounce = "1s",
         settings = {
@@ -187,12 +213,6 @@ return {
                 formatCommand = "stylua --color Never -",
                 formatStdin = true,
                 rootMarkers = { "stylua.toml", ".stylua.toml" },
-              },
-            },
-            python = {
-              {
-                formatCommand = "black --no-color -q -",
-                formatStdin = true,
               },
             },
             sh = {

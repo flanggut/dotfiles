@@ -11,7 +11,7 @@ function M.get()
     or {
       { "<C-j>", "<cmd>lua vim.lsp.buf.definition()<CR>" },
       { "<c-k>", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help", has = "signatureHelp" },
-      { "K", "<cmd>Lspsaga hover_doc<CR>" },
+      { "K", vim.lsp.buf.hover, desc = "hover" },
       { "<leader>e", vim.diagnostic.goto_next },
       { "<leader>E", vim.diagnostic.open_float },
       { "<leader>sa", vim.lsp.buf.code_action, has = "codeAction" },
