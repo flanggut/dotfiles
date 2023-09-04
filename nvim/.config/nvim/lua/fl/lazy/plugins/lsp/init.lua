@@ -1,9 +1,53 @@
 return {
+  -- cmdline tools and lsp servers
+  {
+    "williamboman/mason.nvim",
+    dependencies = {
+      "williamboman/mason-lspconfig.nvim",
+    },
+    cmd = "Mason",
+    keys = { { "<leader>M", "<cmd>Mason<cr>", desc = "Mason" } },
+    build = ":MasonUpdate",
+    opts = {
+      ensure_installed = {
+        "stylua",
+        "shfmt",
+        "flake8",
+      },
+    },
+    ---@param opts MasonSettings | {ensure_installed: string[]}
+    config = function(_, opts)
+      require("mason").setup(opts)
+      local mr = require("mason-registry")
+      local function ensure_installed()
+        for _, tool in ipairs(opts.ensure_installed) do
+          local p = mr.get_package(tool)
+          if not p:is_installed() then
+            p:install()
+          end
+        end
+      end
+      if mr.refresh then
+        mr.refresh(ensure_installed)
+      else
+        ensure_installed()
+      end
+
+      -- mason lsp
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "pyright",
+        },
+      })
+    end,
+  },
+
   -- lspconfig
   {
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
     dependencies = {
+      "mason.nvim",
       { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
       "hrsh7th/cmp-nvim-lsp",
       "ray-x/lsp_signature.nvim",
@@ -94,14 +138,14 @@ return {
       -- Python
       ---@diagnostic disable-next-line: param-type-mismatch
       if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-        -- lspconfig["pyright"].setup({
-        --   capabilities = capabilities,
-        --   on_attach = function(client, _)
-        --     client.server_capabilities.document_formatting = false
-        --     client.server_capabilities.document_range_formatting = false
-        --   end,
-        -- })
-        lspconfig["pylsp"].setup({
+        lspconfig.pyright.setup({
+          capabilities = capabilities,
+          on_attach = function(client, _)
+            client.server_capabilities.document_formatting = false
+            client.server_capabilities.document_range_formatting = false
+          end,
+        })
+        lspconfig.pylsp.setup({
           settings = {
             pylsp = {
               plugins = {
