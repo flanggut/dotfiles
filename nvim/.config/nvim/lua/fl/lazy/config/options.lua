@@ -29,7 +29,7 @@ vim.wo.number = true
 
 vim.wo.signcolumn = "yes:3"
 
-vim.opt.shada = { "!", "'500", "<50", "s10", "h" }
+vim.opt.shada = { "!", "'100", "<50", "s10", "h" }
 vim.opt.swapfile = false
 vim.opt.undofile = false
 

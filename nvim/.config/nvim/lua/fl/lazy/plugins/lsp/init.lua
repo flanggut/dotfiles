@@ -1,53 +1,53 @@
 return {
-  -- cmdline tools and lsp servers
-  {
-    "williamboman/mason.nvim",
-    dependencies = {
-      "williamboman/mason-lspconfig.nvim",
-    },
-    cmd = "Mason",
-    keys = { { "<leader>M", "<cmd>Mason<cr>", desc = "Mason" } },
-    build = ":MasonUpdate",
-    opts = {
-      ensure_installed = {
-        "stylua",
-        "shfmt",
-        "flake8",
-      },
-    },
-    ---@param opts MasonSettings | {ensure_installed: string[]}
-    config = function(_, opts)
-      require("mason").setup(opts)
-      local mr = require("mason-registry")
-      local function ensure_installed()
-        for _, tool in ipairs(opts.ensure_installed) do
-          local p = mr.get_package(tool)
-          if not p:is_installed() then
-            p:install()
-          end
-        end
-      end
-      if mr.refresh then
-        mr.refresh(ensure_installed)
-      else
-        ensure_installed()
-      end
-
-      -- mason lsp
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "pyright",
-        },
-      })
-    end,
-  },
+  -- -- cmdline tools and lsp servers
+  -- {
+  --   "williamboman/mason.nvim",
+  --   dependencies = {
+  --     "williamboman/mason-lspconfig.nvim",
+  --   },
+  --   cmd = "Mason",
+  --   keys = { { "<leader>M", "<cmd>Mason<cr>", desc = "Mason" } },
+  --   build = ":MasonUpdate",
+  --   opts = {
+  --     ensure_installed = {
+  --       "stylua",
+  --       "shfmt",
+  --       "flake8",
+  --     },
+  --   },
+  --   ---@param opts MasonSettings | {ensure_installed: string[]}
+  --   config = function(_, opts)
+  --     require("mason").setup(opts)
+  --     local mr = require("mason-registry")
+  --     local function ensure_installed()
+  --       for _, tool in ipairs(opts.ensure_installed) do
+  --         local p = mr.get_package(tool)
+  --         if not p:is_installed() then
+  --           p:install()
+  --         end
+  --       end
+  --     end
+  --     if mr.refresh then
+  --       mr.refresh(ensure_installed)
+  --     else
+  --       ensure_installed()
+  --     end
+  --
+  --     -- mason lsp
+  --     require("mason-lspconfig").setup({
+  --       ensure_installed = {
+  --         "pyright",
+  --       },
+  --     })
+  --   end,
+  -- },
 
   -- lspconfig
   {
     "neovim/nvim-lspconfig",
     event = "BufReadPre",
     dependencies = {
-      "mason.nvim",
+      -- "mason.nvim",
       { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
       "hrsh7th/cmp-nvim-lsp",
       "ray-x/lsp_signature.nvim",
@@ -137,48 +137,46 @@ return {
 
       -- Python
       ---@diagnostic disable-next-line: param-type-mismatch
-      if not string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
-        lspconfig.pyright.setup({
-          capabilities = capabilities,
-          on_attach = function(client, _)
-            client.server_capabilities.document_formatting = false
-            client.server_capabilities.document_range_formatting = false
-          end,
-        })
+      if not string.find(vim.fn.expand(vim.loop.cwd()), "ffbsource") then
         lspconfig.pylsp.setup({
+          filetypes = { "python" },
           settings = {
             pylsp = {
               plugins = {
-                black = {
-                  cache_config = true,
-                  enabled = true,
-                  line_length = 119,
-                },
-                flake8 = {
-                  enabled = true,
-                  maxLineLength = 119,
-                },
-                mypy = {
-                  enabled = true,
-                },
-                pycodestyle = {
-                  enabled = false,
-                },
-                pyflakes = {
-                  enabled = false,
-                },
+                -- formatter
+                black = { enabled = true },
+                autopep8 = { enabled = false },
+                yapf = { enabled = false },
+                -- linter
+                flake8 = { enabled = true },
+                pylint = { enabled = true, executable = "pylint" },
+                pylsp_mypy = { enabled = true },
+                mccabe = { enabled = false },
+                pycodestyle = { enabled = false },
+                pyflakes = { enabled = false },
+                -- auto-completion options
+                jedi_completion = { fuzzy = true },
+                -- import sorting
+                pyls_isort = { enabled = true },
               },
             },
           },
         })
-      else
-        vim.g.python3_host_prog = "/usr/local/bin/python3"
-        vim.g.python_host_prog = "/usr/local/bin/python2"
 
+        -- lspconfig.pyright.setup({
+        --   capabilities = capabilities,
+        --   on_attach = function(client, _)
+        --     client.server_capabilities.document_formatting = false
+        --     client.server_capabilities.document_range_formatting = false
+        --   end,
+        -- })
+      else
         if vim.env.PYLS_PATH == nil or vim.env.PYLS_PATH == "" then
           ---@diagnostic disable-next-line: param-type-mismatch
           vim.notify("$PYLS_PATH not defined in environment. Cannot start python LSP.", "error")
         else
+          vim.g.python3_host_prog = "/usr/local/bin/python3"
+          vim.g.python_host_prog = "/usr/local/bin/python2"
           lspconfig["pylsp"].setup({
             cmd = {
               vim.env.PYLS_PATH,
