@@ -22,27 +22,61 @@ function M.get()
   return M._keys
 end
 
-function M.on_attach(client, buffer)
-  local Keys = require("lazy.core.handler.keys")
-  local keymaps = {} ---@type table<string,LazyKeys|{has?:string}>
+---@param name string
+function M.opts(name)
+  local plugin = require("lazy.core.config").plugins[name]
+  if not plugin then
+    return {}
+  end
+  local Plugin = require("lazy.core.plugin")
+  return Plugin.values(plugin, "opts", false)
+end
 
-  for _, value in ipairs(M.get()) do
-    local keys = Keys.parse(value)
-    if keys[2] == vim.NIL or keys[2] == false then
-      keymaps[keys.id] = nil
-    else
-      keymaps[keys.id] = keys
+function M.get_clients(...)
+  ---@diagnostic disable-next-line: deprecated
+  local fn = vim.lsp.get_clients or vim.lsp.get_active_clients
+  return fn(...)
+end
+
+---@param method string
+function M.has(buffer, method)
+  method = method:find("/") and method or "textDocument/" .. method
+  local clients = M.get_clients({ bufnr = buffer })
+  for _, client in ipairs(clients) do
+    if client.supports_method(method) then
+      return true
     end
   end
+  return false
+end
+
+---@return (LazyKeys|{has?:string})[]
+function M.resolve(buffer)
+  local Keys = require("lazy.core.handler.keys")
+  if not Keys.resolve then
+    return {}
+  end
+  local spec = M.get()
+  local opts = M.opts("nvim-lspconfig")
+  local clients = M.get_clients({ bufnr = buffer })
+  for _, client in ipairs(clients) do
+    local maps = opts.servers[client.name] and opts.servers[client.name].keys or {}
+    vim.list_extend(spec, maps)
+  end
+  return Keys.resolve(spec)
+end
+
+function M.on_attach(_, buffer)
+  local Keys = require("lazy.core.handler.keys")
+  local keymaps = M.resolve(buffer)
 
   for _, keys in pairs(keymaps) do
-    if not keys.has or client.server_capabilities[keys.has .. "Provider"] then
+    if not keys.has or M.has(buffer, keys.has) then
       local opts = Keys.opts(keys)
-      ---@diagnostic disable-next-line: no-unknown
       opts.has = nil
-      opts.silent = true
+      opts.silent = opts.silent ~= false
       opts.buffer = buffer
-      vim.keymap.set(keys.mode or "n", keys[1], keys[2], opts)
+      vim.keymap.set(keys.mode or "n", keys.lhs, keys.rhs, opts)
     end
   end
 end
