@@ -267,20 +267,6 @@ return {
     end,
   },
 
-  -- lsp status fidget
-  -- {
-  --   "j-hui/fidget.nvim",
-  --   tag = "legacy",
-  --   event = "BufReadPre",
-  --   config = function()
-  --     require("fidget").setup({
-  --       text = {
-  --         spinner = "dots",
-  --       },
-  --     })
-  --   end,
-  -- },
-
   -- alpha startscreen
   {
     "goolord/alpha-nvim",

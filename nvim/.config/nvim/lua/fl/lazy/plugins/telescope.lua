@@ -10,7 +10,6 @@ return {
       "nvim-telescope/telescope-z.nvim",
     },
     cmd = "Telescope",
-    event = "VeryLazy",
     keys = {
       {
         "<C-k>",
