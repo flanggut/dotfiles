@@ -17,6 +17,7 @@ return {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
           D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" },
         },
+        f = { function() require("fl.lazy.util.format").format({force = true}) end, "Format" },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },

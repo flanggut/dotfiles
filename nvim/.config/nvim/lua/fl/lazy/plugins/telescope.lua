@@ -40,6 +40,7 @@ return {
         "<cmd>lua require('telescope.builtin').oldfiles({include_current_session=true, cwd_only=true, previewer=false})<cr>",
         "Previous Files",
       },
+      { "<leader>sm", "<cmd>Noice telescope<cr>", "Noice Messages" },
       { "<leader>sp", "<cmd>lua require('telescope.builtin').registers()<cr>", "Registers" },
       { "<leader>sq", "<cmd>lua require('telescope.builtin').quickfix()<cr>", "Quickfix" },
       { "<leader>st", "<cmd>lua require('telescope.builtin').treesitter()<cr>", "Treesitter" },

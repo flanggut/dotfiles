@@ -8,6 +8,7 @@
   "cmp-nvim-lua": { "branch": "main", "commit": "f12408bdb54c39c23e67cab726264c10db33ada8" },
   "cmp-path": { "branch": "main", "commit": "91ff86cd9c29299a64f968ebb45846c485725f23" },
   "cmp_luasnip": { "branch": "master", "commit": "05a9ab28b53f71d1aece421ef32fee2cb857a843" },
+  "conform.nvim": { "branch": "master", "commit": "fcd272ca731db1813c8da0a88b86db134e642fd3" },
   "dressing.nvim": { "branch": "master", "commit": "59fe7ef1aeeed499b983614fcfff89206bf0d5ce" },
   "flash.nvim": { "branch": "main", "commit": "f219066f1976c781780e2c317d52d515bc0e588b" },
   "gruvbox-material": { "branch": "master", "commit": "30e9f4b0fa24c25980df1690a8c47c36e40b6673" },

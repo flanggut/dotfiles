@@ -50,9 +50,10 @@ return {
       vim.lsp.handlers["window/showStatus"] = vim.lsp.with(on_show_message, {})
 
       -- setup autoformat
-      require("fl.lazy.plugins.lsp.format").autoformat = opts.autoformat
+      require("fl.lazy.util.format").register(require("fl.lazy.util.lsp").formatter())
+
+      -- setup on_attach
       require("fl.lazy.util").on_attach(function(client, buffer)
-        require("fl.lazy.plugins.lsp.format").on_attach(client, buffer)
         require("fl.lazy.plugins.lsp.keymaps").on_attach(client, buffer)
         require("lsp_signature").on_attach({ bind = true, floating_window = false, hint_prefix = "  " }, buffer)
       end)
@@ -177,62 +178,6 @@ return {
           })
         end
       end
-
-      -- efm langserver
-      require("lspconfig").efm.setup({
-        filetypes = { "fish", "json", "lua", "sh" },
-        init_options = { documentFormatting = true },
-        lintDebounce = "1s",
-        settings = {
-          rootMarkers = { ".git/", ".hg/" },
-          languages = {
-            fish = {
-              {
-                formatCommand = "fish_indent",
-                formatStdin = true,
-              },
-              {
-                lintCommand = "fish --no-execute ${INPUT}",
-                lintIgnoreExitCode = true,
-                lintFormats = { "%.%#(line %l): %m" },
-              },
-            },
-            json = {
-              {
-                lintCommand = "jsonlint -c",
-                lintStdin = true,
-                lintFormats = {
-                  "line %l, col %c, found: %m",
-                },
-              },
-              { formatCommand = "prettier --parser json", formatStdin = true },
-            },
-            lua = {
-              {
-                formatCommand = "stylua --color Never -",
-                formatStdin = true,
-                rootMarkers = { "stylua.toml", ".stylua.toml" },
-              },
-            },
-            sh = {
-              {
-                formatCommand = "shfmt -ci -s -bn",
-                formatStdin = true,
-              },
-              {
-                prefix = "shellcheck",
-                lintCommand = "shellcheck --color=never --format=gcc -",
-                lintStdin = true,
-                lintFormats = {
-                  "%f:%l:%c: %trror: %m",
-                  "%f:%l:%c: %tarning: %m",
-                  "%f:%l:%c: %tote: %m",
-                },
-              },
-            },
-          },
-        },
-      })
     end,
   },
 }

@@ -62,3 +62,6 @@ vim.o.background = "dark" -- or "light" for light mode
 if vim.fn.has("termguicolors") == 1 then
   vim.o.termguicolors = true
 end
+
+-- Config
+vim.g.autoformat = true
