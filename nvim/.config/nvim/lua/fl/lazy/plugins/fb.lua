@@ -1,0 +1,25 @@
+-- if string.find(vim.fn.expand(vim.loop.cwd() or ""), "fbsource", 0) then
+--   return {
+--     dir = "~/fbsource/fbcode/editor_support/nvim/",
+--     name = "meta.nvim",
+--     dependencies = { "jose-elias-alvarez/null-ls.nvim" },
+--     event = "VeryLazy",
+--     config = function()
+--       require("meta")
+--       require("meta.metamate").init({
+--
+--         -- change the keymap used for accepting completion. defaults to <C-l>
+--         completionKeymap = "<C-m>",
+--
+--         -- change the highlight group used for showing the completion. defaults to Delimiter
+--         virtualTextHighlightGroup = "ErrorMsg",
+--
+--         -- change the languages to target. defaults to php, python, rust
+--         filetypes = { "cpp", "python" },
+--       })
+--     end,
+--   }
+-- else
+--   return {}
+-- end
+return {}

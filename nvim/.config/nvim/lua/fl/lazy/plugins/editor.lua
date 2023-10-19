@@ -17,7 +17,12 @@ return {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
           D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" },
         },
-        f = { function() require("fl.lazy.util.format").format({force = true}) end, "Format" },
+        f = {
+          function()
+            require("fl.lazy.util.format").format({ force = true })
+          end,
+          "Format",
+        },
         i = {
           d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
         },
@@ -339,5 +344,80 @@ return {
         end,
       },
     },
+  },
+
+  -- file explorer
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    cmd = "Neotree",
+    keys = {
+      {
+        "<leader>fe",
+        function()
+          require("neo-tree.command").execute({ toggle = true, dir = vim.loop.cwd(), position = "float", reveal = true })
+        end,
+        desc = "Explorer NeoTree (cwd)",
+      },
+      {
+        "<leader>be",
+        function()
+          require("neo-tree.command").execute({ source = "buffers", toggle = true })
+        end,
+        desc = "Buffer explorer",
+      },
+    },
+    deactivate = function()
+      vim.cmd([[Neotree close]])
+    end,
+    init = function()
+      if vim.fn.argc(-1) == 1 then
+        local stat = vim.loop.fs_stat(vim.fn.argv(0))
+        if stat and stat.type == "directory" then
+          require("neo-tree")
+        end
+      end
+    end,
+    opts = {
+      sources = { "filesystem", "document_symbols" },
+      open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
+      filesystem = {
+        bind_to_cwd = false,
+        filtered_items = {
+          hide_dotfiles = false,
+          hide_hidden = false,
+        },
+        follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
+      },
+      window = {
+        mappings = {
+          ["<space>"] = "none",
+          ["h"] = "close_node",
+          ["l"] = "open",
+        },
+      },
+      default_component_configs = {
+        indent = {
+          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+          expander_collapsed = "",
+          expander_expanded = "",
+          expander_highlight = "NeoTreeExpander",
+        },
+      },
+    },
+    config = function(_, opts)
+      -- local function on_move(data)
+      -- Util.lsp.on_rename(data.source, data.destination)
+      -- end
+
+      -- local events = require("neo-tree.events")
+      opts.event_handlers = opts.event_handlers or {}
+      -- vim.list_extend(opts.event_handlers, {
+      --   { event = events.FILE_MOVED, handler = on_move },
+      --   { event = events.FILE_RENAMED, handler = on_move },
+      -- })
+      require("neo-tree").setup(opts)
+    end,
   },
 }
