@@ -137,7 +137,7 @@ return {
   -- bufferline
   {
     "akinsho/bufferline.nvim",
-    event = "BufRead",
+    event = "VimEnter",
     config = function()
       require("bufferline").setup({
         ---@diagnostic disable-next-line: missing-fields
@@ -270,6 +270,9 @@ return {
   {
     "nvimdev/dashboard-nvim",
     event = "VimEnter",
+    keys = {
+      { "<C-s>", "<cmd>Dashboard<CR>" },
+    },
     opts = function()
       local logo = [[
         ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗██╗███╗   ███╗

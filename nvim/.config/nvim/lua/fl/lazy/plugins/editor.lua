@@ -353,7 +353,7 @@ return {
     cmd = "Neotree",
     keys = {
       {
-        "<leader>fe",
+        "<leader>ne",
         function()
           require("neo-tree.command").execute({ toggle = true, dir = vim.loop.cwd(), position = "float", reveal = true })
         end,
@@ -392,9 +392,16 @@ return {
       },
       window = {
         mappings = {
+          ["/"] = "filter_as_you_type",
           ["<space>"] = "none",
           ["h"] = "close_node",
           ["l"] = "open",
+          ["L"] = function(state)
+            require("telescope.builtin").live_grep({
+              search_dirs = { state.path },
+              prompt_title = string.format("Grep in [%s]", vim.fs.basename(state.path)),
+            })
+          end,
         },
       },
       default_component_configs = {

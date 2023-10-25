@@ -35,6 +35,7 @@ return {
     end,
     opts = {
       formatters_by_ft = {
+        json = { "fixjson" },
         lua = { "stylua" },
         fish = { "fish_indent" },
         sh = { "shfmt" },

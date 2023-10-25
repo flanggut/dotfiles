@@ -60,7 +60,8 @@ return {
         end,
         "Goto Symbol",
       },
-      { "<leader><leader>h", "<cmd>Telescope help_tags<cr>", "Help Tags" },
+      { "<leader><leader>g", "<cmd>Telescope live_grep<cr>", "Telescope Live Grep" },
+      { "<leader><leader>h", "<cmd>Telescope help_tags<cr>", "Telescope Help Tags" },
     },
     config = function()
       require("telescope").setup({
