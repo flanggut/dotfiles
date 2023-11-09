@@ -171,9 +171,6 @@ return {
   -- statusline
   {
     "nvim-lualine/lualine.nvim",
-    dependencies = {
-      { "mhinz/vim-signify", event = "BufRead" },
-    },
     event = "VeryLazy",
     config = function()
       local lualine = require("lualine")
@@ -404,7 +401,10 @@ return {
     "karb94/neoscroll.nvim",
     event = "BufRead",
     config = function()
-      require("neoscroll").setup({ easing_function = "circular" })
+      require("neoscroll").setup({
+        easing_function = "circular",
+        mappings = { "<C-u>", "<C-d>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
+      })
     end,
   },
   {

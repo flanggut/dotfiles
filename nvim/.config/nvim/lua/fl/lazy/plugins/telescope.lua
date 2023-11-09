@@ -137,7 +137,11 @@ return {
             },
           }),
         },
-        extensions = {},
+        extensions = {
+          quicknote = {
+            defaultScope = "CWD",
+          },
+        },
       })
       require("telescope").load_extension("fzf")
       require("telescope").load_extension("z")

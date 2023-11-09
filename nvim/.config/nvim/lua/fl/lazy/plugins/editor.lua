@@ -23,9 +23,7 @@ return {
           end,
           "Format",
         },
-        i = {
-          d = { "<cmd>lua require('neogen').generate()<CR>", "Generate documentation" },
-        },
+        i = {},
         o = {
           p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" },
         },
@@ -79,34 +77,6 @@ return {
           require("cmp_luasnip").clear_cache()
         end,
         group = snippets_group,
-      })
-    end,
-  },
-
-  -- trail blazer
-  {
-    "LeonHeidelbach/trailblazer.nvim",
-    keys = {
-      { "mm", [[<cmd>TrailBlazerNewTrailMark<cr>]], desc = "New Trail Mark" },
-      { "mp", [[<cmd>TrailBlazerTrackBack<cr>]], desc = "Pop Trail Mark" },
-      {
-        "mk",
-        function()
-          require("trailblazer").move_to_nearest(nil, "up", nil)
-        end,
-        desc = "Nearest Trail Mark Up",
-      },
-      {
-        "ml",
-        function()
-          require("trailblazer").move_to_nearest(nil, "down", nil)
-        end,
-        desc = "Nearest Trail Mark Down",
-      },
-    },
-    config = function()
-      require("trailblazer").setup({
-        -- your custom config goes here
       })
     end,
   },
@@ -322,6 +292,79 @@ return {
     cmd = "Linediff",
   },
 
+  -- {
+  --   "ThePrimeagen/harpoon",
+  --   event = "BufRead",
+  --   keys = {
+  --     {
+  --       "mm",
+  --       mode = { "n" },
+  --       function()
+  --         require("harpoon.mark").add_file()
+  --         require("notify")("harpoon added", "info")
+  --       end,
+  --       desc = "Harpoon add_file",
+  --     },
+  --     {
+  --       "mo",
+  --       mode = { "n" },
+  --       function()
+  --         require("harpoon.ui").toggle_quick_menu()
+  --       end,
+  --       desc = "Harpoon toggle_quick_menu",
+  --     },
+  --     {
+  --       "<c-f>",
+  --       mode = { "n" },
+  --       "<cmd>Telescope harpoon marks<cr>",
+  --       desc = "Harpoon toggle_quick_menu",
+  --     },
+  --   },
+  --   config = function()
+  --     require("telescope").load_extension("harpoon")
+  --   end,
+  -- },
+
+  -- trail blazer
+  {
+    "LeonHeidelbach/trailblazer.nvim",
+    keys = {
+      { "mm", [[<cmd>TrailBlazerNewTrailMark<cr>]], desc = "New Trail Mark" },
+      { "mp", [[<cmd>TrailBlazerTrackBack<cr>]], desc = "Pop Trail Mark" },
+      {
+        "mk",
+        function()
+          require("trailblazer").move_to_nearest(nil, "up", nil)
+        end,
+        desc = "Nearest Trail Mark Up",
+      },
+      {
+        "mj",
+        function()
+          require("trailblazer").move_to_nearest(nil, "down", nil)
+        end,
+        desc = "Nearest Trail Mark Down",
+      },
+      {
+        "ml",
+        function()
+          require("trailblazer").toggle_trail_mark_list("quickfix")
+        end,
+        desc = "Trail Mark List",
+      },
+    },
+    config = function()
+      require("trailblazer").setup({
+        auto_save_trailblazer_state_on_exit = true,
+        auto_load_trailblazer_state_on_enter = true,
+        trail_options = {
+          trail_mark_in_text_highlights_enabled = false,
+        },
+        force_mappings = {},
+      })
+    end,
+  },
+
   -- nnn
   {
     "mcchrish/nnn.vim",
@@ -355,7 +398,12 @@ return {
       {
         "<leader>ne",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = vim.loop.cwd(), position = "float", reveal = true })
+          require("neo-tree.command").execute({
+            toggle = true,
+            dir = vim.fn.expand("%:p:h"),
+            position = "float",
+            reveal = true,
+          })
         end,
         desc = "Explorer NeoTree (cwd)",
       },
@@ -425,6 +473,21 @@ return {
       --   { event = events.FILE_RENAMED, handler = on_move },
       -- })
       require("neo-tree").setup(opts)
+    end,
+  },
+
+  {
+    "mhinz/vim-signify",
+    keys = {
+      { "<leader>is", "<cmd>SignifyEnable<CR>", desc = "Enable Signify" },
+    },
+  },
+
+  {
+    "echasnovski/mini.sessions",
+    version = "*",
+    config = function()
+      require("mini.sessions").setup()
     end,
   },
 }

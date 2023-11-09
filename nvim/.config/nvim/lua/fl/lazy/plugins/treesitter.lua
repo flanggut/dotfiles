@@ -93,4 +93,13 @@ return {
       require("plenary.filetype").add_file("fl")
     end,
   },
+
+  -- log file highlighting
+  {
+    "fei6409/log-highlight.nvim",
+    event = "BufReadPost",
+    config = function()
+      require("log-highlight").setup({})
+    end,
+  },
 }

@@ -90,6 +90,7 @@ return {
           "--background-index",
           "--completion-style=detailed",
           "--header-insertion=never",
+          -- "--query-driver=**",
         },
       })
 
