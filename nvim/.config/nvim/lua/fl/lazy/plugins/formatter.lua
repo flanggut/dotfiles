@@ -5,7 +5,7 @@ return {
     cmd = "ConformInfo",
     keys = {
       {
-        "<leader>cF",
+        "<leader>iF",
         function()
           require("conform").format({ formatters = { "injected" } })
         end,
@@ -39,6 +39,7 @@ return {
         lua = { "stylua" },
         fish = { "fish_indent" },
         sh = { "shfmt" },
+        python = { "black" },
       },
       -- LazyVim will merge the options you set here with builtin formatters.
       -- You can also define any custom formatters here.

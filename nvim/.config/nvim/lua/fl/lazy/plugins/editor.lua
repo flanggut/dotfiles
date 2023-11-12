@@ -1,3 +1,4 @@
+---@diagnostic disable: inject-field
 return {
   -- which-key
   {
@@ -17,11 +18,17 @@ return {
           d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
           D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" },
         },
-        f = {
+        f = { "<cmd>LazyFormat<CR>", "Format" },
+        F = {
           function()
-            require("fl.lazy.util.format").format({ force = true })
+            if vim.b.autoformat == nil then
+              vim.b.autoformat = false
+            else
+              vim.b.autoformat = not vim.b.autoformat
+            end
+            vim.notify("Autoformat toggled: " .. tostring(vim.b.autoformat), "info", {})
           end,
-          "Format",
+          "Toggle auto format",
         },
         i = {},
         o = {
