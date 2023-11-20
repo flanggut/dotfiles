@@ -8,7 +8,7 @@ return {
       linters_by_ft = {
         fish = { "fish" },
         json = { "jsonlint" },
-        python = { "flake8" },
+        python = { "fbflake8" },
         -- Use the "*" filetype to run linters on all filetypes.
         -- ['*'] = { 'global linter' },
         -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
@@ -18,6 +18,15 @@ return {
       -- or add custom linters.
       ---@type table<string,table>
       linters = {
+        fbflake8 = {
+          -- condition = function(ctx)
+          --   return vim.fs.find({ ".arcconfig" }, { path = ctx.filename, upward = true })[1]
+          -- end,
+          cmd = "flake8",
+          stdin = false,
+          stream = "both",
+          ignore_exitcode = true,
+        },
         -- -- Example of using selene only when a selene.toml file is present
         -- selene = {
         --   -- `condition` is another LazyVim extension that allows you to
@@ -33,6 +42,27 @@ return {
 
       local lint = require("lint")
       for name, linter in pairs(opts.linters) do
+        if name == "fbflake8" then
+          -- linter.parser = function(output, _)
+          --   require("notify")("Linter says: " .. output, "warn")
+          -- end
+          linter.parser = require("lint.parser").from_pattern(
+            "[^:]+:(%d+):(%d+):%s*(%u)(%w+)%s*(.+)",
+            { "lnum", "col", "severity", "code", "message" },
+            {
+              ["E"] = vim.diagnostic.severity.ERROR,
+              ["W"] = vim.diagnostic.severity.WARN,
+              ["C"] = vim.diagnostic.severity.INFO,
+              ["H"] = vim.diagnostic.severity.HINT,
+            },
+            {
+              ["source"] = "flake8",
+              ["severity"] = vim.diagnostic.severity.ERROR,
+            }
+          )
+        else
+          require("notify")("Linter not found: " .. name, "warn")
+        end
         if type(linter) == "table" and type(lint.linters[name]) == "table" then
           lint.linters[name] = vim.tbl_deep_extend("force", lint.linters[name], linter)
         else

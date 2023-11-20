@@ -103,13 +103,13 @@ return {
             pylsp = {
               plugins = {
                 -- formatter
-                black = { enabled = true },
+                black = { enabled = false },
                 autopep8 = { enabled = false },
                 yapf = { enabled = false },
                 -- linter
-                flake8 = { enabled = true },
-                pylint = { enabled = true, executable = "pylint" },
-                pylsp_mypy = { enabled = true },
+                flake8 = { enabled = false },
+                pylint = { enabled = false, executable = "pylint" },
+                pylsp_mypy = { enabled = false },
                 mccabe = { enabled = false },
                 pycodestyle = { enabled = false },
                 pyflakes = { enabled = false },

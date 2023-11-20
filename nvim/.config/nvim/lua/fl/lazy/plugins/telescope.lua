@@ -144,7 +144,7 @@ return {
         },
       })
       require("telescope").load_extension("fzf")
-      require("telescope").load_extension("z")
+      require("telescope").load_extension("notify")
     end,
   },
   -- fzf native

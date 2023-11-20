@@ -44,10 +44,10 @@ return {
 
       -- leader leader
       local leaderleader = {
-        c = { "<cmd>TroubleToggle<CR>", "Reload snippets" },
-        s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
         l = { "<cmd>LspRestart<CR>", "Restart LSP servers" },
+        o = { "<cmd>TroubleToggle<CR>", "Toggle Trouble" },
         p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
+        s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
       }
       wk.register(leaderleader, { prefix = "<leader><leader>" })
     end,
@@ -487,6 +487,18 @@ return {
     "mhinz/vim-signify",
     keys = {
       { "<leader>is", "<cmd>SignifyEnable<CR>", desc = "Enable Signify" },
+    },
+  },
+
+  {
+    "hedyhli/outline.nvim",
+    lazy = true,
+    cmd = { "Outline", "OutlineOpen" },
+    keys = {
+      { "<leader>tt", "<cmd>Outline<CR>", desc = "Toggle outline" },
+    },
+    opts = {
+      -- Your setup opts here
     },
   },
 

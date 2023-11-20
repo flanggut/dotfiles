@@ -12,7 +12,7 @@ function M.get()
       { "<C-j>", "<cmd>lua vim.lsp.buf.definition()<CR>" },
       { "<c-k>", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help", has = "signatureHelp" },
       { "K", vim.lsp.buf.hover, desc = "hover" },
-      { "<leader>e", vim.diagnostic.goto_next },
+      { "<leader>e", function() vim.diagnostic.goto_next({severity = vim.diagnostic.severity.ERROR}) end},
       { "<leader>E", vim.diagnostic.open_float },
       { "<leader>sa", vim.lsp.buf.code_action, has = "codeAction" },
       { "<leader>sr", require("telescope.builtin").lsp_references },

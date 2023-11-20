@@ -3,6 +3,8 @@ function __fzf_reverse_history_search
         set command "$command""$i"' ; and '
     end
     set command (echo $command | tr '\n' ' ' | sed -e 's/.;.and..$//g')
-    commandline -- $command
-    commandline -f repaint
+    if test (string length $command) -gt 1
+        commandline -- $command
+        commandline -f repaint
+    end
 end

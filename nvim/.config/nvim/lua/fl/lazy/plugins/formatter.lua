@@ -65,6 +65,9 @@ return {
         end
       end
       require("conform").setup(opts)
+      require("conform").formatters.black = {
+        prepend_args = { "--line-length", "80" },
+      }
     end,
   },
 }
