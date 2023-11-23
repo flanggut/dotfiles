@@ -329,73 +329,6 @@ return {
     end,
   },
 
-  -- alpha startscreen
-  -- {
-  --   "goolord/alpha-nvim",
-  --   event = "VimEnter",
-  --   keys = {
-  --     { "<C-s>", "<cmd>Alpha<CR>" },
-  --   },
-  --   opts = function()
-  --     local dashboard = require("alpha.themes.dashboard")
-  --     dashboard.section.buttons.val = {
-  --       dashboard.button("f", " " .. " Find file", [[:lua require("fl.functions").myfiles({}) <cr>]]),
-  --       dashboard.button(
-  --         "l",
-  --         " " .. " Local file",
-  --         ":Telescope oldfiles include_current_session=true cwd_only=true previewer=false <CR>"
-  --       ),
-  --       dashboard.button(
-  --         "m",
-  --         " " .. " MRU",
-  --         ":Telescope oldfiles include_current_session=true previewer=false <CR>"
-  --       ),
-  --       dashboard.button("s", " " .. " Restore Session", [[:lua require("persistence").load() <cr>]]),
-  --       dashboard.button(
-  --         "c",
-  --         " " .. " Config",
-  --         ":Telescope find_files cwd=~/.config/nvim/ follow=true hidden=true <CR>"
-  --       ),
-  --       dashboard.button("L", "󰒲 " .. " Lazy", ":Lazy<CR>"),
-  --       dashboard.button("q", " " .. " Quit", ":qa<CR>"),
-  --     }
-  --     for _, button in ipairs(dashboard.section.buttons.val) do
-  --       button.opts.hl = "AlphaButtons"
-  --       button.opts.hl_shortcut = "AlphaShortcut"
-  --     end
-  --     dashboard.section.footer.opts.hl = "Type"
-  --     dashboard.section.header.opts.hl = "AlphaHeader"
-  --     dashboard.section.buttons.opts.hl = "AlphaButtons"
-  --     dashboard.opts.layout[1].val = 8
-  --     return dashboard
-  --   end,
-  --   config = function(_, dashboard)
-  --     vim.b.miniindentscope_disable = true
-  --     -- close Lazy and re-open when the dashboard is ready
-  --     if vim.o.filetype == "lazy" then
-  --       vim.cmd.close()
-  --       vim.api.nvim_create_autocmd("User", {
-  --         pattern = "AlphaReady",
-  --         callback = function()
-  --           require("lazy").show()
-  --         end,
-  --       })
-  --     end
-  --
-  --     require("alpha").setup(dashboard.opts)
-  --
-  --     vim.api.nvim_create_autocmd("User", {
-  --       pattern = "LazyVimStarted",
-  --       callback = function()
-  --         local stats = require("lazy").stats()
-  --         local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-  --         dashboard.section.footer.val = "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
-  --         pcall(vim.cmd.AlphaRedraw)
-  --       end,
-  --     })
-  --   end,
-  -- },
-
   -- Smooth Scrolling
   {
     "karb94/neoscroll.nvim",
@@ -404,27 +337,6 @@ return {
       require("neoscroll").setup({
         easing_function = "circular",
         mappings = { "<C-u>", "<C-d>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
-      })
-    end,
-  },
-  {
-    "edluffy/specs.nvim",
-    event = "BufRead",
-    config = function()
-      require("specs").setup({
-        show_jumps = true,
-        min_jump = 5,
-        popup = {
-          delay_ms = 0, -- delay before popup displays
-          inc_ms = 20, -- time increments used for fade/resize effects
-          blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
-          width = 20,
-          winhl = "PMenu",
-          fader = require("specs").linear_fader,
-          resizer = require("specs").shrink_resizer,
-        },
-        ignore_filetypes = {},
-        ignore_buftypes = { nofile = true },
       })
     end,
   },
