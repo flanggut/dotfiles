@@ -70,6 +70,7 @@ return {
   -- snippets
   {
     "L3MON4D3/LuaSnip",
+    dependencies = { "rafamadriz/friendly-snippets" },
     config = function()
       require("luasnip").config.set_config({
         history = true,
@@ -185,6 +186,20 @@ return {
     -- stylua: ignore
     keys = {
       { "<leader>sg", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
+    },
+  },
+
+  -- search/replace treesitter structures
+  {
+    "cshuaimin/ssr.nvim",
+    keys = {
+      {
+        "<leader>ssr",
+        function()
+          require("ssr").open()
+        end,
+        desc = "Structural Search/Replace",
+      },
     },
   },
 

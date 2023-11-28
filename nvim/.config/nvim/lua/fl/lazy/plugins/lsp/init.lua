@@ -7,7 +7,7 @@ return {
       -- "mason.nvim",
       { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
       "hrsh7th/cmp-nvim-lsp",
-      "ray-x/lsp_signature.nvim",
+      -- "ray-x/lsp_signature.nvim",
     },
     version = false,
     ---@class PluginLspOpts
@@ -55,7 +55,7 @@ return {
       -- setup on_attach
       require("fl.lazy.util").on_attach(function(client, buffer)
         require("fl.lazy.plugins.lsp.keymaps").on_attach(client, buffer)
-        require("lsp_signature").on_attach({ bind = true, floating_window = false, hint_prefix = "  " }, buffer)
+        -- require("lsp_signature").on_attach({ bind = true, floating_window = false, hint_prefix = "  " }, buffer)
       end)
 
       -- setup default servers

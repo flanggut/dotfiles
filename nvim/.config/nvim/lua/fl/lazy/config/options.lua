@@ -5,7 +5,7 @@ vim.g.maplocalleader = " "
 -- Basic must haves
 vim.o.cmdheight = 2
 vim.o.compatible = false
-vim.o.completeopt = "menu,menuone,noselect"
+vim.o.completeopt = "menu,menuone"
 vim.o.foldlevelstart = 1
 vim.o.hidden = true
 vim.o.inccommand = "nosplit"

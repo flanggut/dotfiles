@@ -116,6 +116,10 @@ return {
           },
           view = "mini",
         },
+        -- {
+        --   filter = { event = "msg_show", kind = "search_count" },
+        --   opts = { skip = true },
+        -- },
       },
       presets = {
         long_message_to_split = true,
@@ -292,7 +296,7 @@ return {
           header = vim.split(logo, "\n"),
           -- stylua: ignore
           center = {
-            { action = 'lua require("fl.functions").myfiles()',                             desc = " Find file",    icon = " ", key = "f" },
+            { action = 'lua require("fl.functions").myfiles({})', desc = " Find file",    icon = " ", key = "f" },
             { action = "Telescope oldfiles include_current_session=true cwd_only=true previewer=false", desc = " Local file", icon = " ", key = "l" },
             { action = "Telescope oldfiles include_current_session=true previewer=false", desc = " Recent files", icon = " ", key = "m" },
             { action = 'lua require("persistence").load()', desc = " Restore Session", icon = " ", key = "s" },
