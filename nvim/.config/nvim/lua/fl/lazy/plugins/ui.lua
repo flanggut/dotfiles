@@ -178,12 +178,13 @@ return {
     event = "VeryLazy",
     config = function()
       local lualine = require("lualine")
-      local configuration = vim.fn["gruvbox_material#get_configuration"]()
-      local palette = vim.fn["gruvbox_material#get_palette"](
-        configuration.background,
-        configuration.foreground,
-        configuration.colors_override
-      )
+      -- local configuration = vim.fn["gruvbox_material#get_configuration"]()
+      -- local palette = vim.fn["gruvbox_material#get_palette"](
+      -- configuration.background,
+      -- configuration.foreground,
+      -- configuration.colors_override
+      -- )
+      local palette = require("rose-pine.palette")
 
       local function os_indicator()
         if vim.fn.has("macunix") == 1 then
@@ -255,9 +256,9 @@ return {
             { "filename", padding = { left = 1, right = 1 } },
           },
           lualine_x = {
-            { added, color = { fg = palette.green[1] }, separator = {} },
-            { removed, color = { fg = palette.red[1] }, separator = {} },
-            { modified, color = { fg = palette.blue[1] } },
+            { added, color = { fg = palette.pine }, separator = {} },
+            { removed, color = { fg = palette.love }, separator = {} },
+            { modified, color = { fg = palette.foam } },
             -- { "diff", symbols = {added = " " , removed = " ", modified = "柳"} },
             "filetype",
             "encoding",

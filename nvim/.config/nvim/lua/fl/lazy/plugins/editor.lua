@@ -269,11 +269,15 @@ return {
     event = "BufRead",
     main = "ibl",
     config = function()
-      require("ibl").setup({
-        -- space_char_blankline = " ",
-        -- show_current_context = true,
-        -- show_current_context_start = true,
-      })
+      local palette = require("rose-pine.palette")
+      local highlight = {
+        "FLIndent",
+      }
+      local hooks = require("ibl.hooks")
+      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+        vim.api.nvim_set_hl(0, highlight[1], { fg = palette.highlight_med })
+      end)
+      require("ibl").setup({ indent = { highlight = highlight } })
     end,
   },
 
