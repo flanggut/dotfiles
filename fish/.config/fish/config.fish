@@ -25,6 +25,8 @@ set -g tide_right_prompt_items status context jobs virtual_env cmd_duration time
 
 zoxide init fish | source
 
+fish_config theme choose "Rosé Pine Dawn"
+
 ############################
 #       Alias Config       #
 abbr -a j z
