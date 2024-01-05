@@ -392,33 +392,103 @@ return {
   },
 
   -- nnn
+  -- {
+  --   "mcchrish/nnn.vim",
+  --   config = function()
+  --     require("nnn").setup({
+  --       command = "nnn -o -A",
+  --       set_default_mappings = 0,
+  --       replace_netrw = 1,
+  --       layout = { window = { width = 0.6, height = 0.7, xoffset = 0.95, highlight = "Debug" } },
+  --     })
+  --   end,
+  --   keys = {
+  --     {
+  --       "<c-n>",
+  --       function()
+  --         ---@diagnostic disable-next-line: missing-parameter
+  --         local path = vim.fn.expand("%:p")
+  --         local nnn_command = path == "" and "NnnPicker" or ("NnnPicker" .. path)
+  --         vim.api.nvim_command(nnn_command)
+  --       end,
+  --     },
+  --   },
+  -- },
+
+  -- file explorer
   {
-    "mcchrish/nnn.vim",
-    config = function()
-      require("nnn").setup({
-        command = "nnn -o -A",
-        set_default_mappings = 0,
-        replace_netrw = 1,
-        layout = { window = { width = 0.6, height = 0.7, xoffset = 0.95, highlight = "Debug" } },
-      })
-    end,
+    "stevearc/oil.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     keys = {
       {
         "<c-n>",
         function()
-          ---@diagnostic disable-next-line: missing-parameter
-          local path = vim.fn.expand("%:p")
-          local nnn_command = path == "" and "NnnPicker" or ("NnnPicker" .. path)
-          vim.api.nvim_command(nnn_command)
+          vim.api.nvim_command("Oil --float")
         end,
       },
     },
+    opts = {
+      -- Set to `false` to remove a keymap
+      -- See :help oil-actions for a list of all available actions
+      keymaps = {
+        ["g?"] = "actions.show_help",
+        ["<CR>"] = "actions.select",
+        ["l"] = "actions.select",
+        ["<C-l>"] = "actions.select",
+        ["<C-s>"] = "actions.select_vsplit",
+        ["<C-t>"] = "actions.select_tab",
+        ["<C-p>"] = "actions.preview",
+        ["q"] = "actions.close",
+        ["<C-n>"] = "actions.close",
+        ["<C-r>"] = "actions.refresh",
+        ["h"] = "actions.parent",
+        ["<C-h>"] = "actions.parent",
+        ["_"] = "actions.open_cwd",
+        ["`"] = "actions.cd",
+        ["~"] = "actions.tcd",
+        ["gs"] = "actions.change_sort",
+        ["gx"] = "actions.open_external",
+        ["g."] = "actions.toggle_hidden",
+        ["g\\"] = "actions.toggle_trash",
+      },
+      float = {
+        border = "rounded",
+        win_options = {
+          winblend = 0,
+          winhl = "Normal:Normal,FloatBorder:Normal",
+        },
+        -- This is the config that will be passed to nvim_open_win.
+        -- Change values here to customize the layout
+        override = function(conf)
+          local layout = require("oil.layout")
+          local total_width = vim.o.columns
+          local total_height = layout.get_editor_height()
+          local width = math.min(100, total_width - 20)
+          local height = math.min(40, total_height)
+          local row = math.floor((total_height - height) / 2)
+          local col = math.floor((total_width - width)) - 10
+          conf.width = width
+          conf.height = height
+          conf.row = row
+          conf.col = col
+          return conf
+        end,
+      },
+      view_options = {
+        -- Show files and directories that start with "."
+        show_hidden = true,
+      },
+    },
   },
-
-  -- file explorer
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
     cmd = "Neotree",
     keys = {
       {
@@ -429,6 +499,7 @@ return {
             dir = vim.fn.expand("%:p:h"),
             position = "float",
             reveal = true,
+            reveal_force_cwd = true,
           })
         end,
         desc = "Explorer NeoTree (cwd)",
@@ -446,6 +517,7 @@ return {
     end,
     init = function()
       if vim.fn.argc(-1) == 1 then
+        ---@diagnostic disable-next-line: param-type-mismatch
         local stat = vim.loop.fs_stat(vim.fn.argv(0))
         if stat and stat.type == "directory" then
           require("neo-tree")
@@ -455,27 +527,32 @@ return {
     opts = {
       sources = { "filesystem", "document_symbols" },
       open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
-      filesystem = {
-        bind_to_cwd = false,
-        filtered_items = {
-          hide_dotfiles = false,
-          hide_hidden = false,
-        },
-        follow_current_file = { enabled = true },
-        use_libuv_file_watcher = true,
-      },
       window = {
-        mappings = {
-          ["/"] = "filter_as_you_type",
-          ["<space>"] = "none",
-          ["h"] = "close_node",
-          ["l"] = "open",
-          ["L"] = function(state)
-            require("telescope.builtin").live_grep({
-              search_dirs = { state.path },
-              prompt_title = string.format("Grep in [%s]", vim.fs.basename(state.path)),
-            })
-          end,
+        height = 50,
+      },
+      filesystem = {
+        follow_current_file = { enabled = true },
+        window = {
+          mappings = {
+            ["/"] = "fuzzy_finder",
+            ["<space>"] = "none",
+            ["h"] = "navigate_up",
+            ["l"] = "set_root",
+            ["L"] = function(state)
+              require("telescope.builtin").live_grep({
+                search_dirs = { state.path },
+                prompt_title = string.format("Grep in [%s]", vim.fs.basename(state.path)),
+              })
+            end,
+          },
+          fuzzy_finder_mappings = {
+            ["<down>"] = "move_cursor_down",
+            ["<C-n>"] = "move_cursor_down",
+            ["<C-j>"] = "move_cursor_down",
+            ["<up>"] = "move_cursor_up",
+            ["<C-p>"] = "move_cursor_up",
+            ["<C-k>"] = "move_cursor_up",
+          },
         },
       },
       default_component_configs = {
@@ -488,16 +565,6 @@ return {
       },
     },
     config = function(_, opts)
-      -- local function on_move(data)
-      -- Util.lsp.on_rename(data.source, data.destination)
-      -- end
-
-      -- local events = require("neo-tree.events")
-      opts.event_handlers = opts.event_handlers or {}
-      -- vim.list_extend(opts.event_handlers, {
-      --   { event = events.FILE_MOVED, handler = on_move },
-      --   { event = events.FILE_RENAMED, handler = on_move },
-      -- })
       require("neo-tree").setup(opts)
     end,
   },
