@@ -417,70 +417,24 @@ return {
 
   -- file explorer
   {
-    "stevearc/oil.nvim",
+    "simonmclean/triptych.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim", -- required
+      "nvim-tree/nvim-web-devicons", -- optional
+    },
+    config = function()
+      require("triptych").setup()
+    end,
     event = "VeryLazy",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
     keys = {
       {
-        "<c-n>",
-        function()
-          vim.api.nvim_command("Oil --float")
-        end,
-      },
-    },
-    opts = {
-      -- Set to `false` to remove a keymap
-      -- See :help oil-actions for a list of all available actions
-      keymaps = {
-        ["g?"] = "actions.show_help",
-        ["<CR>"] = "actions.select",
-        ["l"] = "actions.select",
-        ["<C-l>"] = "actions.select",
-        ["<C-s>"] = "actions.select_vsplit",
-        ["<C-t>"] = "actions.select_tab",
-        ["<C-p>"] = "actions.preview",
-        ["q"] = "actions.close",
-        ["<C-n>"] = "actions.close",
-        ["<C-r>"] = "actions.refresh",
-        ["h"] = "actions.parent",
-        ["<C-h>"] = "actions.parent",
-        ["_"] = "actions.open_cwd",
-        ["`"] = "actions.cd",
-        ["~"] = "actions.tcd",
-        ["gs"] = "actions.change_sort",
-        ["gx"] = "actions.open_external",
-        ["g."] = "actions.toggle_hidden",
-        ["g\\"] = "actions.toggle_trash",
-      },
-      float = {
-        border = "rounded",
-        win_options = {
-          winblend = 0,
-          winhl = "Normal:Normal,FloatBorder:Normal",
-        },
-        -- This is the config that will be passed to nvim_open_win.
-        -- Change values here to customize the layout
-        override = function(conf)
-          local layout = require("oil.layout")
-          local total_width = vim.o.columns
-          local total_height = layout.get_editor_height()
-          local width = math.min(100, total_width - 20)
-          local height = math.min(40, total_height)
-          local row = math.floor((total_height - height) / 2)
-          local col = math.floor((total_width - width)) - 10
-          conf.width = width
-          conf.height = height
-          conf.row = row
-          conf.col = col
-          return conf
-        end,
-      },
-      view_options = {
-        -- Show files and directories that start with "."
-        show_hidden = true,
+        "<C-n>",
+        "<cmd>Triptych<cr>",
+        desc = "Files (cwd)",
       },
     },
   },
+
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",

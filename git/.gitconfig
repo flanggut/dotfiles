@@ -20,7 +20,7 @@
   editor = nvim
   pager = delta
 [credential]
-  helper = osxkeychain
+	helper = osxkeychain
 
 [delta]
   syntax-theme = OneHalfLight
