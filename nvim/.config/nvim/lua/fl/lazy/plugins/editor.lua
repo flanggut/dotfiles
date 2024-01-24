@@ -417,25 +417,6 @@ return {
 
   -- file explorer
   {
-    "simonmclean/triptych.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim", -- required
-      "nvim-tree/nvim-web-devicons", -- optional
-    },
-    config = function()
-      require("triptych").setup()
-    end,
-    event = "VeryLazy",
-    keys = {
-      {
-        "<C-n>",
-        "<cmd>Triptych<cr>",
-        desc = "Files (cwd)",
-      },
-    },
-  },
-
-  {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     dependencies = {
@@ -445,6 +426,19 @@ return {
     },
     cmd = "Neotree",
     keys = {
+      {
+        "<C-n>",
+        function()
+          require("neo-tree.command").execute({
+            toggle = true,
+            dir = vim.fn.expand("%:p:h"),
+            position = "float",
+            reveal = true,
+            reveal_force_cwd = true,
+          })
+        end,
+        desc = "Explorer NeoTree (cwd)",
+      },
       {
         "<leader>ne",
         function()

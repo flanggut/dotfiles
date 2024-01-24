@@ -262,6 +262,7 @@ return {
             -- { "diff", symbols = {added = " " , removed = " ", modified = "柳"} },
             "filetype",
             "encoding",
+            "filesize",
             "fileformat",
           },
         },

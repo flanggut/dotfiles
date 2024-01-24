@@ -44,7 +44,7 @@ return {
     config = function(_, opts)
       -- general setup
       vim.cmd("highlight LspDiagnosticsVirtualTextError guifg='#EEEEEE'")
-      -- vim.lsp.set_log_level("debug")
+      vim.lsp.set_log_level("off") -- use "debug" for detailed logs
 
       local on_show_message = vim.lsp.handlers["window/showMessage"]
       vim.lsp.handlers["window/showStatus"] = vim.lsp.with(on_show_message, {})
@@ -90,7 +90,7 @@ return {
           "--background-index",
           "--completion-style=detailed",
           "--header-insertion=never",
-          -- "--query-driver=**",
+          "--offset-encoding=utf-16",
         },
       })
 
