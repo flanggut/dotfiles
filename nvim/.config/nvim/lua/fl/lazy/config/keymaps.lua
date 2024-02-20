@@ -32,11 +32,11 @@ vim.keymap.set("n", "<leader>F", "za", { noremap = false })
 -- fold lines matching search string
 vim.keymap.set(
   "n",
-  "<leader>ho",
+  "<leader>oh",
   [[:setlocal foldexpr=(getline(v:lnum)=~@/)?0:1 foldmethod=expr foldlevel=0 foldcolumn=2 foldminlines=0<CR><CR>]],
   { noremap = false, silent = true }
 )
-vim.keymap.set("n", "<leader>hn", [[:setlocal foldmethod=manual<CR><CR>]], { noremap = false, silent = true })
+vim.keymap.set("n", "<leader>om", [[:setlocal foldmethod=manual<CR><CR>]], { noremap = false, silent = true })
 
 -- better star search
 vim.keymap.set(

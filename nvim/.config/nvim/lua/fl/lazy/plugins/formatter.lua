@@ -52,6 +52,9 @@ return {
         --     return vim.fs.find({ "dprint.json" }, { path = ctx.filename, upward = true })[1]
         --   end,
         -- },
+        shfmt = {
+          prepend_args = { "-i", "2" },
+        },
       },
     },
     config = function(_, opts)

@@ -61,13 +61,13 @@ return {
     end,
   },
   -- Show context for large scopes
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    event = "BufReadPost",
-    config = function()
-      require("treesitter-context").setup({})
-    end,
-  },
+  -- {
+  --   "nvim-treesitter/nvim-treesitter-context",
+  --   event = "BufReadPost",
+  --   config = function()
+  --     require("treesitter-context").setup({})
+  --   end,
+  -- },
   -- Various little helpers.
   {
     "nvim-treesitter/nvim-treesitter-refactor",

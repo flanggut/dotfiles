@@ -488,6 +488,7 @@ return {
             ["h"] = "navigate_up",
             ["l"] = "set_root",
             ["L"] = function(state)
+              require("neo-tree.command").execute({ action = "close" })
               require("telescope.builtin").live_grep({
                 search_dirs = { state.path },
                 prompt_title = string.format("Grep in [%s]", vim.fs.basename(state.path)),
@@ -538,10 +539,42 @@ return {
   },
 
   {
-    "echasnovski/mini.sessions",
-    version = "*",
+    "benlubas/molten-nvim",
+    version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+    build = ":UpdateRemotePlugins",
+    init = function()
+      -- this is an example, not a default. Please see the readme for more configuration options
+      -- vim.g.molten_output_win_max_height = 12
+    end,
+  },
+  {
+    "GCBallesteros/NotebookNavigator.nvim",
+    dependencies = {
+      "echasnovski/mini.comment",
+      -- "hkupty/iron.nvim", -- repl provider
+      -- "akinsho/toggleterm.nvim", -- alternative repl provider
+      "benlubas/molten-nvim", -- alternative repl provider
+      "anuvyklack/hydra.nvim",
+    },
+    keys = {
+      { "<leader>P", "<cmd>lua require('notebook-navigator').run_cell()<cr>" },
+    },
     config = function()
-      require("mini.sessions").setup()
+      local nn = require("notebook-navigator")
+      nn.setup({
+        repl_provider = "molten",
+        activate_hydra_keys = "<leader>hn",
+        show_hydra_hint = false,
+        hydra_keys = {
+          comment = "c",
+          run = "p",
+          run_and_move = "P",
+          move_up = "k",
+          move_down = "j",
+          add_cell_before = "i",
+          add_cell_after = "x",
+        },
+      })
     end,
   },
 }
