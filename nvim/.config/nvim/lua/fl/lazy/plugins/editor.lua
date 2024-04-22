@@ -231,7 +231,11 @@ return {
   {
     "akinsho/toggleterm.nvim",
     version = "*",
-    opts = {},
+    opts = {
+      on_close = function(terminal)
+        terminal.send("history clear-session")
+      end,
+    },
   },
 
   -- persistence

@@ -1,5 +1,7 @@
 local M = {}
 
+local Terminal = require("toggleterm.terminal").Terminal
+
 local format_line_ending = {
   ["unix"] = "\n",
   ["dos"] = "\r\n",
@@ -199,9 +201,6 @@ M.tmux_prev2 = function()
   end
 end
 
-local Terminal = require("toggleterm.terminal").Terminal
-M.file_runner_term = Terminal:new({ cmd = "fish", hidden = true })
-
 M.file_runner = function()
   -- Default tmux handler.
   if M.is_tmux() then
@@ -215,10 +214,9 @@ M.file_runner = function()
 
   local file = vim.api.nvim_buf_get_name(0)
 
-  M.file_runner_term:toggle()
-  M.file_runner_term:send('python3 "' .. file .. '"')
-  M.file_runner_term:send("history clear-session")
-  M.file_runner_term:toggle()
+  require("notify")("Running python script: " .. file, "info")
+  local file_runner_term = Terminal:new({ cmd = 'python3 "' .. file .. '"', hidden = true })
+  file_runner_term:open()
 end
 
 local parsers = require("nvim-treesitter.parsers")

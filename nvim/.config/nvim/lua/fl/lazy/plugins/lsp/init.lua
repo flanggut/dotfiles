@@ -8,6 +8,7 @@ return {
       { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
       "hrsh7th/cmp-nvim-lsp",
       -- "ray-x/lsp_signature.nvim",
+      { "zeioth/garbage-day.nvim", event = "BufRead", opts = {} },
     },
     version = false,
     ---@class PluginLspOpts

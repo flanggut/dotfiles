@@ -7,6 +7,7 @@ vim.o.cmdheight = 2
 vim.o.compatible = false
 vim.o.completeopt = "menu,menuone"
 vim.o.foldlevelstart = 1
+vim.o.foldopen = "block,hor,mark,percent,quickfix,tag,undo"
 vim.o.hidden = true
 vim.o.inccommand = "nosplit"
 vim.o.laststatus = 2
