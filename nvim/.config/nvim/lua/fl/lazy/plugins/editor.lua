@@ -45,7 +45,7 @@ return {
       -- leader leader
       local leaderleader = {
         l = { "<cmd>LspRestart<CR>", "Restart LSP servers" },
-        o = { "<cmd>TroubleToggle<CR>", "Toggle Trouble" },
+        o = { "<cmd>Trouble diagnostics toggle<CR>", "Toggle Trouble" },
         p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
         s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
       }
@@ -55,15 +55,36 @@ return {
 
   {
     "folke/trouble.nvim",
+    branch = "dev",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "VeryLazy",
     opts = {
       auto_close = true,
-      mode = "document_diagnostics",
+      auto_preview = false,
+      follow = false,
+      pinned = true,
     },
-    -- stylua: ignore
     keys = {
-      { "gR",function() require("trouble").open("lsp_references") end, desc = "Trouble lsp references", },
+      {
+        "{",
+        function()
+          ---@diagnostic disable-next-line: missing-parameter
+          require("trouble").prev()
+          ---@diagnostic disable-next-line: missing-parameter
+          require("trouble").jump()
+        end,
+        desc = "Trouble prev and jump",
+      },
+      {
+        "}",
+        function()
+          ---@diagnostic disable-next-line: missing-parameter
+          require("trouble").next()
+          ---@diagnostic disable-next-line: missing-parameter
+          require("trouble").jump()
+        end,
+        desc = "Trouble next and jump",
+      },
     },
   },
 
@@ -165,13 +186,13 @@ return {
     end,
     opts = {
       mappings = {
-        add = "gza", -- Add surrounding in Normal and Visual modes
-        delete = "gzd", -- Delete surrounding
-        find = "gzf", -- Find surrounding (to the right)
-        find_left = "gzF", -- Find surrounding (to the left)
-        highlight = "gzh", -- Highlight surrounding
-        replace = "gzr", -- Replace surrounding
-        update_n_lines = "gzn", -- Update `n_lines`
+        add = "gsa", -- Add surrounding in Normal and Visual modes
+        delete = "gsd", -- Delete surrounding
+        find = "gsf", -- Find surrounding (to the right)
+        find_left = "gsF", -- Find surrounding (to the left)
+        highlight = "gsh", -- Highlight surrounding
+        replace = "gsr", -- Replace surrounding
+        update_n_lines = "gsn", -- Update `n_lines`
       },
     },
     config = function(_, opts)
