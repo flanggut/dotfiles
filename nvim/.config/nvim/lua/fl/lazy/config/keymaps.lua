@@ -27,7 +27,7 @@ vim.keymap.set("n", "<leader>cc", [[<cmd>cclose<CR>]], { noremap = true })
 vim.keymap.set("v", "<leader>r", [["hy:%s/<C-r>h//gc<left><left><left>]], { noremap = true })
 
 -- toggle fold
-vim.keymap.set("n", "<leader>F", "za", { noremap = false })
+-- vim.keymap.set("n", "<leader>F", "za", { noremap = false })
 
 -- fold lines matching search string
 vim.keymap.set(

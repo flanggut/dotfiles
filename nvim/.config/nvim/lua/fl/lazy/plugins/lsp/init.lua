@@ -28,6 +28,10 @@ return {
             },
           },
         },
+        pyright = {
+          enabled = false,
+        },
+        basedpyright = {},
       },
       -- you can do any additional lsp server setup here
       -- return true if you don't want this server to be setup with lspconfig
@@ -98,30 +102,30 @@ return {
       -- Python
       ---@diagnostic disable-next-line: param-type-mismatch
       if not string.find(vim.fn.expand(vim.loop.cwd()), "ffbsource") then
-        lspconfig.pylsp.setup({
-          filetypes = { "python" },
-          settings = {
-            pylsp = {
-              plugins = {
-                -- formatter
-                black = { enabled = false },
-                autopep8 = { enabled = false },
-                yapf = { enabled = false },
-                -- linter
-                flake8 = { enabled = false },
-                pylint = { enabled = false, executable = "pylint" },
-                pylsp_mypy = { enabled = false },
-                mccabe = { enabled = false },
-                pycodestyle = { enabled = false },
-                pyflakes = { enabled = false },
-                -- auto-completion options
-                jedi_completion = { fuzzy = true },
-                -- import sorting
-                pyls_isort = { enabled = true },
-              },
-            },
-          },
-        })
+        -- lspconfig.pylsp.setup({
+        --   filetypes = { "python" },
+        --   settings = {
+        --     pylsp = {
+        --       plugins = {
+        --         -- formatter
+        --         black = { enabled = false },
+        --         autopep8 = { enabled = false },
+        --         yapf = { enabled = false },
+        --         -- linter
+        --         flake8 = { enabled = false },
+        --         pylint = { enabled = false, executable = "pylint" },
+        --         pylsp_mypy = { enabled = false },
+        --         mccabe = { enabled = false },
+        --         pycodestyle = { enabled = false },
+        --         pyflakes = { enabled = false },
+        --         -- auto-completion options
+        --         jedi_completion = { fuzzy = true },
+        --         -- import sorting
+        --         pyls_isort = { enabled = true },
+        --       },
+        --     },
+        --   },
+        -- })
 
         -- lspconfig.pyright.setup({
         --   capabilities = capabilities,

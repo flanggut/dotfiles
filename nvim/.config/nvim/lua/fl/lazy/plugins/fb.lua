@@ -7,7 +7,7 @@ if string.find(vim.fn.expand(vim.loop.cwd() or ""), "fbsource", 0) then
     config = function()
       require("meta")
       require("meta.metamate").init({
-        completionKeymap = "<C-f>",
+        completionKeymap = "<A-f>",
         -- change the languages to target. defaults to php, python, rust
         filetypes = { "cpp", "python" },
       })

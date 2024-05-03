@@ -206,7 +206,7 @@ return {
     "windwp/nvim-spectre",
     -- stylua: ignore
     keys = {
-      { "<leader>sg", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
+      { "<leader>spe", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
     },
   },
 
@@ -341,79 +341,6 @@ return {
   {
     "AndrewRadev/linediff.vim",
     cmd = "Linediff",
-  },
-
-  -- {
-  --   "ThePrimeagen/harpoon",
-  --   event = "BufRead",
-  --   keys = {
-  --     {
-  --       "mm",
-  --       mode = { "n" },
-  --       function()
-  --         require("harpoon.mark").add_file()
-  --         require("notify")("harpoon added", "info")
-  --       end,
-  --       desc = "Harpoon add_file",
-  --     },
-  --     {
-  --       "mo",
-  --       mode = { "n" },
-  --       function()
-  --         require("harpoon.ui").toggle_quick_menu()
-  --       end,
-  --       desc = "Harpoon toggle_quick_menu",
-  --     },
-  --     {
-  --       "<c-f>",
-  --       mode = { "n" },
-  --       "<cmd>Telescope harpoon marks<cr>",
-  --       desc = "Harpoon toggle_quick_menu",
-  --     },
-  --   },
-  --   config = function()
-  --     require("telescope").load_extension("harpoon")
-  --   end,
-  -- },
-
-  -- trail blazer
-  {
-    "LeonHeidelbach/trailblazer.nvim",
-    keys = {
-      { "mm", [[<cmd>TrailBlazerNewTrailMark<cr>]], desc = "New Trail Mark" },
-      { "mp", [[<cmd>TrailBlazerTrackBack<cr>]], desc = "Pop Trail Mark" },
-      {
-        "mk",
-        function()
-          require("trailblazer").move_to_nearest(nil, "up", nil)
-        end,
-        desc = "Nearest Trail Mark Up",
-      },
-      {
-        "mj",
-        function()
-          require("trailblazer").move_to_nearest(nil, "down", nil)
-        end,
-        desc = "Nearest Trail Mark Down",
-      },
-      {
-        "ml",
-        function()
-          require("trailblazer").toggle_trail_mark_list("quickfix")
-        end,
-        desc = "Trail Mark List",
-      },
-    },
-    config = function()
-      require("trailblazer").setup({
-        auto_save_trailblazer_state_on_exit = true,
-        auto_load_trailblazer_state_on_enter = true,
-        trail_options = {
-          trail_mark_in_text_highlights_enabled = false,
-        },
-        force_mappings = {},
-      })
-    end,
   },
 
   -- nnn
@@ -572,32 +499,50 @@ return {
       -- vim.g.molten_output_win_max_height = 12
     end,
   },
+
   {
     "GCBallesteros/NotebookNavigator.nvim",
     dependencies = {
       "echasnovski/mini.comment",
-      -- "hkupty/iron.nvim", -- repl provider
       -- "akinsho/toggleterm.nvim", -- alternative repl provider
       "benlubas/molten-nvim", -- alternative repl provider
-      "anuvyklack/hydra.nvim",
+      "nvimtools/hydra.nvim",
     },
+    ft = { "python" },
     keys = {
-      { "<leader>P", "<cmd>lua require('notebook-navigator').run_cell()<cr>" },
+      -- { "<leader>ip", "<cmd>lua require('notebook-navigator').run_cell()<cr>" },
+      -- {
+      --   "<leader>ih",
+      --   function()
+      --   end,
+      -- },
     },
     config = function()
       local nn = require("notebook-navigator")
       nn.setup({
         repl_provider = "molten",
-        activate_hydra_keys = "<leader>hn",
-        show_hydra_hint = false,
-        hydra_keys = {
-          comment = "c",
-          run = "p",
-          run_and_move = "P",
-          move_up = "k",
-          move_down = "j",
-          add_cell_before = "i",
-          add_cell_after = "x",
+      })
+      local Hydra = require("hydra")
+      Hydra({
+        -- string? only used in auto-generated hint
+        name = "NotebookNavigator",
+        -- string | string[] modes where the hydra exists, same as `vim.keymap.set()` accepts
+        mode = "n",
+        hint = [[ Hint String  ]],
+        config = {
+          hint = {
+            type = "window",
+            position = "bottom",
+          },
+        },
+        heads = {
+          {
+            "p",
+            function()
+              require("notebook-navigator").run_and_move()
+            end,
+            {},
+          },
         },
       })
     end,
