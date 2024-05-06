@@ -490,6 +490,27 @@ return {
     },
   },
 
+  -- Track
+  {
+    "dharmx/track.nvim",
+    cmd = {
+      "Track",
+      "Mark",
+      "MarkOpened",
+      "StashBundle",
+      "RestoreBundle",
+      "AlternateBundle",
+      "Unmark",
+    },
+    keys = {
+      { "gM", "<cmd>Mark<CR>", desc = "Mark file" },
+      { "gm", "<cmd>Track<CR>", desc = "Open marks" },
+    },
+    config = function()
+      require("track").setup({})
+    end,
+  },
+
   {
     "benlubas/molten-nvim",
     version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
