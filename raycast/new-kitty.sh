@@ -14,6 +14,7 @@
 
 pushd ~
 
-/Users/flanggut/homebrew/bin/kitty --single-instance sh -c "/Users/flanggut/homebrew/bin/fish"
+#/Users/flanggut/homebrew/bin/kitty --single-instance sh -c "/Users/flanggut/homebrew/bin/fish"
+/Users/flanggut/homebrew/bin/kitty --single-instance &
 
 popd
