@@ -1,0 +1,6 @@
+# .zsh_plugins.txt
+romkatv/powerlevel10k
+zsh-users/zsh-completions
+zsh-users/zsh-autosuggestions
+zdharma-continuum/fast-syntax-highlighting kind:defer
+
