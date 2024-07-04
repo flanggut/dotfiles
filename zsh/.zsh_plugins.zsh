@@ -11,3 +11,5 @@ if ! (( $+functions[zsh-defer] )); then
 fi
 fpath+=( /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zdharma-continuum-SLASH-fast-syntax-highlighting )
 zsh-defer source /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zdharma-continuum-SLASH-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+fpath+=( $HOME/dotfiles/zsh/plugins/fzf )
+source $HOME/dotfiles/zsh/plugins/fzf/fzf.plugin.zsh

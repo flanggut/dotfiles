@@ -4,3 +4,5 @@ zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions
 zdharma-continuum/fast-syntax-highlighting kind:defer
 
+$HOME/dotfiles/zsh/plugins/fzf
+

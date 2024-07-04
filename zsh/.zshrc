@@ -6,14 +6,20 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 ######     Path      ######
-path+=('/Users/flanggut/homebrew/bin')
+path+=("${XDG_CACHE_HOME:-$HOME}/bin")
+path+=("${XDG_CACHE_HOME:-$HOME}/homebrew/bin")
 export PATH
 
+fpath=( ~/.zsh_func "${fpath[@]}" )
+
 ######     Alias      ######
+alias ..="cd .."
+alias ...="cd ../.."
 alias j="z"
 alias ji="/Users/flanggut/homebrew/bin/fish"
 alias vim=nvim
 alias ls="ls --color"
+alias la="ls --color -la"
 #     Git + HG commands    #
 alias shows="hg show --stat"
 alias sshow="hg st -m"
@@ -37,6 +43,8 @@ zstyle ':completion:*' matcher-list '' \
   'm:{a-z\-}={A-Z\_}' \
   'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
   'r:|?=** m:{a-z\-}={A-Z\_}'
+# Completion colors
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 ######     Plugins      ######
 # Antidote
@@ -52,5 +60,24 @@ source ${zsh_plugins}.zsh
 # Zoxide
 eval "$(zoxide init zsh)"
 
+######     Opts      ######
+autoload -U compinit && compinit
+
+### History
+HISTSIZE=100000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
+# To save every command before it is executed
+setopt inc_append_history
+# To read and update history on every command
+setopt share_history
+setopt hist_ignore_dups
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+setopt hist_find_no_dups
+
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
