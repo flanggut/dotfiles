@@ -12,6 +12,9 @@ export PATH
 
 fpath=( ~/.zsh_func "${fpath[@]}" )
 
+LS_COLORS='di=0;34:ln=0;36:ex=0;91'
+export LS_COLORS
+
 ######     Alias      ######
 alias ..="cd .."
 alias ...="cd ../.."

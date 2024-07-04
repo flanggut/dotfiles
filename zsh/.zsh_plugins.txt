@@ -5,4 +5,5 @@ zsh-users/zsh-autosuggestions
 zdharma-continuum/fast-syntax-highlighting kind:defer
 
 $HOME/dotfiles/zsh/plugins/fzf
+$HOME/dotfiles/zsh/plugins/adb
 

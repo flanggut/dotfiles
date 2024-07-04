@@ -12,7 +12,7 @@ function __fzf_reverse_history_search() {
 
   BUFFER="${(j| && |)candidates}"
 
-  zle vi-fetch-history -n $BUFFER
+  [[ ! -z "$BUFFER" ]] && zle vi-fetch-history -n $BUFFER
   zle end-of-line
   zle reset-prompt
 }

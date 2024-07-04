@@ -13,3 +13,5 @@ fpath+=( /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-githu
 zsh-defer source /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zdharma-continuum-SLASH-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fpath+=( $HOME/dotfiles/zsh/plugins/fzf )
 source $HOME/dotfiles/zsh/plugins/fzf/fzf.plugin.zsh
+fpath+=( $HOME/dotfiles/zsh/plugins/adb )
+source $HOME/dotfiles/zsh/plugins/adb/adb.plugin.zsh
