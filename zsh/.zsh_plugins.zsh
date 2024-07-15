@@ -5,12 +5,8 @@ fpath+=( /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-githu
 source /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-completions/zsh-completions.plugin.zsh
 fpath+=( /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-autosuggestions )
 source /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
-if ! (( $+functions[zsh-defer] )); then
-  fpath+=( /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-romkatv-SLASH-zsh-defer )
-  source /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-romkatv-SLASH-zsh-defer/zsh-defer.plugin.zsh
-fi
-fpath+=( /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zdharma-continuum-SLASH-fast-syntax-highlighting )
-zsh-defer source /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zdharma-continuum-SLASH-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+fpath+=( /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-syntax-highlighting )
+source /Users/flanggut/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
 fpath+=( $HOME/dotfiles/zsh/plugins/fzf )
 source $HOME/dotfiles/zsh/plugins/fzf/fzf.plugin.zsh
 fpath+=( $HOME/dotfiles/zsh/plugins/adb )

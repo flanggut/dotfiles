@@ -2,7 +2,7 @@
 romkatv/powerlevel10k
 zsh-users/zsh-completions
 zsh-users/zsh-autosuggestions
-zdharma-continuum/fast-syntax-highlighting kind:defer
+zsh-users/zsh-syntax-highlighting
 
 $HOME/dotfiles/zsh/plugins/fzf
 $HOME/dotfiles/zsh/plugins/adb
