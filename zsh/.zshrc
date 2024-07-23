@@ -4,6 +4,7 @@
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 ######     Path      ######
 path+=("${XDG_CACHE_HOME:-$HOME}/bin")
@@ -12,8 +13,11 @@ export PATH
 
 fpath=( ~/.zsh_func "${fpath[@]}" )
 
-LS_COLORS='di=0;34:ln=0;36:ex=0;91'
-export LS_COLORS
+######     Helpers      ######
+
+function is-macos() {
+  [[ $OSTYPE == darwin* ]]
+}
 
 is_inside_git_repo() {
     git rev-parse --is-inside-work-tree >/dev/null 2>&1
@@ -25,6 +29,7 @@ is_git() {
     git rev-parse --is-inside-work-tree >/dev/null 2>&1
 }
 
+alias ad="antidote"
 alias ..="cd .."
 alias ...="cd ../.."
 alias j="z"
@@ -48,8 +53,13 @@ alias jfs3="jf s -r .^^..."
 alias jfs4="jf s -r .^^^..."
 alias jfs5="jf s -r .^^^^..."
 alias dff="if is_git; then git diff | delta | less -r; else hg diff | delta | less -r; fi"
+alias show="if is_git; then git show | delta | less -r; else hg diff -r .^ | delta | less -r; fi"
+alias st="if is_git; then git st; else hg st; fi"
+alias qd="adb devices && maui q d"
 
-######   Fuzzy Matching    ######
+
+######   Completion    ######
+# Fuzzy Matching
 # 0 -- vanilla completion (abc => abc)
 # 1 -- smart case completion (abc => Abc)
 # 2 -- word flex completion (abc => A-big-Car)
@@ -61,8 +71,16 @@ zstyle ':completion:*' matcher-list '' \
 # Completion colors
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
-######     Plugins      ######
+# Completion init
+autoload -U compinit && compinit
+
+################     Plugins      ##############
 # Antidote
+# Bootstrap
+if [[ ! -d ${ZDOTDIR:-~}/.antidote  ]]; then
+  git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+fi
+
 zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   (
@@ -87,8 +105,16 @@ ZSH_HIGHLIGHT_STYLES[function]='bold'
 ZSH_HIGHLIGHT_STYLES[command]='bold'
 ZSH_HIGHLIGHT_STYLES[hashed-command]='bold'
 
-# Completion
-autoload -U compinit && compinit
+### Colors
+export FZF_DEFAULT_OPTS="
+	--color=fg:#797593,bg:#faf4ed,hl:#d7827e
+	--color=fg+:#575279,bg+:#f2e9e1,hl+:#d7827e
+	--color=border:#dfdad9,header:#286983,gutter:#faf4ed
+	--color=spinner:#ea9d34,info:#56949f,separator:#dfdad9
+	--color=pointer:#907aa9,marker:#b4637a,prompt:#797593"
+
+LS_COLORS='di=0;34:ln=0;36:ex=0;91'
+export LS_COLORS
 
 ### History
 HISTSIZE=100000
