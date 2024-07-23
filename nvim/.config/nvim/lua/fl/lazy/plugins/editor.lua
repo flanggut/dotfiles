@@ -11,15 +11,16 @@ return {
     config = function(_, opts)
       local wk = require("which-key")
       wk.setup(opts)
-
-      -- leader
-      local leader = {
-        c = {
-          d = { "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", "Compile commands" },
-          D = { "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>", "Compile commands" },
+      wk.add({
+        { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
+        {
+          "<leader>cD",
+          "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>",
+          desc = "Compile commands with deps",
         },
-        f = { "<cmd>LazyFormat<CR>", "Format" },
-        F = {
+        { "<leader>f", "<cmd>LazyFormat<CR>", desc = "Format" },
+        {
+          "<leader>F",
           function()
             if vim.b.autoformat == nil then
               vim.b.autoformat = false
@@ -28,34 +29,25 @@ return {
             end
             vim.notify("Autoformat toggled: " .. tostring(vim.b.autoformat), "info", {})
           end,
-          "Toggle auto format",
+          desc = "Toggle auto format",
         },
-        i = {},
-        o = {
-          p = { "<cmd>lua R('fl.functions').open_in_browser()<CR>", "Open in browser" },
+        {
+          "<leader>op",
+          "<cmd>lua R('fl.functions').open_in_browser()<CR>",
+          desc = "Open in browser",
         },
-        p = { "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", "Runner" },
-        q = { "<cmd>bdelete!<CR>", "Close Buffer" },
-        s = {
-          name = "+search",
-        },
-      }
-      wk.register(leader, { prefix = "<leader>" })
-
-      -- leader leader
-      local leaderleader = {
-        l = { "<cmd>LspRestart<CR>", "Restart LSP servers" },
-        o = { "<cmd>Trouble diagnostics toggle<CR>", "Toggle Trouble" },
-        p = { "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", "Runner" },
-        s = { "<cmd>lua R('fl.snippets').load()<CR>", "Reload snippets" },
-      }
-      wk.register(leaderleader, { prefix = "<leader><leader>" })
+        { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
+        { "<leader>q", "<cmd>bdelete!<CR>", desc = "Close Buffer" },
+        { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
+        { "<leader><leader>o", "<cmd>Trouble diagnostics toggle<CR>", desc = "Toggle Trouble" },
+        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", desc = "Runner" },
+        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>", desc = "Reload snippets" },
+      })
     end,
   },
 
   {
     "folke/trouble.nvim",
-    branch = "dev",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "VeryLazy",
     opts = {
