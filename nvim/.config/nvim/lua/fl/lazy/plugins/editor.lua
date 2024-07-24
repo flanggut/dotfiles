@@ -6,7 +6,6 @@ return {
     event = "BufRead",
     opts = {
       plugins = { spelling = true },
-      key_labels = { ["<leader>"] = "SPC" },
     },
     config = function(_, opts)
       local wk = require("which-key")
@@ -37,11 +36,20 @@ return {
           desc = "Open in browser",
         },
         { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
-        { "<leader>q", "<cmd>bdelete!<CR>", desc = "Close Buffer" },
         { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
         { "<leader><leader>o", "<cmd>Trouble diagnostics toggle<CR>", desc = "Toggle Trouble" },
         { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", desc = "Runner" },
         { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>", desc = "Reload snippets" },
+      })
+    end,
+  },
+
+  {
+    "psjay/buffer-closer.nvim",
+    event = "BufRead",
+    config = function()
+      require("buffer-closer").setup({
+        close_key = "<leader>q",
       })
     end,
   },
@@ -200,6 +208,21 @@ return {
     keys = {
       { "<leader>spe", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
     },
+  },
+  {
+    "MagicDuck/grug-far.nvim",
+    keys = {
+      {
+        "<leader>ge",
+        function()
+          require("grug-far").grug_far({ prefills = { search = vim.fn.expand("<cword>") } })
+        end,
+        desc = "Replace in files (grug-far)",
+      },
+    },
+    config = function()
+      require("grug-far").setup({})
+    end,
   },
 
   -- search/replace treesitter structures

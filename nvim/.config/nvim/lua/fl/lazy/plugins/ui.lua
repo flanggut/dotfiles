@@ -52,6 +52,15 @@ return {
     end,
   },
 
+  -- highlight testxt on undo redo
+  {
+    "mei28/luminate.nvim",
+    event = { "VeryLazy" },
+    config = function()
+      require("luminate").setup({})
+    end,
+  },
+
   -- noice
   {
     "folke/noice.nvim",
@@ -204,7 +213,7 @@ return {
 
       local function lsp_names()
         local names = ""
-        for _, client in ipairs(vim.lsp.get_active_clients()) do
+        for _, client in ipairs(vim.lsp.get_clients()) do
           if names == "" then
             names = client.name
           else

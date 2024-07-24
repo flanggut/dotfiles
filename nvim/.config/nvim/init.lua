@@ -3,6 +3,8 @@ P = function(v)
   return v
 end
 
+require("fl.lazy")
+
 if pcall(require, "plenary") then
   RELOAD = require("plenary.reload").reload_module
 
@@ -11,5 +13,3 @@ if pcall(require, "plenary") then
     return require(name)
   end
 end
-
-require("fl.lazy")
