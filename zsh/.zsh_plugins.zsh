@@ -18,10 +18,6 @@ if is-macos; then
   fpath+=( $HOME/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-ohmyzsh-SLASH-ohmyzsh/plugins/brew )
   source $HOME/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-ohmyzsh-SLASH-ohmyzsh/plugins/brew/brew.plugin.zsh
 fi
-if is-macos; then
-  fpath+=( $HOME/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-ohmyzsh-SLASH-ohmyzsh/plugins/macos )
-  source $HOME/Library/Caches/antidote/https-COLON--SLASH--SLASH-github.com-SLASH-ohmyzsh-SLASH-ohmyzsh/plugins/macos/macos.plugin.zsh
-fi
 fpath+=( $HOME/dotfiles/zsh/plugins/fzf )
 source $HOME/dotfiles/zsh/plugins/fzf/fzf.plugin.zsh
 fpath+=( $HOME/dotfiles/zsh/plugins/adb )

@@ -1,3 +1,15 @@
+######     Helpers      ######
+
+function is-macos() {
+  [[ $OSTYPE == darwin* ]]
+}
+
+is_inside_git_repo() {
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1
+}
+
+
+##############################     Main      #################################
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -9,19 +21,10 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 ######     Path      ######
 path+=("${XDG_CACHE_HOME:-$HOME}/bin")
 path+=("${XDG_CACHE_HOME:-$HOME}/homebrew/bin")
+path+=("${XDG_CACHE_HOME:-$HOME}/Library/Python/3.10/bin")
 export PATH
 
 fpath=( ~/.zsh_func "${fpath[@]}" )
-
-######     Helpers      ######
-
-function is-macos() {
-  [[ $OSTYPE == darwin* ]]
-}
-
-is_inside_git_repo() {
-    git rev-parse --is-inside-work-tree >/dev/null 2>&1
-}
 
 ######     Alias      ######
 # helpers
@@ -124,7 +127,7 @@ HISTDUP=erase
 # To save every command before it is executed
 setopt inc_append_history
 # To read and update history on every command
-setopt share_history
+# setopt share_history
 setopt hist_ignore_dups
 setopt hist_ignore_all_dups
 setopt hist_ignore_space
