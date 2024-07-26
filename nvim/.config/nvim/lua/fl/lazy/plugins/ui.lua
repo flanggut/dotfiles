@@ -52,15 +52,6 @@ return {
     end,
   },
 
-  -- highlight testxt on undo redo
-  {
-    "mei28/luminate.nvim",
-    event = { "VeryLazy" },
-    config = function()
-      require("luminate").setup({})
-    end,
-  },
-
   -- noice
   {
     "folke/noice.nvim",

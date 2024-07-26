@@ -5,7 +5,11 @@ return {
     event = "BufReadPre",
     dependencies = {
       -- "mason.nvim",
-      { "folke/neodev.nvim", opts = { experimental = { pathStrict = true } } },
+      {
+        "folke/lazydev.nvim",
+        ft = "lua",
+        opts = {},
+      },
       "hrsh7th/cmp-nvim-lsp",
       -- "ray-x/lsp_signature.nvim",
       { "zeioth/garbage-day.nvim", event = "BufRead", opts = {} },

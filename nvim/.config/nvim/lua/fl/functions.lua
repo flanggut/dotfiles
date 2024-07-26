@@ -215,7 +215,7 @@ M.file_runner = function()
   local file = vim.api.nvim_buf_get_name(0)
 
   require("notify")("Running python script: " .. file, "info")
-  local file_runner_term = Terminal:new({ cmd = 'python3 "' .. file .. '"', hidden = true })
+  local file_runner_term = Terminal:new({ cmd = 'fc -p && python3 "' .. file .. '"', hidden = true })
   file_runner_term:open()
 end
 
