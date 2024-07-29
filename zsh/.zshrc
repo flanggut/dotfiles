@@ -80,13 +80,14 @@ autoload -U compinit && compinit
 ################     Plugins      ##############
 # Antidote
 # Bootstrap
-if [[ ! -d ${ZDOTDIR:-~}/.antidote  ]]; then
+if [[ ! -d ${ZDOTDIR:-$HOME}/.antidote  ]]; then
   git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
 fi
 
 zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   (
+    echo "Re-generating antidote bundle..."
     source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
     antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
   )
@@ -120,7 +121,7 @@ LS_COLORS='di=0;34:ln=0;36:ex=0;91'
 export LS_COLORS
 
 ### History
-HISTSIZE=100000
+HISTSIZE=1000000
 HISTFILE=~/.zsh_history
 SAVEHIST=$HISTSIZE
 HISTDUP=erase

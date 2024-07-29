@@ -4,15 +4,14 @@
 Aloxaf/fzf-tab
 
 romkatv/powerlevel10k
-zsh-users/zsh-completions
-zsh-users/zsh-autosuggestions
-zsh-users/zsh-syntax-highlighting
+zsh-users/zsh-completions kind:defer
+zsh-users/zsh-autosuggestions kind:defer
+zsh-users/zsh-syntax-highlighting kind:defer
 
 getantidote/use-omz
-
 ohmyzsh/ohmyzsh path:plugins/git
 # Add macOS specific plugins
-ohmyzsh/ohmyzsh path:plugins/brew conditional:is-macos
+# ohmyzsh/ohmyzsh path:plugins/brew conditional:is-macos
 # ohmyzsh/ohmyzsh path:plugins/macos conditional:is-macos
 
 
