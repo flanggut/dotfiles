@@ -1,9 +1,10 @@
+require("fl.lazy")
+
+-- some general helper functions
 P = function(v)
   print(vim.inspect(v))
   return v
 end
-
-require("fl.lazy")
 
 if pcall(require, "plenary") then
   RELOAD = require("plenary.reload").reload_module

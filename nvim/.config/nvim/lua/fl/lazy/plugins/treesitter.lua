@@ -61,13 +61,13 @@ return {
     end,
   },
   -- Show context for large scopes
-  -- {
-  --   "nvim-treesitter/nvim-treesitter-context",
-  --   event = "BufReadPost",
-  --   config = function()
-  --     require("treesitter-context").setup({})
-  --   end,
-  -- },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = "BufReadPost",
+    config = function()
+      require("treesitter-context").setup({})
+    end,
+  },
   -- Various little helpers.
   {
     "nvim-treesitter/nvim-treesitter-refactor",
@@ -93,13 +93,12 @@ return {
       require("plenary.filetype").add_file("fl")
     end,
   },
-
   -- log file highlighting
-  {
-    "fei6409/log-highlight.nvim",
-    event = "BufReadPost",
-    config = function()
-      require("log-highlight").setup({})
-    end,
-  },
+  -- {
+  --   "fei6409/log-highlight.nvim",
+  --   event = "BufReadPost",
+  --   config = function()
+  --     require("log-highlight").setup({})
+  --   end,
+  -- },
 }
