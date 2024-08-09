@@ -77,6 +77,9 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 # Completion init
 autoload -U compinit && compinit
 
+# fzf
+source <(fzf --zsh)
+
 ################     Plugins      ##############
 # Antidote
 # Bootstrap
