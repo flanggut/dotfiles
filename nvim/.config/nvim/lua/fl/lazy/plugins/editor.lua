@@ -380,108 +380,146 @@ return {
 
   -- file explorer
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
-    },
-    cmd = "Neotree",
+    "stevearc/oil.nvim",
+    cmd = "Oil",
     keys = {
       {
         "<C-n>",
         function()
-          require("neo-tree.command").execute({
-            toggle = true,
-            dir = vim.fn.expand("%:p:h"),
-            position = "float",
-            reveal = true,
-            reveal_force_cwd = true,
-          })
+          require("oil").open_float()
         end,
-        desc = "Explorer NeoTree (cwd)",
-      },
-      {
-        "<leader>ne",
-        function()
-          require("neo-tree.command").execute({
-            toggle = true,
-            dir = vim.fn.expand("%:p:h"),
-            position = "float",
-            reveal = true,
-            reveal_force_cwd = true,
-          })
-        end,
-        desc = "Explorer NeoTree (cwd)",
-      },
-      {
-        "<leader>be",
-        function()
-          require("neo-tree.command").execute({ source = "buffers", toggle = true })
-        end,
-        desc = "Buffer explorer",
+        desc = "Explorer Oil (cwd)",
       },
     },
-    deactivate = function()
-      vim.cmd([[Neotree close]])
-    end,
-    init = function()
-      if vim.fn.argc(-1) == 1 then
-        ---@diagnostic disable-next-line: param-type-mismatch
-        local stat = vim.loop.fs_stat(vim.fn.argv(0))
-        if stat and stat.type == "directory" then
-          require("neo-tree")
-        end
-      end
-    end,
     opts = {
-      sources = { "filesystem", "document_symbols" },
-      open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
-      window = {
-        height = 50,
+      view_options = {
+        -- Show files and directories that start with "."
+        show_hidden = true,
       },
-      filesystem = {
-        bind_to_cwd = false,
-        follow_current_file = { enabled = true },
-        window = {
-          mappings = {
-            ["."] = "toggle_hidden",
-            ["/"] = "fuzzy_sorter",
-            ["<space>"] = "none",
-            ["h"] = "navigate_up",
-            ["l"] = "set_root",
-            ["L"] = function(state)
-              require("neo-tree.command").execute({ action = "close" })
-              require("telescope.builtin").live_grep({
-                search_dirs = { state.path },
-                prompt_title = string.format("Grep in [%s]", vim.fs.basename(state.path)),
-              })
-            end,
-          },
-          fuzzy_finder_mappings = {
-            ["<down>"] = "move_cursor_down",
-            ["<C-n>"] = "move_cursor_down",
-            ["<C-j>"] = "move_cursor_down",
-            ["<up>"] = "move_cursor_up",
-            ["<C-p>"] = "move_cursor_up",
-            ["<C-k>"] = "move_cursor_up",
-          },
-        },
+      columns = {
+        "icon",
+        -- "permissions",
+        "size",
+        -- "mtime",
       },
-      default_component_configs = {
-        indent = {
-          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-          expander_collapsed = "",
-          expander_expanded = "",
-          expander_highlight = "NeoTreeExpander",
-        },
+      keymaps = {
+        ["h"] = "actions.parent",
+        ["q"] = "actions.close",
+      },
+      float = {
+        -- Padding around the floating window
+        padding = 2,
+        max_width = 100,
+        max_height = 50,
+        border = "rounded",
       },
     },
-    config = function(_, opts)
-      require("neo-tree").setup(opts)
-    end,
+    -- Optional dependencies
+    dependencies = { { "echasnovski/mini.icons", opts = {} } },
   },
+  -- {
+  --   "nvim-neo-tree/neo-tree.nvim",
+  --   branch = "v3.x",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-tree/nvim-web-devicons",
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  --   cmd = "Neotree",
+  --   keys = {
+  --     {
+  --       "<C-n>",
+  --       function()
+  --         require("neo-tree.command").execute({
+  --           toggle = true,
+  --           dir = vim.fn.expand("%:p:h"),
+  --           position = "float",
+  --           reveal = true,
+  --           reveal_force_cwd = true,
+  --         })
+  --       end,
+  --       desc = "Explorer NeoTree (cwd)",
+  --     },
+  --     {
+  --       "<leader>ne",
+  --       function()
+  --         require("neo-tree.command").execute({
+  --           toggle = true,
+  --           dir = vim.fn.expand("%:p:h"),
+  --           position = "float",
+  --           reveal = true,
+  --           reveal_force_cwd = true,
+  --         })
+  --       end,
+  --       desc = "Explorer NeoTree (cwd)",
+  --     },
+  --     {
+  --       "<leader>be",
+  --       function()
+  --         require("neo-tree.command").execute({ source = "buffers", toggle = true })
+  --       end,
+  --       desc = "Buffer explorer",
+  --     },
+  --   },
+  --   deactivate = function()
+  --     vim.cmd([[Neotree close]])
+  --   end,
+  --   init = function()
+  --     if vim.fn.argc(-1) == 1 then
+  --       ---@diagnostic disable-next-line: param-type-mismatch
+  --       local stat = vim.loop.fs_stat(vim.fn.argv(0))
+  --       if stat and stat.type == "directory" then
+  --         require("neo-tree")
+  --       end
+  --     end
+  --   end,
+  --   opts = {
+  --     sources = { "filesystem", "document_symbols" },
+  --     open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
+  --     window = {
+  --       height = 50,
+  --     },
+  --     filesystem = {
+  --       bind_to_cwd = false,
+  --       follow_current_file = { enabled = true },
+  --       window = {
+  --         mappings = {
+  --           ["."] = "toggle_hidden",
+  --           ["/"] = "fuzzy_sorter",
+  --           ["<space>"] = "none",
+  --           ["h"] = "navigate_up",
+  --           ["l"] = "set_root",
+  --           ["L"] = function(state)
+  --             require("neo-tree.command").execute({ action = "close" })
+  --             require("telescope.builtin").live_grep({
+  --               search_dirs = { state.path },
+  --               prompt_title = string.format("Grep in [%s]", vim.fs.basename(state.path)),
+  --             })
+  --           end,
+  --         },
+  --         fuzzy_finder_mappings = {
+  --           ["<down>"] = "move_cursor_down",
+  --           ["<C-n>"] = "move_cursor_down",
+  --           ["<C-j>"] = "move_cursor_down",
+  --           ["<up>"] = "move_cursor_up",
+  --           ["<C-p>"] = "move_cursor_up",
+  --           ["<C-k>"] = "move_cursor_up",
+  --         },
+  --       },
+  --     },
+  --     default_component_configs = {
+  --       indent = {
+  --         with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+  --         expander_collapsed = "",
+  --         expander_expanded = "",
+  --         expander_highlight = "NeoTreeExpander",
+  --       },
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("neo-tree").setup(opts)
+  --   end,
+  -- },
 
   {
     "mhinz/vim-signify",
