@@ -10,14 +10,6 @@ is_inside_git_repo() {
 
 
 ##############################     Main      #################################
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-
 ######     Path      ######
 path+=("${XDG_CACHE_HOME:-$HOME}/bin")
 path+=("${XDG_CACHE_HOME:-$HOME}/homebrew/bin")
@@ -87,6 +79,7 @@ if [[ ! -d ${ZDOTDIR:-$HOME}/.antidote  ]]; then
   git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
 fi
 
+
 zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
 if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   (
@@ -100,8 +93,14 @@ source ${zsh_plugins}.zsh
 # Zoxide
 eval "$(zoxide init zsh)"
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Pure
+# adjustments:
+#   if [[ $OSTYPE == darwin* ]]; then
+#     preprompt_parts+=('%f')
+#   fi
+#   preprompt_parts+=('%F{${prompt_pure_colors[path]}} %~%f')
+autoload -U promptinit; promptinit
+prompt pure
 
 ######     Opts      ######
 # Highlight styles
