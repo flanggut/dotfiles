@@ -22,7 +22,7 @@ return {
           priority = 100,
           primary = true,
           format = function(buf)
-            require("conform").format({ bufnr = buf })
+            require("conform").format({ bufnr = buf, timeout_ms = 5000 })
           end,
           sources = function(buf)
             local ret = require("conform").list_formatters(buf)
@@ -68,9 +68,9 @@ return {
         end
       end
       require("conform").setup(opts)
-      require("conform").formatters.black = {
-        prepend_args = { "--line-length", "80" },
-      }
+      -- require("conform").formatters.black = {
+      --   prepend_args = { "--line-length", "80" },
+      -- }
     end,
   },
 }
