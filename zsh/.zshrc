@@ -35,7 +35,7 @@ alias la="ls --color -la"
 #     Git + HG commands    #
 alias shows="hg show --stat"
 alias sshow="hg st -m"
-alias sl="hg fsl"
+alias sl="if is_git; then git sl; else hg fsl; fi"
 alias ssl="hg fssl"
 alias histe="hg histedit"
 alias hi="__fzf_hg"

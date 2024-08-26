@@ -9,6 +9,8 @@ zsh-users/zsh-completions kind:defer
 zsh-users/zsh-autosuggestions kind:defer
 zsh-users/zsh-syntax-highlighting kind:defer
 
+jimhester/per-directory-history
+
 getantidote/use-omz
 ohmyzsh/ohmyzsh path:plugins/git
 
