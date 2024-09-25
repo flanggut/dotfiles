@@ -60,4 +60,3 @@ zle -N __fzf_reverse_history_search
 bindkey "^k" __fzf_reverse_history_search
 autoload __fzf_hg
 zle -N __fzf_hg
-bindkey "^h" __fzf_hg

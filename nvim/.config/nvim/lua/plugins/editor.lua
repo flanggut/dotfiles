@@ -320,9 +320,12 @@ return {
   -- auto pairs
   {
     "windwp/nvim-autopairs",
-    event = "BufRead",
+    event = "InsertEnter",
     config = function()
       require("nvim-autopairs").setup()
+      local Rule = require("nvim-autopairs.rule")
+      local npairs = require("nvim-autopairs")
+      npairs.add_rule(Rule("```", "```", { "markdown", "vimwiki", "rmarkdown", "rmd", "pandoc", "hgcommit" }))
     end,
   },
 
@@ -405,6 +408,7 @@ return {
       keymaps = {
         ["h"] = "actions.parent",
         ["q"] = "actions.close",
+        ["<C-n>"] = "actions.close",
       },
       float = {
         -- Padding around the floating window

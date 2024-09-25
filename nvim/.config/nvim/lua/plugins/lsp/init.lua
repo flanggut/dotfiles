@@ -59,11 +59,11 @@ return {
       vim.lsp.handlers["window/showStatus"] = vim.lsp.with(on_show_message, {})
 
       -- setup autoformat
-      require("fl.lazy.util.format").register(require("fl.lazy.util.lsp").formatter())
+      require("fl.util.format").register(require("fl.util.lsp").formatter())
 
       -- setup on_attach
-      require("fl.lazy.util").on_attach(function(client, buffer)
-        require("fl.lazy.plugins.lsp.keymaps").on_attach(client, buffer)
+      require("fl.util").on_attach(function(client, buffer)
+        require("plugins.lsp.keymaps").on_attach(client, buffer)
         -- require("lsp_signature").on_attach({ bind = true, floating_window = false, hint_prefix = "  " }, buffer)
       end)
 

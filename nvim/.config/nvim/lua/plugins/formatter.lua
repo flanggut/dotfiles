@@ -16,8 +16,8 @@ return {
     init = function()
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
       -- Install the conform formatter on VeryLazy
-      require("fl.lazy.util").on_very_lazy(function()
-        require("fl.lazy.util.format").register({
+      require("fl.util").on_very_lazy(function()
+        require("fl.util.format").register({
           name = "conform.nvim",
           priority = 100,
           primary = true,
@@ -71,6 +71,7 @@ return {
       -- require("conform").formatters.black = {
       --   prepend_args = { "--line-length", "80" },
       -- }
+      require("fl.lazy.util.format").setup()
     end,
   },
 }

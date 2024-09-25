@@ -1,7 +1,7 @@
 local function load(name)
   local Util = require("lazy.core.util")
 
-  local mod = "fl.lazy.config." .. name
+  local mod = "config." .. name
   Util.try(function()
     require(mod)
   end, {

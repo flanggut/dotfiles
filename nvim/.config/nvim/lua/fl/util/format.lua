@@ -1,4 +1,4 @@
-local Util = require("fl.lazy.util")
+local Util = require("fl.util")
 
 ---@class lazyvim.util.format
 ---@overload fun(opts?: {force?:boolean})

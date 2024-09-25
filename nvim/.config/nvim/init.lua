@@ -1,4 +1,4 @@
-require("fl.lazy")
+require("config.lazy")
 
 -- some general helper functions
 P = function(v)

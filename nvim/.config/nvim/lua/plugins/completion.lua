@@ -36,7 +36,7 @@ return {
           fields = { "kind", "abbr", "menu" },
           format = function(_, vim_item)
             vim_item.menu = vim_item.kind
-            vim_item.kind = require("fl.lazy.config.symbols").icons.kinds[vim_item.kind]
+            vim_item.kind = require("config.symbols").icons.kinds[vim_item.kind]
             vim_item.abbr = vim_item.abbr:gsub("^%s+", "")
             vim_item.abbr = " " .. require("plenary.strings").truncate(vim_item.abbr, 60)
             return vim_item
