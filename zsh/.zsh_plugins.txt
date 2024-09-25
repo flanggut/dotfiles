@@ -3,17 +3,20 @@
 # needs to be first
 Aloxaf/fzf-tab
 
+# romkatv/powerlevel10k
 sindresorhus/pure
-
 zsh-users/zsh-completions kind:defer
 zsh-users/zsh-autosuggestions kind:defer
 zsh-users/zsh-syntax-highlighting kind:defer
 
-jimhester/per-directory-history
-
 getantidote/use-omz
 ohmyzsh/ohmyzsh path:plugins/git
+# Add macOS specific plugins
+# ohmyzsh/ohmyzsh path:plugins/brew conditional:is-macos
+# ohmyzsh/ohmyzsh path:plugins/macos conditional:is-macos
+
 
 $HOME/dotfiles/zsh/plugins/fzf
 $HOME/dotfiles/zsh/plugins/adb
 $HOME/fbconfig/zsh/plugins/dbu
+
