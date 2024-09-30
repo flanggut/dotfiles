@@ -3,6 +3,7 @@ return {
     "stevearc/conform.nvim",
     lazy = true,
     cmd = "ConformInfo",
+    event = "VeryLazy",
     keys = {
       {
         "<leader>iF",
@@ -71,7 +72,7 @@ return {
       -- require("conform").formatters.black = {
       --   prepend_args = { "--line-length", "80" },
       -- }
-      require("fl.lazy.util.format").setup()
+      require("fl.util.format").setup()
     end,
   },
 }
