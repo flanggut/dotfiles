@@ -9,13 +9,13 @@ local format_line_ending = {
 }
 
 local function buf_get_line_ending(bufnr)
-  return format_line_ending[vim.api.nvim_buf_get_option(bufnr, "fileformat")] or "\n"
+  return format_line_ending[vim.api.nvim_get_option_value("fileformat", { buf = bufnr })] or "\n"
 end
 
 local function buf_get_full_text(bufnr)
   local line_ending = buf_get_line_ending(bufnr)
   local text = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, true), line_ending)
-  if vim.api.nvim_buf_get_option(bufnr, "eol") then
+  if vim.api.nvim_get_option_value("eol", { buf = bufnr }) then
     text = text .. line_ending
   end
   return text
@@ -27,7 +27,7 @@ end
 
 local function get_tmux_socket()
   -- The socket path is the first value in the comma-separated list of $TMUX.
-  return vim.split(os.getenv("TMUX"), ",")[1]
+  return vim.split(os.getenv("TMUX") or "", ",")[1]
 end
 
 function M.tmux_execute(arg)
@@ -39,7 +39,7 @@ function M.tmux_execute(arg)
 end
 
 M.restart_all_lsp_servers = function()
-  for _, client in ipairs(vim.lsp.get_active_clients()) do
+  for _, client in ipairs(vim.lsp.get_clients()) do
     if client then
       client.stop()
       vim.defer_fn(function()
@@ -80,7 +80,7 @@ M.generate_compile_commands = function(all_files)
         vim.defer_fn(function()
           local uri = vim.uri_from_fname(filename)
           local bufnr = vim.uri_to_bufnr(uri)
-          for _, client in ipairs(vim.lsp.buf_get_clients(bufnr)) do
+          for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
             if client and client.name == "clangd" then
               client.notify("textDocument/didChange", {
                 textDocument = {
@@ -103,7 +103,7 @@ M.generate_compile_commands = function(all_files)
 end
 
 M.myfiles = function(opts)
-  local cwd = vim.fn.expand(vim.loop.cwd()) or "~"
+  local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
   if not string.find(cwd, "fbsource") then
     if string.find(cwd, "dotfiles") then
       require("telescope.builtin").find_files({ hidden = true })
@@ -111,13 +111,13 @@ M.myfiles = function(opts)
       require("telescope.builtin").find_files()
     end
   else
-    opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
+    opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.fn.getcwd()
 
     local myles_search = require("telescope.finders").new_job(function(prompt)
       if not prompt or prompt == "" or string.len(prompt) < 7 then
-        return vim.tbl_flatten({ "find", ".", "-not", "-path", "*/.*", "-type", "f", "-maxdepth", "1" })
+        return vim.iter({ "find", ".", "-not", "-path", "*/.*", "-type", "f", "-maxdepth", "1" }):flatten():totable()
       end
-      return vim.tbl_flatten({ "arc", "myles", "--list", "-n", "25", prompt })
+      return vim.iter({ "arc", "myles", "--list", "-n", "25", prompt }):flatten():totable()
     end, opts.entry_maker or require("telescope.make_entry").gen_from_file(opts), 25, opts.cwd)
     require("telescope.pickers")
       .new(opts, {
@@ -153,7 +153,7 @@ M.mygrep = function(opts)
     })
   end
 
-  if string.find(vim.fn.expand(vim.loop.cwd()), "fbsource") then
+  if string.find(vim.fn.expand(vim.fn.getcwd()), "fbsource") then
     local word = escape_chars(vim.fn.expand("<cword>"))
     local args = { "xbgs", "-is", word }
     local sorter = conf.generic_sorter(opts)
