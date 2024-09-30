@@ -7,6 +7,17 @@ return {
   -- lspconfig
   {
     "neovim/nvim-lspconfig",
+    version = false,
+    dependencies = {
+      {
+        "folke/lazydev.nvim",
+        ft = "lua",
+        opts = {},
+      },
+      "hrsh7th/cmp-nvim-lsp",
+      { "zeioth/garbage-day.nvim", event = "BufRead", opts = {} },
+    },
+    ---@class PluginLspOpts
     opts = {
       servers = {
         clangd = {
@@ -21,22 +32,10 @@ return {
       },
     },
   },
+  -- Keymap configurations.
   {
     "neovim/nvim-lspconfig",
-    version = false,
-    dependencies = {
-      {
-        "folke/lazydev.nvim",
-        ft = "lua",
-        opts = {},
-      },
-      "hrsh7th/cmp-nvim-lsp",
-      { "zeioth/garbage-day.nvim", event = "BufRead", opts = {} },
-    },
-    version = false,
-    ---@class PluginLspOpts
     opts = function()
-      -- Keymap configurations.
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       keys[#keys + 1] = { "<C-j>", "<cmd>lua vim.lsp.buf.definition()<CR>" }
       keys[#keys + 1] =
