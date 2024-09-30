@@ -1,9 +1,4 @@
 return {
-  -- icons
-  { "nvim-tree/nvim-web-devicons" },
-  -- ui components
-  { "MunifTanjim/nui.nvim", event = "VeryLazy" },
-
   -- better vim.notify
   {
     "rcarriga/nvim-notify",
@@ -27,26 +22,8 @@ return {
     },
   },
 
-  -- better vim.ui
-  {
-    "stevearc/dressing.nvim",
-    init = function()
-      ---@diagnostic disable-next-line: duplicate-set-field
-      vim.ui.select = function(...)
-        require("lazy").load({ plugins = { "dressing.nvim" } })
-        return vim.ui.select(...)
-      end
-      ---@diagnostic disable-next-line: duplicate-set-field
-      vim.ui.input = function(...)
-        require("lazy").load({ plugins = { "dressing.nvim" } })
-        return vim.ui.input(...)
-      end
-    end,
-  },
-
   {
     "mvllow/modes.nvim",
-    tag = "v0.2.0",
     config = function()
       require("modes").setup()
     end,
@@ -55,7 +32,6 @@ return {
   -- noice
   {
     "folke/noice.nvim",
-    event = "VeryLazy",
     opts = {
       cmdline = {
         view = "cmdline_popup",
@@ -68,70 +44,6 @@ return {
             height = "auto",
           },
         },
-        format = {
-          search_down = {
-            view = "cmdline",
-            opts = {
-              relative = "editor",
-              anchor = "NW",
-              position = {
-                row = "100%",
-                col = 0,
-              },
-              size = {
-                height = "auto",
-                width = "100%",
-              },
-            },
-          },
-          search_up = {
-            view = "cmdline",
-            opts = {
-              relative = "editor",
-              anchor = "NW",
-              position = {
-                row = "100%",
-                col = 0,
-              },
-              size = {
-                height = "auto",
-                width = "100%",
-              },
-            },
-          },
-        },
-      },
-      lsp = {
-        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-        override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
-        },
-        signature = {
-          enabled = false,
-        },
-      },
-      routes = {
-        {
-          filter = {
-            event = "msg_show",
-            any = {
-              { find = "%d+L, %d+B" },
-              { find = "; after #%d+" },
-              { find = "; before #%d+" },
-            },
-          },
-          view = "mini",
-        },
-        -- {
-        --   filter = { event = "msg_show", kind = "search_count" },
-        --   opts = { skip = true },
-        -- },
-      },
-      presets = {
-        long_message_to_split = true,
-        inc_rename = false,
       },
     },
     -- stylua: ignore
