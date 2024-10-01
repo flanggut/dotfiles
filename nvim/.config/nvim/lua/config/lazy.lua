@@ -20,19 +20,12 @@ require("lazy").setup({
     { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = { colorscheme = "rose-pine" } },
     -- import/override with your plugins
     { import = "plugins" },
+    -- vscode extras
+    { import = "lazyvim.plugins.extras.vscode" },
   },
   defaults = {
     lazy = true,
     version = "*", -- try installing the latest stable version for plugins that support semver
-    -- only enable certain plugins for vscode
-    cond = vim.g.vscode and function(plugin)
-      local p = plugin[1]
-      return p == "nvim-treesitter/nvim-treesitter"
-        or p == "numToStr/Comment.nvim"
-        or p == "folke/flash.nvim"
-        or p == "karb94/neoscroll.nvim"
-        or p == "karb94/neoscroll.nvim"
-    end or nil,
   },
   install = {
     -- install missing plugins on startup. This doesn't increase startup time.

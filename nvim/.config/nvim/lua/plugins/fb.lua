@@ -1,4 +1,4 @@
-if string.find(vim.fn.expand(vim.loop.cwd() or ""), "fbsource", 0) then
+if string.find(vim.fn.expand(vim.fn.getcwd() or ""), "fbsource", 0) then
   return {
     dir = "~/fbsource/fbcode/editor_support/nvim/",
     name = "meta.nvim",
