@@ -5,9 +5,9 @@ return {
     dependencies = {
       "nvim-lua/popup.nvim",
       "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope-fzf-native.nvim",
       "nvim-telescope/telescope-symbols.nvim",
       "nvim-telescope/telescope-z.nvim",
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
     cmd = "Telescope",
     keys = {
@@ -114,7 +114,7 @@ return {
                 cwd = vim.fn.expand(opts.cwd)
               end
             else
-              cwd = vim.loop.cwd()
+              cwd = vim.fn.getcwd()
             end
             local relative = Path:new(path):make_relative(cwd)
             relative = strings.truncate(relative, #relative - #tail + 1)
@@ -146,10 +146,5 @@ return {
       require("telescope").load_extension("fzf")
       require("telescope").load_extension("notify")
     end,
-  },
-  -- fzf native
-  {
-    "nvim-telescope/telescope-fzf-native.nvim",
-    build = "make",
   },
 }

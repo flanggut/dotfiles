@@ -134,22 +134,6 @@ return {
   -- surround
   {
     "echasnovski/mini.surround",
-    keys = function(_, keys)
-      -- Populate the keys based on the user's options
-      local plugin = require("lazy.core.config").spec.plugins["mini.surround"]
-      local opts = require("lazy.core.plugin").values(plugin, "opts", false)
-      local mappings = {
-        { opts.mappings.add, desc = "Add surrounding", mode = { "n", "v" } },
-        { opts.mappings.delete, desc = "Delete surrounding" },
-        { opts.mappings.find, desc = "Find right surrounding" },
-        { opts.mappings.find_left, desc = "Find left surrounding" },
-        { opts.mappings.highlight, desc = "Highlight surrounding" },
-        { opts.mappings.replace, desc = "Replace surrounding" },
-        { opts.mappings.update_n_lines, desc = "Update `MiniSurround.config.n_lines`" },
-      }
-      ---@diagnostic disable-next-line: missing-parameter
-      return vim.list_extend(mappings, keys)
-    end,
     opts = {
       mappings = {
         add = "gsa", -- Add surrounding in Normal and Visual modes
@@ -161,46 +145,18 @@ return {
         update_n_lines = "gsn", -- Update `n_lines`
       },
     },
-    config = function(_, opts)
-      -- use gz mappings instead of s to prevent conflict with leap
-      require("mini.surround").setup(opts)
-    end,
   },
 
   -- search/replace in multiple files
-  {
-    "windwp/nvim-spectre",
-    -- stylua: ignore
-    keys = {
-      { "<leader>spe", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
-    },
-  },
   {
     "MagicDuck/grug-far.nvim",
     keys = {
       {
         "<leader>gu",
         function()
-          require("grug-far").grug_far({ prefills = { search = vim.fn.expand("<cword>") } })
+          require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
         end,
         desc = "Replace in files (grug-far)",
-      },
-    },
-    config = function()
-      require("grug-far").setup({})
-    end,
-  },
-
-  -- search/replace treesitter structures
-  {
-    "cshuaimin/ssr.nvim",
-    keys = {
-      {
-        "<leader>ssr",
-        function()
-          require("ssr").open()
-        end,
-        desc = "Structural Search/Replace",
       },
     },
   },
@@ -323,30 +279,6 @@ return {
     cmd = "Linediff",
   },
 
-  -- nnn
-  -- {
-  --   "mcchrish/nnn.vim",
-  --   config = function()
-  --     require("nnn").setup({
-  --       command = "nnn -o -A",
-  --       set_default_mappings = 0,
-  --       replace_netrw = 1,
-  --       layout = { window = { width = 0.6, height = 0.7, xoffset = 0.95, highlight = "Debug" } },
-  --     })
-  --   end,
-  --   keys = {
-  --     {
-  --       "<c-n>",
-  --       function()
-  --         ---@diagnostic disable-next-line: missing-parameter
-  --         local path = vim.fn.expand("%:p")
-  --         local nnn_command = path == "" and "NnnPicker" or ("NnnPicker" .. path)
-  --         vim.api.nvim_command(nnn_command)
-  --       end,
-  --     },
-  --   },
-  -- },
-
   -- file explorer
   {
     "stevearc/oil.nvim",
@@ -392,18 +324,6 @@ return {
     "mhinz/vim-signify",
     keys = {
       { "<leader>is", "<cmd>SignifyEnable<CR>", desc = "Enable Signify" },
-    },
-  },
-
-  {
-    "hedyhli/outline.nvim",
-    lazy = true,
-    cmd = { "Outline", "OutlineOpen" },
-    keys = {
-      { "<leader>tt", "<cmd>Outline<CR>", desc = "Toggle outline" },
-    },
-    opts = {
-      -- Your setup opts here
     },
   },
 

@@ -9,11 +9,6 @@ return {
     "neovim/nvim-lspconfig",
     version = false,
     dependencies = {
-      {
-        "folke/lazydev.nvim",
-        ft = "lua",
-        opts = {},
-      },
       "hrsh7th/cmp-nvim-lsp",
       { "zeioth/garbage-day.nvim", event = "BufRead", opts = {} },
     },
