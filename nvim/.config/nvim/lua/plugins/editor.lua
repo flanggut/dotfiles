@@ -281,17 +281,38 @@ return {
 
   -- file explorer
   {
-    "stevearc/oil.nvim",
-    cmd = "Oil",
+    "echasnovski/mini.files",
     keys = {
       {
         "<C-n>",
         function()
-          require("oil").open_float()
+          if not MiniFiles.close() then
+            MiniFiles.open(vim.api.nvim_buf_get_name(0))
+          end
         end,
-        desc = "Explorer Oil (cwd)",
+        desc = "Mini Files (cwd)",
       },
     },
+    config = function()
+      require("mini.files").setup({
+        mappings = {
+          go_in_plus = "<CR>",
+        },
+      })
+    end,
+  },
+  {
+    "stevearc/oil.nvim",
+    cmd = "Oil",
+    -- keys = {
+    --   {
+    --     "<C-n>",
+    --     function()
+    --       require("oil").open_float()
+    --     end,
+    --     desc = "Explorer Oil (cwd)",
+    --   },
+    -- },
     opts = {
       view_options = {
         -- Show files and directories that start with "."

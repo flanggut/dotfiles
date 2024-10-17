@@ -143,7 +143,7 @@ return {
           lualine_a = { os_indicator, "mode" },
           lualine_b = {
             { lsp_names },
-            { "diagnostics", symbols = require("config.symbols").icons.diagnostics },
+            { "diagnostics", symbols = LazyVim.config.icons.diagnostics },
           },
           lualine_c = {
             { "filename", padding = { left = 1, right = 1 } },

@@ -5,9 +5,9 @@ vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = t
 -- remove highlight from search
 vim.keymap.set("n", "<esc><esc>", "<cmd>nohlsearch<CR>")
 
-vim.notify("LOADING KEYMAPS")
 -- toggle two most recent files
 vim.keymap.set("n", "<leader>.", "<c-6>")
+vim.keymap.set("n", "<leader>l", "<c-6>")
 
 -- goto line start/end
 vim.keymap.set("n", "H", "^")
