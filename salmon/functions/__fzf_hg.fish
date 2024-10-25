@@ -12,7 +12,7 @@ function __fzf_hg
 
     # New version: also search for commit message
     #
-    set FZF_HG "hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog && cat ~/.cache/fzf_hg_smartlog | sed -e 's/^[\|\/\ ╷│├╯╭─╯]*//' | sed -e 's/[0-9]*:[0-9]*//' | sed -e 's/at\ *//' | sed -e 's/D[0-9]\{7,\}//' | egrep -A 1 '(^(o|\@)\ )' | sed '/^--/d' | paste - - | cut -c 4- | sed -e 's/flanggut//' | sed -e 's/[[:blank:]]\{1,\}/ /g' >~/.cache/fzf_hg_list"
+    set FZF_HG "hg sl --color always 2>/dev/null > ~/.cache/fzf_hg_smartlog && cat ~/.cache/fzf_hg_smartlog | sed -e 's/^[\|\/\ ╷│├╯╭─╯]*//' | sed -e 's/[0-9]*:[0-9]*//' | sed -e 's/at\ *//' | sed -e 's/D[0-9]\{7,\}//' | grep -E -A 1 '(^(o|\@)\ )' | sed '/^--/d' | paste - - | cut -c 4- | sed -e 's/flanggut//' | sed -e 's/[[:blank:]]\{1,\}/ /g' >~/.cache/fzf_hg_list"
     eval $FZF_HG
     FZF_DEFAULT_COMMAND="cat ~/.cache/fzf_hg_list" fzf \
         --ansi --no-sort --reverse --preview-window right:60% \
