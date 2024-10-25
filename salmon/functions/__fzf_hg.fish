@@ -22,13 +22,13 @@ function __fzf_hg
         --bind "ctrl-u:execute(hg up (echo {} | cut -c -9))+become(__fzf_hg)" \
         --bind "ctrl-g:execute(hg graft (echo {} | cut -c -9))+become(__fzf_hg)" \
         --bind "ctrl-h:execute(hg rebase -s (echo {} | cut -c -9) -d .)+become(__fzf_hg)" \
-        --bind "ctrl-p:execute(hg rebase -s (echo {} | cut -c -9) -d (pbpaste))+become(__fzf_hg)" \
+        --bind "ctrl-p:execute(hg rebase -s (echo {} | cut -c -9) -d (cat ~/.cache/hg_hash))+become(__fzf_hg)" \
         --bind "ctrl-r:execute(hg rebase -s (echo {} | cut -c -9) -d stable)+become(__fzf_hg)" \
         --bind "ctrl-s:execute(hg show --color always (echo {} | cut -c -9) | less -R)" \
         --bind "ctrl-n:execute(jf s -n -r (echo {} | cut -c -9))+execute(hg show --stat (echo {} | cut -c -9))+abort" \
-        --bind "ctrl-t:execute(hg rebase -s (pbpaste) -d (echo {} | cut -c -9))+become(__fzf_hg)" \
+        --bind "ctrl-t:execute(hg rebase -s (cat ~/.cache/hg_hash) -d (echo {} | cut -c -9))+become(__fzf_hg)" \
         --bind "ctrl-o:execute(hg show --stat (echo {} | cut -c -9) | grep https | sed 's/.*https/https/' | xargs open)+clear-query" \
-        --bind "ctrl-y:execute-silent(printf (echo {} | cut -c -9) | pbcopy)+clear-query"
+        --bind "ctrl-y:execute-silent(printf (echo {} | cut -c -9) | tee ~/.cache/hg_hash)+clear-query"
 
     # Reprint the command line
     # commandline ""
