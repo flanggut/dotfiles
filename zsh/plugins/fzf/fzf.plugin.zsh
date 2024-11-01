@@ -41,7 +41,7 @@ function __fzf_hg() {
         --bind 'ctrl-u:execute(hg up $(echo {} | cut -c -10))+become(eval $SELF)' \
         --bind 'ctrl-g:execute(hg graft $(echo {} | cut -c -10))+become(eval $SELF)' \
         --bind 'ctrl-h:execute(hg rebase -s $(echo {} | cut -c -10) -d .)+become(eval $SELF)' \
-        --bind 'ctrl-p:execute(hg rebase -s $(echo {} | cut -c -10) -d $(cat ~/cache/hg_hash))+become(eval $SELF)' \
+        --bind 'ctrl-p:execute(hg rebase -s $(echo {} | cut -c -10) -d $(cat ~/.cache/hg_hash))+become(eval $SELF)' \
         --bind 'ctrl-r:execute(hg rebase -s $(echo {} | cut -c -10) -d stable)+become(eval $SELF)' \
         --bind 'ctrl-s:execute(hg show --color always $(echo {} | cut -c -10) | less -R)' \
         --bind 'ctrl-n:execute(jf s -n -r $(echo {} | cut -c -10))+execute(hg show --stat $(echo {} | cut -c -10))+abort' \
