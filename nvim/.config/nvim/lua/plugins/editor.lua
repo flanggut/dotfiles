@@ -295,45 +295,6 @@ return {
       })
     end,
   },
-  {
-    "stevearc/oil.nvim",
-    cmd = "Oil",
-    -- keys = {
-    --   {
-    --     "<C-n>",
-    --     function()
-    --       require("oil").open_float()
-    --     end,
-    --     desc = "Explorer Oil (cwd)",
-    --   },
-    -- },
-    opts = {
-      view_options = {
-        -- Show files and directories that start with "."
-        show_hidden = true,
-      },
-      columns = {
-        "icon",
-        -- "permissions",
-        "size",
-        -- "mtime",
-      },
-      keymaps = {
-        ["h"] = "actions.parent",
-        ["q"] = "actions.close",
-        ["<C-n>"] = "actions.close",
-      },
-      float = {
-        -- Padding around the floating window
-        padding = 2,
-        max_width = 100,
-        max_height = 50,
-        border = "rounded",
-      },
-    },
-    -- Optional dependencies
-    dependencies = { { "echasnovski/mini.icons", opts = {} } },
-  },
 
   {
     "mhinz/vim-signify",
