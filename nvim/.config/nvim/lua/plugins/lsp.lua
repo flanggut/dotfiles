@@ -9,11 +9,13 @@ return {
     "neovim/nvim-lspconfig",
     version = false,
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
+      -- "hrsh7th/cmp-nvim-lsp",
+      "saghen/blink.cmp",
       { "zeioth/garbage-day.nvim", event = "BufRead", opts = {} },
     },
     ---@class PluginLspOpts
     opts = {
+      -- capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities()),
       servers = {
         clangd = {
           cmd = {

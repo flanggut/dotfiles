@@ -11,6 +11,8 @@ return {
       local wk = require("which-key")
       wk.setup(opts)
       wk.add({
+        { "<c-/>", "<cmd>lua Snacks.terminal()<CR>", desc = "🦊 Toggle Terminal" },
+        --
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
           "<leader>cD",
@@ -36,20 +38,12 @@ return {
           desc = "Open in browser",
         },
         { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
+        { "<leader>un", "<cmd>lua Snacks.notifier.hide()<CR>", desc = "🦊 Hide all notifications" },
+        --
         { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
         { "<leader><leader>o", "<cmd>Trouble diagnostics toggle<CR>", desc = "Toggle Trouble" },
         { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", desc = "Runner" },
         { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>", desc = "Reload snippets" },
-      })
-    end,
-  },
-
-  {
-    "psjay/buffer-closer.nvim",
-    event = "BufRead",
-    config = function()
-      require("buffer-closer").setup({
-        close_key = "<leader>q",
       })
     end,
   },
