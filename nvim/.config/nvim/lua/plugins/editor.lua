@@ -11,8 +11,7 @@ return {
       local wk = require("which-key")
       wk.setup(opts)
       wk.add({
-        { "<c-/>", "<cmd>lua Snacks.terminal()<CR>", desc = "🦊 Toggle Terminal" },
-        --
+        { "<leader>q", "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
           "<leader>cD",
@@ -38,7 +37,6 @@ return {
           desc = "Open in browser",
         },
         { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
-        { "<leader>un", "<cmd>lua Snacks.notifier.hide()<CR>", desc = "🦊 Hide all notifications" },
         --
         { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
         { "<leader><leader>o", "<cmd>Trouble diagnostics toggle<CR>", desc = "Toggle Trouble" },
