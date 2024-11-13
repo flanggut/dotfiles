@@ -53,7 +53,6 @@ M.compile_commands_running = {}
 M.generate_compile_commands = function(all_files)
   local Job = require("plenary.job")
   local Path = require("plenary.path")
-  local notify = require("notify")
   local filename = vim.fn.expand("%:p")
   local tail = "all files"
   local args = {}
@@ -68,7 +67,7 @@ M.generate_compile_commands = function(all_files)
     cwd = "~/fbsource",
     on_start = function()
       M.compile_commands_running[filename] = true
-      notify("Generating compile commands for " .. tail, "info", {
+      vim.notify("Generating compile commands for " .. tail, vim.log.levels.INFO, {
         keep = function()
           return M.compile_commands_running[filename]
         end,
@@ -95,7 +94,7 @@ M.generate_compile_commands = function(all_files)
           end
         end, 5000)
       else
-        notify("Compile commands error. \n" .. table.concat(j:stderr_result(), "\n"), "error")
+        vim.notify("Compile commands error. \n" .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
       end
     end,
     enable_recording = true,
@@ -179,8 +178,8 @@ M.open_in_browser = function()
   local tail = filename:gsub("^.*fbsource", "")
   local line = vim.api.nvim_win_get_cursor(0)[1]
   local url = "https://www.internalfb.com/code/fbsource/[master]" .. tail .. "?lines=" .. tostring(line)
-  require("notify")("Opening in browser: " .. tail, "info")
-  require("notify")(url, "info")
+  vim.notify("Opening in browser: " .. tail, vim.log.levels.INFO)
+  vim.notify(url, vim.log.levels.INFO)
   require("plenary.job")
     :new({
       command = "open",
@@ -195,7 +194,7 @@ M.tmux_prev2 = function()
     local command = "send -t -1 C-c"
     M.tmux_execute(command)
     command = "send -t -1 C-p C-p Enter"
-    require("notify")("tmux " .. command, "info")
+    vim.notify("tmux " .. command, vim.log.levels.INFO)
     M.tmux_execute(command)
     return
   end
@@ -207,14 +206,14 @@ M.file_runner = function()
     local command = "send -t -1 C-c"
     M.tmux_execute(command)
     command = "send -t -1 C-p Enter"
-    require("notify")("tmux " .. command, "info")
+    vim.notify("tmux " .. command, vim.log.levels.INFO)
     M.tmux_execute(command)
     return
   end
 
   local file = vim.api.nvim_buf_get_name(0)
 
-  require("notify")("Running python script: " .. file, "info")
+  vim.notify("Running python script: " .. file, vim.log.levels.INFO)
   local file_runner_term = Terminal:new({ cmd = 'fc -p && python3 "' .. file .. '"', hidden = true })
   file_runner_term:open()
 end
