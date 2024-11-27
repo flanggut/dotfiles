@@ -15,6 +15,7 @@ return {
     },
     ---@class PluginLspOpts
     opts = {
+      inlay_hints = { enabled = false },
       -- capabilities = require("blink.cmp").get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities()),
       servers = {
         clangd = {

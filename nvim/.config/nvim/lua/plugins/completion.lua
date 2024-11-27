@@ -6,13 +6,16 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
+      ghost_text = {
+        enabled = false,
+      },
       -- 'default' for mappings similar to built-in completion
       -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
       -- see the "default configuration" section below for full documentation on how to define
       -- your own keymap. when defining your own, no keybinds will be assigned automatically.
       keymap = {
         ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-        ["<C-e>"] = { "hide" },
+        ["<C-f>"] = { "hide" },
         ["<CR>"] = {
           function(cmp)
             if cmp.windows.autocomplete.win:is_open() then

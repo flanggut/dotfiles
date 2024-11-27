@@ -11,7 +11,9 @@ return {
       local wk = require("which-key")
       wk.setup(opts)
       wk.add({
+        { "<c-s>", "<cmd>lua Snacks.dashboard()<cr>", desc = "Dashboard" },
         { "<leader>q", "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
+        { "<leader>sN", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
           "<leader>cD",
@@ -342,6 +344,14 @@ return {
       require("gen").prompts["Generate_Code"] = {
         prompt = "Generate code for the following problem: $input. Only ouput the result in format ```$filetype\n...\n```",
       }
+    end,
+  },
+  -- CSV file support
+  {
+    "hat0uma/csvview.nvim",
+    ft = { "csv" },
+    config = function()
+      require("csvview").setup()
     end,
   },
 }
