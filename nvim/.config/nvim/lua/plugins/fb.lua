@@ -6,7 +6,7 @@ if string.find(vim.fn.expand(vim.fn.getcwd() or ""), "fbsource", 0) then
     event = "BufRead",
     keys = {
       {
-        "<c-i>",
+        "<c-f>",
         mode = { "i" },
         function()
           vim.notify("MM accept", vim.log.levels.INFO)
