@@ -42,7 +42,13 @@ return {
       keys[#keys + 1] = {
         "<leader>e",
         function()
-          vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+          -- Goto error if exists, else warning
+          local errors = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+          if #errors > 0 then
+            vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+          else
+            vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+          end
         end,
       }
       keys[#keys + 1] = { "<leader>E", vim.diagnostic.open_float }

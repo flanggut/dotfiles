@@ -1,3 +1,6 @@
+local pattern = "[^:]+:(%d+):(%d+): (%w)(%d+)(.+)"
+local groups = { "lnum", "col", "severity", "code", "message" }
+
 return {
   {
     "stevearc/conform.nvim",
@@ -11,10 +14,11 @@ return {
   {
     "mfussenegger/nvim-lint",
     opts = {
+      events = { "BufWritePost", "BufReadPost", "InsertLeave" },
       linters_by_ft = {
         fish = { "fish" },
         json = { "jsonlint" },
-        -- python = { "fbflake8" },
+        python = { "fbflake8" },
         -- Use the "*" filetype to run linters on all filetypes.
         -- ['*'] = { 'global linter' },
         -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
@@ -32,6 +36,10 @@ return {
           append_fname = true,
           stream = "both",
           ignore_exitcode = true,
+          parser = require("lint.parser").from_pattern(pattern, groups, { ["E"] = vim.diagnostic.severity.ERROR }, {
+            ["source"] = "flake8",
+            ["severity"] = vim.diagnostic.severity.WARN,
+          }),
         },
         --     -- -- Example of using selene only when a selene.toml file is present
         --     -- selene = {

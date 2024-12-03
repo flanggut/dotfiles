@@ -11,16 +11,16 @@ return {
       local wk = require("which-key")
       wk.setup(opts)
       wk.add({
-        { "<c-s>",      "<cmd>lua Snacks.dashboard()<cr>",                            desc = "Dashboard" },
-        { "<leader>q",  "<cmd>lua Snacks.bufdelete()<CR>",                            desc = "Delete buffer" },
-        { "<leader>sN", "<cmd>lua Snacks.notifier.show_history()<CR>",                desc = "Notifier History" },
+        { "<c-s>", "<cmd>lua Snacks.dashboard()<cr>", desc = "Dashboard" },
+        { "<leader>q", "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
+        { "<leader>sN", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
           "<leader>cD",
           "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>",
           desc = "Compile commands with deps",
         },
-        { "<leader>f",         "<cmd>LazyFormat<CR>",                                    desc = "Format" },
+        { "<leader>f", "<cmd>LazyFormat<CR>", desc = "Format" },
         {
           "<leader>F",
           function()
@@ -38,11 +38,12 @@ return {
           "<cmd>lua R('fl.functions').open_in_browser()<CR>",
           desc = "Open in browser",
         },
-        { "<leader>p",         "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
-        -- { "<leader><leader>l", "<cmd>LspRestart<CR>",                                    desc = "Restart LSP servers" },
-        { "<leader><leader>o", "<cmd>Trouble diagnostics toggle<CR>",                    desc = "Toggle Trouble" },
-        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>",  desc = "Runner" },
-        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>",                   desc = "Reload snippets" },
+        { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
+        --
+        { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
+        { "<leader><leader>e", "<cmd>Trouble diagnostics toggle<CR>", desc = "Toggle Trouble" },
+        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", desc = "Runner" },
+        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>", desc = "Reload snippets" },
       })
     end,
   },
@@ -129,12 +130,12 @@ return {
     "echasnovski/mini.surround",
     opts = {
       mappings = {
-        add = "gsa",            -- Add surrounding in Normal and Visual modes
-        delete = "gsd",         -- Delete surrounding
-        find = "gsf",           -- Find surrounding (to the right)
-        find_left = "gsF",      -- Find surrounding (to the left)
-        highlight = "gsh",      -- Highlight surrounding
-        replace = "gsr",        -- Replace surrounding
+        add = "gsa", -- Add surrounding in Normal and Visual modes
+        delete = "gsd", -- Delete surrounding
+        find = "gsf", -- Find surrounding (to the right)
+        find_left = "gsF", -- Find surrounding (to the left)
+        highlight = "gsh", -- Highlight surrounding
+        replace = "gsr", -- Replace surrounding
         update_n_lines = "gsn", -- Update `n_lines`
       },
     },
