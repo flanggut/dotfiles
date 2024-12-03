@@ -11,16 +11,16 @@ return {
       local wk = require("which-key")
       wk.setup(opts)
       wk.add({
-        { "<c-s>", "<cmd>lua Snacks.dashboard()<cr>", desc = "Dashboard" },
-        { "<leader>q", "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
-        { "<leader>sN", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
+        { "<c-s>",      "<cmd>lua Snacks.dashboard()<cr>",                            desc = "Dashboard" },
+        { "<leader>q",  "<cmd>lua Snacks.bufdelete()<CR>",                            desc = "Delete buffer" },
+        { "<leader>sN", "<cmd>lua Snacks.notifier.show_history()<CR>",                desc = "Notifier History" },
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
           "<leader>cD",
           "<cmd>lua R('fl.functions').generate_compile_commands(true)<CR>",
           desc = "Compile commands with deps",
         },
-        { "<leader>f", "<cmd>LazyFormat<CR>", desc = "Format" },
+        { "<leader>f",         "<cmd>LazyFormat<CR>",                                    desc = "Format" },
         {
           "<leader>F",
           function()
@@ -38,12 +38,11 @@ return {
           "<cmd>lua R('fl.functions').open_in_browser()<CR>",
           desc = "Open in browser",
         },
-        { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
-        --
-        { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
-        { "<leader><leader>o", "<cmd>Trouble diagnostics toggle<CR>", desc = "Toggle Trouble" },
-        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", desc = "Runner" },
-        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>", desc = "Reload snippets" },
+        { "<leader>p",         "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
+        -- { "<leader><leader>l", "<cmd>LspRestart<CR>",                                    desc = "Restart LSP servers" },
+        { "<leader><leader>o", "<cmd>Trouble diagnostics toggle<CR>",                    desc = "Toggle Trouble" },
+        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>",  desc = "Runner" },
+        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>",                   desc = "Reload snippets" },
       })
     end,
   },
@@ -130,12 +129,12 @@ return {
     "echasnovski/mini.surround",
     opts = {
       mappings = {
-        add = "gsa", -- Add surrounding in Normal and Visual modes
-        delete = "gsd", -- Delete surrounding
-        find = "gsf", -- Find surrounding (to the right)
-        find_left = "gsF", -- Find surrounding (to the left)
-        highlight = "gsh", -- Highlight surrounding
-        replace = "gsr", -- Replace surrounding
+        add = "gsa",            -- Add surrounding in Normal and Visual modes
+        delete = "gsd",         -- Delete surrounding
+        find = "gsf",           -- Find surrounding (to the right)
+        find_left = "gsF",      -- Find surrounding (to the left)
+        highlight = "gsh",      -- Highlight surrounding
+        replace = "gsr",        -- Replace surrounding
         update_n_lines = "gsn", -- Update `n_lines`
       },
     },
@@ -160,10 +159,10 @@ return {
     "aserowy/tmux.nvim",
     -- stylua: ignore
     keys = {
-      { "<M-h>", function() require("tmux").move_left() end, desc = "Tmux Left" },
+      { "<M-h>", function() require("tmux").move_left() end,   desc = "Tmux Left" },
       { "<M-j>", function() require("tmux").move_bottom() end, desc = "Tmux Down" },
-      { "<M-k>", function() require("tmux").move_top() end, desc = "Tmux Up" },
-      { "<M-l>", function() require("tmux").move_right() end, desc = "Tmux Right" },
+      { "<M-k>", function() require("tmux").move_top() end,    desc = "Tmux Up" },
+      { "<M-l>", function() require("tmux").move_right() end,  desc = "Tmux Right" },
     },
     config = function()
       return require("tmux").setup({
@@ -177,13 +176,6 @@ return {
         },
       })
     end,
-  },
-
-  -- terminal
-  {
-    "akinsho/toggleterm.nvim",
-    version = "*",
-    opts = {},
   },
 
   -- persistence
@@ -303,49 +295,6 @@ return {
     },
   },
 
-  {
-    "David-Kunz/gen.nvim",
-    cmd = { "Gen" },
-    keys = {
-      { "<leader>og", "<cmd>Gen Generate_Code<cr>" },
-    },
-    config = function()
-      local opts = {
-        model = "llama3.1:8b", -- The default model to use.
-        host = "localhost", -- The host running the Ollama service.
-        port = "11434", -- The port on which the Ollama service is listening.
-        quit_map = "q", -- set keymap for close the response window
-        retry_map = "<c-r>", -- set keymap to re-send the current prompt
-        init = function(_)
-          pcall(io.popen, "ollama serve > /dev/null 2>&1 &")
-        end,
-        -- Function to initialize Ollama
-        command = function(options)
-          ---@diagnostic disable-next-line: unused-local
-          local body = { model = options.model, stream = true }
-          return "curl --silent --no-buffer -X POST http://"
-            .. options.host
-            .. ":"
-            .. options.port
-            .. "/api/chat -d $body"
-        end,
-        -- The command for the Ollama service. You can use placeholders $prompt, $model and $body (shellescaped).
-        -- This can also be a command string.
-        -- The executed command must return a JSON object with { response, context }
-        -- (context property is optional).
-        -- list_models = '<omitted lua function>', -- Retrieves a list of model names
-        display_mode = "float", -- The display mode. Can be "float" or "split" or "horizontal-split".
-        show_prompt = false, -- Shows the prompt submitted to Ollama.
-        show_model = false, -- Displays which model you are using at the beginning of your chat session.
-        no_auto_close = false, -- Never closes the window automatically.
-        debug = false, -- Prints errors and the command which is run.
-      }
-      require("gen").setup(opts)
-      require("gen").prompts["Generate_Code"] = {
-        prompt = "Generate code for the following problem: $input. Only ouput the result in format ```$filetype\n...\n```",
-      }
-    end,
-  },
   -- CSV file support
   {
     "hat0uma/csvview.nvim",

@@ -1,7 +1,5 @@
 local M = {}
 
-local Terminal = require("toggleterm.terminal").Terminal
-
 local format_line_ending = {
   ["unix"] = "\n",
   ["dos"] = "\r\n",
@@ -119,13 +117,13 @@ M.myfiles = function(opts)
       return vim.iter({ "arc", "myles", "--list", "-n", "25", prompt }):flatten():totable()
     end, opts.entry_maker or require("telescope.make_entry").gen_from_file(opts), 25, opts.cwd)
     require("telescope.pickers")
-      .new(opts, {
-        prompt_title = "Myles",
-        finder = myles_search,
-        previewer = false,
-        sorter = false,
-      })
-      :find()
+        .new(opts, {
+          prompt_title = "Myles",
+          finder = myles_search,
+          previewer = false,
+          sorter = false,
+        })
+        :find()
   end
 end
 
@@ -163,13 +161,13 @@ M.mygrep = function(opts)
       sorter = conf.file_sorter(opts)
     end
     pickers
-      .new(opts, {
-        prompt_title = "Find Word (" .. word .. ")",
-        finder = finders.new_oneshot_job(args, opts),
-        previewer = false,
-        sorter = sorter,
-      })
-      :find()
+        .new(opts, {
+          prompt_title = "Find Word (" .. word .. ")",
+          finder = finders.new_oneshot_job(args, opts),
+          previewer = false,
+          sorter = sorter,
+        })
+        :find()
   end
 end
 
@@ -181,12 +179,12 @@ M.open_in_browser = function()
   vim.notify("Opening in browser: " .. tail, vim.log.levels.INFO)
   vim.notify(url, vim.log.levels.INFO)
   require("plenary.job")
-    :new({
-      command = "open",
-      args = { url },
-      cwd = "~/fbsource",
-    })
-    :start()
+      :new({
+        command = "open",
+        args = { url },
+        cwd = "~/fbsource",
+      })
+      :start()
 end
 
 M.tmux_prev2 = function()
@@ -211,11 +209,12 @@ M.file_runner = function()
     return
   end
 
-  local file = vim.api.nvim_buf_get_name(0)
-
-  vim.notify("Running python script: " .. file, vim.log.levels.INFO)
-  local file_runner_term = Terminal:new({ cmd = 'fc -p && python3 "' .. file .. '"', hidden = true })
-  file_runner_term:open()
+  if vim.bo.filetype == "python" then
+    local file = vim.api.nvim_buf_get_name(0)
+    require("lazy.util").float_cmd({ "python3", file })
+  else
+    vim.notify("No runner available.", vim.log.levels.WARN)
+  end
 end
 
 local parsers = require("nvim-treesitter.parsers")

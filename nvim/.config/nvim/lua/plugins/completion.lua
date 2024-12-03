@@ -1,47 +1,34 @@
 return {
   -- completion
-  { "hrsh7th/nvim-cmp", enabled = false },
   {
     "saghen/blink.cmp",
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
-      ghost_text = {
-        enabled = false,
+      ---@diagnostic disable-next-line: missing-fields
+      completion = {
+        trigger = {
+          -- List of trigger characters (on top of `show_on_blocked_trigger_characters`) that won't trigger
+          -- the completion window when the cursor comes after a trigger character when
+          -- entering insert mode/accepting an item
+          show_on_x_blocked_trigger_characters = { "'", '"', '(', '{', "," },
+        },
+        ghost_text = {
+          enabled = false,
+        },
       },
+
       -- 'default' for mappings similar to built-in completion
       -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
       -- see the "default configuration" section below for full documentation on how to define
       -- your own keymap. when defining your own, no keybinds will be assigned automatically.
       keymap = {
-        ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-        ["<C-f>"] = { "hide" },
-        ["<CR>"] = {
-          function(cmp)
-            if cmp.windows.autocomplete.win:is_open() then
-              return cmp.select_and_accept()
-            end
-          end,
-          "fallback",
-        },
-
+        ["<C-h>"] = { "show", "show_documentation", "hide_documentation" },
         ["<C-k>"] = { "select_prev", "fallback" },
         ["<C-j>"] = { "select_next", "fallback" },
-
         ["<C-p>"] = { "scroll_documentation_up", "fallback" },
         ["<C-n>"] = { "scroll_documentation_down", "fallback" },
-        ["<Tab>"] = {
-          function(cmp)
-            if cmp.is_in_snippet() then
-              return cmp.accept()
-            else
-              return cmp.select_and_accept()
-            end
-          end,
-          "snippet_forward",
-          "fallback",
-        },
-        ["<S-Tab>"] = { "snippet_backward", "fallback" },
+        ["<C-l>"] = { "snippet_forward", "fallback" },
       },
     },
   },
