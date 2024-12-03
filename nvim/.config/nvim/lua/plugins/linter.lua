@@ -29,9 +29,9 @@ return {
       --   ---@type table<string,table>
       linters = {
         fbflake8 = {
-          -- condition = function(ctx)
-          --   return vim.fs.find({ ".arcconfig" }, { path = ctx.filename, upward = true })[1]
-          -- end,
+          condition = function(ctx)
+            return vim.fs.find({ ".arcconfig" }, { path = ctx.filename, upward = true })[1]
+          end,
           cmd = "/usr/local/bin/flake8",
           append_fname = true,
           stream = "both",
@@ -41,14 +41,14 @@ return {
             ["severity"] = vim.diagnostic.severity.WARN,
           }),
         },
-        --     -- -- Example of using selene only when a selene.toml file is present
-        --     -- selene = {
-        --     --   -- `condition` is another LazyVim extension that allows you to
-        --     --   -- dynamically enable/disable linters based on the context.
-        --     --   condition = function(ctx)
-        --     --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
-        --     --   end,
-        --     -- },
+        -- -- Example of using selene only when a selene.toml file is present
+        -- selene = {
+        --   -- `condition` is another LazyVim extension that allows you to
+        --   -- dynamically enable/disable linters based on the context.
+        --   condition = function(ctx)
+        --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
+        --   end,
+        -- },
       },
     },
   },
