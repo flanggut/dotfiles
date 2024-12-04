@@ -30,7 +30,7 @@ return {
       linters = {
         fbflake8 = {
           condition = function(ctx)
-            return vim.fs.find({ ".arcconfig" }, { path = ctx.filename, upward = true })[1]
+            return vim.fs.find({ ".arcrc" }, { path = ctx.filename, upward = true })[1]
           end,
           cmd = "/usr/local/bin/flake8",
           append_fname = true,
