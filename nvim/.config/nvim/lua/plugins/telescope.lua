@@ -3,11 +3,7 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
-      "nvim-lua/popup.nvim",
-      "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-symbols.nvim",
-      "nvim-telescope/telescope-z.nvim",
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
     cmd = "Telescope",
     keys = {
@@ -45,8 +41,13 @@ return {
       { "<leader>st", "<cmd>lua require('telescope.builtin').treesitter()<cr>", "Treesitter" },
       { "<leader>ss", "<cmd>Telescope treesitter<cr>", "Treesitter" },
       {
-        "<leader>sv",
-        "<cmd>lua require('telescope.builtin').find_files({hidden=true, cwd='~/.local/share/nvim/site/pack/packer/'})<cr>",
+        "<leader>sP",
+        function()
+          require("telescope.builtin").find_files({
+            ---@diagnostic disable-next-line: param-type-mismatch
+            cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy"),
+          })
+        end,
         "Vim Plugins",
       },
       {
@@ -135,11 +136,6 @@ return {
             },
           },
         }),
-      },
-      extensions = {
-        quicknote = {
-          defaultScope = "CWD",
-        },
       },
     },
   },

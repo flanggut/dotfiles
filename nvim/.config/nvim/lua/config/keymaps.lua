@@ -59,6 +59,11 @@ vim.keymap.set("i", ".", ".<c-g>u", { noremap = true })
 vim.keymap.set("i", "(", "(<c-g>u", { noremap = true })
 vim.keymap.set("i", "<", "<<c-g>u", { noremap = true })
 
+-- execute lua
+vim.keymap.set("n", "<space><space>L", "<cmd>source %<CR>")
+vim.keymap.set("n", "<space>L", ":.lua<CR>")
+vim.keymap.set("v", "<space>L", ":lua<CR>")
+
 -- Unmap common typos
 vim.keymap.set("n", "q:", "<nop>", { noremap = true })
 vim.keymap.set("n", "Q", "<nop>", { noremap = true })
