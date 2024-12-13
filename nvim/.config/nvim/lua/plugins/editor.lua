@@ -286,6 +286,37 @@ return {
           go_in_plus = "<CR>",
         },
       })
+      -- Yank in register full path of entry under cursor
+      local yank_path = function()
+        local path = (MiniFiles.get_fs_entry() or {}).path
+        if path == nil then
+          return vim.notify("Cursor is not on valid entry")
+        end
+        vim.fn.setreg(vim.v.register, path)
+        MiniFiles.close()
+      end
+
+      -- Live grep in directory
+      local live_grep = function()
+        local path = (MiniFiles.get_fs_entry() or {}).path
+        if path == nil then
+          return vim.notify("Cursor is not on valid entry")
+        end
+        MiniFiles.close()
+        local dirname = vim.fs.dirname(path)
+        require("telescope.builtin").live_grep({
+          cwd = dirname,
+        })
+      end
+
+      vim.api.nvim_create_autocmd("User", {
+        callback = function(args)
+          local b = args.data.buf_id
+          vim.keymap.set("n", "<c-l>", live_grep, { buffer = b, desc = "Live Grep current path" })
+          vim.keymap.set("n", "gy", yank_path, { buffer = b, desc = "Yank path" })
+        end,
+        pattern = "MiniFilesBufferCreate",
+      })
     end,
   },
 
