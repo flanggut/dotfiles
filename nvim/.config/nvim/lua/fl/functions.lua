@@ -48,17 +48,18 @@ M.restart_all_lsp_servers = function()
 end
 
 M.compile_commands_running = {}
+---@param all_files boolean
 M.generate_compile_commands = function(all_files)
   local Job = require("plenary.job")
-  local Path = require("plenary.path")
-  local filename = vim.fn.expand("%:p")
+  local filename = vim.api.nvim_buf_get_name(0)
   local tail = "all files"
   local args = {}
   if not all_files and filename then
     args = { filename }
-    tail = string.match(filename, "[^" .. Path.path.sep .. "]*$")
+    tail = vim.fs.basename(filename)
   end
   filename = filename or "all"
+  ---@diagnostic disable-next-line: missing-fields
   Job:new({
     command = "commands_for_file.py",
     args = args,
@@ -117,13 +118,13 @@ M.myfiles = function(opts)
       return vim.iter({ "arc", "myles", "--list", "-n", "25", prompt }):flatten():totable()
     end, opts.entry_maker or require("telescope.make_entry").gen_from_file(opts), 25, opts.cwd)
     require("telescope.pickers")
-        .new(opts, {
-          prompt_title = "Myles",
-          finder = myles_search,
-          previewer = false,
-          sorter = false,
-        })
-        :find()
+      .new(opts, {
+        prompt_title = "Myles",
+        finder = myles_search,
+        previewer = false,
+        sorter = false,
+      })
+      :find()
   end
 end
 
@@ -161,13 +162,13 @@ M.mygrep = function(opts)
       sorter = conf.file_sorter(opts)
     end
     pickers
-        .new(opts, {
-          prompt_title = "Find Word (" .. word .. ")",
-          finder = finders.new_oneshot_job(args, opts),
-          previewer = false,
-          sorter = sorter,
-        })
-        :find()
+      .new(opts, {
+        prompt_title = "Find Word (" .. word .. ")",
+        finder = finders.new_oneshot_job(args, opts),
+        previewer = false,
+        sorter = sorter,
+      })
+      :find()
   end
 end
 
@@ -179,12 +180,12 @@ M.open_in_browser = function()
   vim.notify("Opening in browser: " .. tail, vim.log.levels.INFO)
   vim.notify(url, vim.log.levels.INFO)
   require("plenary.job")
-      :new({
-        command = "open",
-        args = { url },
-        cwd = "~/fbsource",
-      })
-      :start()
+    :new({
+      command = "open",
+      args = { url },
+      cwd = "~/fbsource",
+    })
+    :start()
 end
 
 M.tmux_prev2 = function()
