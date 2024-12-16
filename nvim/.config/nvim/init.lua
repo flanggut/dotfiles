@@ -1,6 +1,7 @@
+-- load global config
 require("config.lazy")
 
--- some general helper functions
+-- define some global helper functions
 P = function(v)
   print(vim.inspect(v))
   return v
