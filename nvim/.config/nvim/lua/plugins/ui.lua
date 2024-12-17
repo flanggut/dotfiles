@@ -22,6 +22,11 @@ return {
           },
         },
       },
+      scroll = {
+        animate = {
+          easing = "outCirc",
+        },
+      },
     },
   },
 
@@ -181,18 +186,6 @@ return {
             "fileformat",
           },
         },
-      })
-    end,
-  },
-
-  -- Smooth Scrolling
-  {
-    "karb94/neoscroll.nvim",
-    event = "BufRead",
-    config = function()
-      require("neoscroll").setup({
-        easing_function = "circular",
-        mappings = { "<C-u>", "<C-d>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
       })
     end,
   },
