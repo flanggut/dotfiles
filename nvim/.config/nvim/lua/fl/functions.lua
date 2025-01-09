@@ -37,29 +37,28 @@ local tmux_execute = function(arg)
 end
 
 M.fzfiles = function()
-  local config = require("fzf-lua.config")
   local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
   if string.find(cwd, "fbsource") then
     vim.notify("FzFiles: fbsource")
-    local entry_opts = {
-      file_icons = true,
-      color_icons = true,
-      formatter = "path.filename_first",
-    }
-    entry_opts = config.normalize_opts(entry_opts, "files") or {}
+    local fzf_lua = require("fzf-lua")
+    local opts = {}
+    opts.file_icons = true
+    opts.color_icons = true
+    opts.formatter = "path.filename_first"
+    opts.actions = fzf_lua.defaults.actions.files
+    opts.previewer = false
+    opts.fn_transform = function(x)
+      return fzf_lua.make_entry.file(x, opts)
+    end
+    opts.exec_empty_query = true
+    opts = require("fzf-lua.config").normalize_opts(opts, "files") or {}
 
     require("fzf-lua").fzf_live(function(query)
       if not query or query == "" or string.len(query) < 7 then
         return "find . -not -path '*/.*' -type f -maxdepth 1"
       end
       return "arc myles --list -n 25 " .. query
-    end, {
-      actions = require("fzf-lua").defaults.actions.files,
-      exec_empty_query = true,
-      fn_transform = function(x)
-        return require("fzf-lua").make_entry.file(x, entry_opts)
-      end,
-    })
+    end, opts)
     return
   end
   require("fzf-lua").files()
@@ -77,6 +76,7 @@ M.restart_all_lsp_servers = function()
 end
 
 M.compile_commands_running = {}
+
 ---@param all_files boolean
 M.generate_compile_commands = function(all_files)
   local Job = require("plenary.job")

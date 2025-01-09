@@ -10,13 +10,8 @@ return {
     keys = {
       { "<C-l>", "<cmd>FzfLua buffers formatter=path.filename_first<cr>", desc = "Buffers" },
       { "<C-p>", "<cmd>lua R('fl.functions').fzfiles()<cr>", "Files" },
-      {
-        "<C-k>",
-        function()
-          require("fzf-lua").lsp_document_symbols()
-        end,
-        "Goto Symbol",
-      },
+      { "<C-k>", "<cmd>FzfLua lsp_document_symbols<cr>", "Goto Symbol" },
+      { "<leader>sl", "<cmd>FzfLua oldfiles cwd_only=true formatter=path.filename_first<cr>", desc = "Local Files" },
       {
         "<leader>sP",
         function()
