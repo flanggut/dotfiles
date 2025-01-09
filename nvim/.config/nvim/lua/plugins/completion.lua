@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-fields
 return {
   -- completion
   {
@@ -5,13 +6,12 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
-      ---@diagnostic disable-next-line: missing-fields
       completion = {
         trigger = {
           -- List of trigger characters (on top of `show_on_blocked_trigger_characters`) that won't trigger
           -- the completion window when the cursor comes after a trigger character when
           -- entering insert mode/accepting an item
-          show_on_x_blocked_trigger_characters = { "'", '"', '(', '{', "," },
+          show_on_x_blocked_trigger_characters = { "'", '"', "(", "{", "," },
         },
         ghost_text = {
           enabled = false,

@@ -53,7 +53,7 @@ return {
       }
       keys[#keys + 1] = { "<leader>E", vim.diagnostic.open_float }
       keys[#keys + 1] = { "<leader>sa", vim.lsp.buf.code_action, has = "codeAction" }
-      keys[#keys + 1] = { "<leader>sr", require("telescope.builtin").lsp_references }
+      keys[#keys + 1] = { "<leader>sr", require("fzf-lua").lsp_references }
       keys[#keys + 1] = { "<leader>rn", vim.lsp.buf.rename, has = "rename" }
       keys[#keys + 1] = {
         "<leader>sy",

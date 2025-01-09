@@ -2,22 +2,27 @@ return {
   -- snacks
   {
     "folke/snacks.nvim",
+    keys = {
+      { "<c-s>", mode = { "n" }, "<cmd>lua Snacks.dashboard()<cr>", desc = "Dashboard" },
+      { "<leader>q", mode = { "n" }, "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
+      { "<leader>sN", mode = { "n" }, "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
+    },
     opts = {
       dashboard = {
         preset = {
           -- stylua: ignore
           ---@type snacks.dashboard.Item[]
           keys = {
-            { icon = " ", key = "f", desc = "Find File", action = ":lua require('fl.functions').myfiles({})" },
+            { icon = " ", key = "f", desc = "Find File", action = ":lua require('fl.functions').fzfiles()" },
             { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
             { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
-            { icon = " ", key = "l", desc = "Local Files", action = ":lua Snacks.dashboard.pick('oldfiles', {cwd_only = true})" },
-            { icon = " ", key = "m", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+            { icon = " ", key = "l", desc = "Local Files", action = ":FzfLua oldfiles cwd_only=true formatter=path.filename_first" },
+            { icon = " ", key = "m", desc = "Recent Files", action = ":FzfLua oldfiles formatter=path.filename_first" },
             { icon = " ", key = "s", desc = "Restore Session", section = "session" },
             { icon = "󰒲 ", key = "y", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "x", desc = "Lazy Extras", action = ":LazyExtras" },
             { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
-            { icon = "󰌑 ", key = "h", desc = "Hide Dashboard", action = ":e" },
+            { icon = "󰌑 ", key = "<c-s>", desc = "Hide Dashboard", action = ":e" },
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
         },

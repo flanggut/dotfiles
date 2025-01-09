@@ -11,9 +11,6 @@ return {
       local wk = require("which-key")
       wk.setup(opts)
       wk.add({
-        { "<c-s>", "<cmd>lua Snacks.dashboard()<cr>", desc = "Dashboard" },
-        { "<leader>q", "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
-        { "<leader>sN", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
           "<leader>cD",

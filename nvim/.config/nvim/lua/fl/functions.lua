@@ -19,7 +19,7 @@ local function buf_get_full_text(bufnr)
   return text
 end
 
-M.is_tmux = function()
+local is_tmux = function()
   return os.getenv("TMUX") ~= nil
 end
 
@@ -28,12 +28,41 @@ local function get_tmux_socket()
   return vim.split(os.getenv("TMUX") or "", ",")[1]
 end
 
-function M.tmux_execute(arg)
+local tmux_execute = function(arg)
   local t_cmd = string.format("tmux -S %s %s", get_tmux_socket(), arg)
   local handle = assert(io.popen(t_cmd), string.format("Tmux: Unable to execute > [%s]", t_cmd))
   local result = handle:read()
   handle:close()
   return result
+end
+
+M.fzfiles = function()
+  local config = require("fzf-lua.config")
+  local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
+  if string.find(cwd, "fbsource") then
+    vim.notify("FzFiles: fbsource")
+    local entry_opts = {
+      file_icons = true,
+      color_icons = true,
+      formatter = "path.filename_first",
+    }
+    entry_opts = config.normalize_opts(entry_opts, "files") or {}
+
+    require("fzf-lua").fzf_live(function(query)
+      if not query or query == "" or string.len(query) < 7 then
+        return "find . -not -path '*/.*' -type f -maxdepth 1"
+      end
+      return "arc myles --list -n 25 " .. query
+    end, {
+      actions = require("fzf-lua").defaults.actions.files,
+      exec_empty_query = true,
+      fn_transform = function(x)
+        return require("fzf-lua").make_entry.file(x, entry_opts)
+      end,
+    })
+    return
+  end
+  require("fzf-lua").files()
 end
 
 M.restart_all_lsp_servers = function()
@@ -100,77 +129,77 @@ M.generate_compile_commands = function(all_files)
   }):start()
 end
 
-M.myfiles = function(opts)
-  local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
-  if not string.find(cwd, "fbsource") then
-    if string.find(cwd, "dotfiles") then
-      require("telescope.builtin").find_files({ hidden = true })
-    else
-      require("telescope.builtin").find_files()
-    end
-  else
-    opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.fn.getcwd()
+-- M.myfiles = function(opts)
+--   local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
+--   if not string.find(cwd, "fbsource") then
+--     if string.find(cwd, "dotfiles") then
+--       require("telescope.builtin").find_files({ hidden = true })
+--     else
+--       require("telescope.builtin").find_files()
+--     end
+--   else
+--     opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.fn.getcwd()
+--
+--     local myles_search = require("telescope.finders").new_job(function(prompt)
+--       if not prompt or prompt == "" or string.len(prompt) < 7 then
+--         return vim.iter({ "find", ".", "-not", "-path", "*/.*", "-type", "f", "-maxdepth", "1" }):flatten():totable()
+--       end
+--       return vim.iter({ "arc", "myles", "--list", "-n", "25", prompt }):flatten():totable()
+--     end, opts.entry_maker or require("telescope.make_entry").gen_from_file(opts), 25, opts.cwd)
+--     require("telescope.pickers")
+--       .new(opts, {
+--         prompt_title = "Myles",
+--         finder = myles_search,
+--         previewer = false,
+--         sorter = false,
+--       })
+--       :find()
+--   end
+-- end
 
-    local myles_search = require("telescope.finders").new_job(function(prompt)
-      if not prompt or prompt == "" or string.len(prompt) < 7 then
-        return vim.iter({ "find", ".", "-not", "-path", "*/.*", "-type", "f", "-maxdepth", "1" }):flatten():totable()
-      end
-      return vim.iter({ "arc", "myles", "--list", "-n", "25", prompt }):flatten():totable()
-    end, opts.entry_maker or require("telescope.make_entry").gen_from_file(opts), 25, opts.cwd)
-    require("telescope.pickers")
-      .new(opts, {
-        prompt_title = "Myles",
-        finder = myles_search,
-        previewer = false,
-        sorter = false,
-      })
-      :find()
-  end
-end
-
-M.mygrep = function(opts)
-  local make_entry = require("telescope.make_entry")
-  local pickers = require("telescope.pickers")
-  local finders = require("telescope.finders")
-  local conf = require("telescope.config").values
-  local escape_chars = function(string)
-    return string.gsub(string, "[%(|%)|\\|%[|%]|%-|%{%}|%?|%+|%*|%^|%$]", {
-      ["\\"] = "\\\\",
-      ["-"] = "\\-",
-      ["("] = "\\(",
-      [")"] = "\\)",
-      ["["] = "\\[",
-      ["]"] = "\\]",
-      ["{"] = "\\{",
-      ["}"] = "\\}",
-      ["?"] = "\\?",
-      ["+"] = "\\+",
-      ["*"] = "\\*",
-      ["^"] = "\\^",
-      ["$"] = "\\$",
-    })
-  end
-
-  if string.find(vim.fn.expand(vim.fn.getcwd()), "fbsource") then
-    local word = escape_chars(vim.fn.expand("<cword>"))
-    local args = { "xbgs", "-is", word }
-    local sorter = conf.generic_sorter(opts)
-    opts.entry_maker = make_entry.gen_from_vimgrep(opts)
-    if opts.list_files_only then
-      opts.entry_maker = make_entry.gen_from_file(opts)
-      args = { "xbgs", "-isl", word }
-      sorter = conf.file_sorter(opts)
-    end
-    pickers
-      .new(opts, {
-        prompt_title = "Find Word (" .. word .. ")",
-        finder = finders.new_oneshot_job(args, opts),
-        previewer = false,
-        sorter = sorter,
-      })
-      :find()
-  end
-end
+-- M.mygrep = function(opts)
+--   local make_entry = require("telescope.make_entry")
+--   local pickers = require("telescope.pickers")
+--   local finders = require("telescope.finders")
+--   local conf = require("telescope.config").values
+--   local escape_chars = function(string)
+--     return string.gsub(string, "[%(|%)|\\|%[|%]|%-|%{%}|%?|%+|%*|%^|%$]", {
+--       ["\\"] = "\\\\",
+--       ["-"] = "\\-",
+--       ["("] = "\\(",
+--       [")"] = "\\)",
+--       ["["] = "\\[",
+--       ["]"] = "\\]",
+--       ["{"] = "\\{",
+--       ["}"] = "\\}",
+--       ["?"] = "\\?",
+--       ["+"] = "\\+",
+--       ["*"] = "\\*",
+--       ["^"] = "\\^",
+--       ["$"] = "\\$",
+--     })
+--   end
+--
+--   if string.find(vim.fn.expand(vim.fn.getcwd()), "fbsource") then
+--     local word = escape_chars(vim.fn.expand("<cword>"))
+--     local args = { "xbgs", "-is", word }
+--     local sorter = conf.generic_sorter(opts)
+--     opts.entry_maker = make_entry.gen_from_vimgrep(opts)
+--     if opts.list_files_only then
+--       opts.entry_maker = make_entry.gen_from_file(opts)
+--       args = { "xbgs", "-isl", word }
+--       sorter = conf.file_sorter(opts)
+--     end
+--     pickers
+--       .new(opts, {
+--         prompt_title = "Find Word (" .. word .. ")",
+--         finder = finders.new_oneshot_job(args, opts),
+--         previewer = false,
+--         sorter = sorter,
+--       })
+--       :find()
+--   end
+-- end
 
 M.open_in_browser = function()
   local filename = vim.fn.expand("%:p")
@@ -189,24 +218,24 @@ M.open_in_browser = function()
 end
 
 M.tmux_prev2 = function()
-  if M.is_tmux() then
+  if is_tmux() then
     local command = "send -t -1 C-c"
-    M.tmux_execute(command)
+    tmux_execute(command)
     command = "send -t -1 C-p C-p Enter"
     vim.notify("tmux " .. command, vim.log.levels.INFO)
-    M.tmux_execute(command)
+    tmux_execute(command)
     return
   end
 end
 
 M.file_runner = function()
   -- Default tmux handler.
-  if M.is_tmux() then
+  if is_tmux() then
     local command = "send -t -1 C-c"
-    M.tmux_execute(command)
+    tmux_execute(command)
     command = "send -t -1 C-p Enter"
     vim.notify("tmux " .. command, vim.log.levels.INFO)
-    M.tmux_execute(command)
+    tmux_execute(command)
     return
   end
 
@@ -215,62 +244,6 @@ M.file_runner = function()
     require("lazy.util").float_cmd({ "python3", file })
   else
     vim.notify("No runner available.", vim.log.levels.WARN)
-  end
-end
-
-local parsers = require("nvim-treesitter.parsers")
-M.leap_identifiers = function()
-  local wininfo = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
-  -- Collect all treesitter nodes of identifier type.
-  local nodes = {}
-  local function collect_identifier_nodes(root_node)
-    if root_node:type() == "identifier" then
-      table.insert(nodes, root_node)
-    end
-    for node, _ in root_node:iter_children() do
-      collect_identifier_nodes(node)
-    end
-  end
-
-  -- Collect nodes for current buffer.
-  local bufnr = vim.api.nvim_get_current_buf()
-  local lang_tree = parsers.get_parser(bufnr)
-  for _, tree in ipairs(lang_tree:trees()) do
-    local root = tree:root()
-    collect_identifier_nodes(root)
-  end
-
-  -- Sort nodes wrt. distance to cursor.
-  local cursor_line, _ = unpack(vim.api.nvim_win_get_cursor(0))
-  local function distance(node_a, node_b)
-    local startline, _, _, _ = node_a:range()
-    local distance_a = math.abs(startline - cursor_line)
-    startline, _, _, _ = node_b:range()
-    local distance_b = math.abs(startline - cursor_line)
-    return distance_a < distance_b
-  end
-
-  table.sort(nodes, distance)
-
-  -- Create Leap targets from TS nodes.
-  local targets = {}
-  for _, node in ipairs(nodes) do
-    local startline, startcol, _, _ = node:range()
-    if startline + 1 >= wininfo.topline then
-      local target = { node = node, pos = { startline + 1, startcol + 1 } }
-      table.insert(targets, target)
-    end
-  end
-
-  -- Leap.
-  if #targets >= 1 then
-    require("leap").leap({
-      targets = targets,
-      backward = true,
-    })
-    return targets
-  else
-    vim.notify("No treesitter nodes found.")
   end
 end
 

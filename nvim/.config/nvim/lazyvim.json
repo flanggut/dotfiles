@@ -1,6 +1,5 @@
 {
   "extras": [
-    "lazyvim.plugins.extras.editor.telescope",
     "lazyvim.plugins.extras.ui.edgy",
     "lazyvim.plugins.extras.vscode"
   ],
