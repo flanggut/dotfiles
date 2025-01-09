@@ -24,7 +24,7 @@ is_git() {
     git rev-parse --is-inside-work-tree >/dev/null 2>&1
 }
 
-alias ad="antidote"
+alias ad="~/.antidote/antidote"
 alias ..="cd .."
 alias ...="cd ../.."
 alias j="z"
@@ -76,6 +76,7 @@ source <(fzf --zsh)
 # Bootstrap
 if [[ ! -d ${ZDOTDIR:-$HOME}/.antidote  ]]; then
   git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+  chmod u+x ${ZDOTDIR:-~}/.antidote/antidote
 fi
 
 
