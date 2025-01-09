@@ -55,12 +55,6 @@ return {
       keys[#keys + 1] = { "<leader>sa", vim.lsp.buf.code_action, has = "codeAction" }
       keys[#keys + 1] = { "<leader>sr", require("fzf-lua").lsp_references }
       keys[#keys + 1] = { "<leader>rn", vim.lsp.buf.rename, has = "rename" }
-      keys[#keys + 1] = {
-        "<leader>sy",
-        function()
-          require("telescope.builtin").lsp_document_symbols({ symbol_width = 50, symbol_type_width = 12 })
-        end,
-      }
     end,
   },
 }

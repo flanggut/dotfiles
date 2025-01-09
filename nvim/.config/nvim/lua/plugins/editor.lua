@@ -283,7 +283,7 @@ return {
         end
         MiniFiles.close()
         local dirname = vim.fs.dirname(path)
-        require("telescope.builtin").live_grep({
+        require("fzf-lua").live_grep_native({
           cwd = dirname,
         })
       end
