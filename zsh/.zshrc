@@ -32,10 +32,10 @@ alias ji="zi"
 alias vim=nvim
 alias ls="ls --color"
 alias la="ls --color -la"
+
 #     Git + HG commands    #
 alias shows="hg show --stat"
 alias sshow="hg st -m"
-alias sml="if is_git; then git sl; else hg fsl; fi"
 alias histe="hg histedit"
 alias hi="__fzf_hg"
 alias hgn="hg next"
@@ -46,10 +46,23 @@ alias jfs2="jf s -r .^..."
 alias jfs3="jf s -r .^^..."
 alias jfs4="jf s -r .^^^..."
 alias jfs5="jf s -r .^^^^..."
-alias dff="if is_git; then git diff | delta | less -r; else hg diff | delta | less -r; fi"
-alias show="if is_git; then git show | delta | less -r; else hg diff -r .^ | delta | less -r; fi"
-alias st="if is_git; then git st; else hg st; fi"
 alias qd="adb devices && maui q d"
+
+sml() {
+   if is_git; then git sl; else hg fsl; fi
+}
+
+dff() {
+  if is_git; then git diff | delta | less -r; else hg diff | delta | less -r; fi
+}
+
+show() {
+  if is_git; then git show | delta | less -r; else hg diff -r .^ | delta | less -r; fi
+}
+
+st() {
+  if is_git; then git st; else hg st; fi
+}
 
 
 ######   Completion    ######
