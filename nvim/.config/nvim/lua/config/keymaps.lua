@@ -14,6 +14,8 @@ vim.keymap.set("n", "<leader>l", "<c-6>")
 -- goto line start/end
 vim.keymap.set("n", "H", "^")
 vim.keymap.set("n", "L", "$")
+vim.keymap.set("n", "-", "^")
+vim.keymap.set("n", "+", "$")
 
 -- Y yank until the end of line  (note: this is now a default on master)
 vim.keymap.set("n", "Y", "y$", { noremap = true })

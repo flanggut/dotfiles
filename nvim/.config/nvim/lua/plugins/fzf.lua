@@ -6,12 +6,18 @@ return {
         formatter = "path.filename_first",
         previewer = false,
       },
+      oldfiles = {
+        formatter = "path.filename_first",
+        previewer = false,
+      },
+      lsp = {
+        path_shorten = 1,
+      },
     },
     keys = {
-      { "<C-l>", "<cmd>FzfLua buffers formatter=path.filename_first<cr>", desc = "Buffers" },
-      { "<C-p>", "<cmd>lua R('fl.functions').fzfiles()<cr>", "Files" },
-      { "<C-k>", "<cmd>FzfLua lsp_document_symbols<cr>", "Goto Symbol" },
-      { "<leader>sl", "<cmd>FzfLua oldfiles cwd_only=true formatter=path.filename_first<cr>", desc = "Local Files" },
+      { "<leader>sf", "<cmd>FzfLua blines<cr>", desc = "Buffer Lines" },
+      { "<leader>si", "<cmd>FzfLua treesitter<cr>", desc = "Treesitter" },
+      { "<leader>sl", "<cmd>FzfLua oldfiles cwd_only=true<cr>", desc = "Local Files" },
       {
         "<leader>sP",
         function()
@@ -20,8 +26,27 @@ return {
             cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy"),
           })
         end,
-        "Vim Plugins",
+        desc = "Vim Plugins",
       },
+      { "<C-k>", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Goto Symbol" },
+      {
+        "<C-l>",
+        function()
+          require("fzf-lua").buffers({
+            formatter = "path.filename_first",
+            previewer = false,
+            winopts = {
+              relative = "cursor",
+              row = 1.01,
+              col = 0,
+              height = 0.2,
+              width = 0.5,
+            },
+          })
+        end,
+        desc = "Buffers",
+      },
+      { "<C-p>", "<cmd>lua R('fl.functions').fzfiles()<cr>", desc = "Files" },
     },
   },
 
