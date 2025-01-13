@@ -6,8 +6,8 @@ return {
     opts = {
       plugins = { spelling = true },
       spec = {
-        { "<leader>x", "gcc", mode = "n", noremap = false },
-        { "<leader>x", "gc", mode = "v", noremap = false },
+        { "<leader>x", "gcc", mode = "n", noremap = false, nowait = true },
+        { "<leader>x", "gc", mode = "v", noremap = false, nowait = true },
         { "<leader>f", "<cmd>LazyFormat<CR>", desc = "Format" },
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
