@@ -3,15 +3,12 @@ return {
   -- which-key
   {
     "folke/which-key.nvim",
-    event = "BufRead",
     opts = {
       plugins = { spelling = true },
-    },
-    config = function(_, opts)
-      local wk = require("which-key")
-      wk.setup(opts)
-      wk.add({
-        { "<leader>f",  "<cmd>LazyFormat<CR>",                                        desc = "Format" },
+      spec = {
+        { "<leader>x", "gcc", mode = "n", noremap = false },
+        { "<leader>x", "gc", mode = "v", noremap = false },
+        { "<leader>f", "<cmd>LazyFormat<CR>", desc = "Format" },
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
           "<leader>cD",
@@ -26,7 +23,7 @@ return {
             else
               vim.b.autoformat = not vim.b.autoformat
             end
-            vim.notify("Autoformat toggled: " .. tostring(vim.b.autoformat), "info", {})
+            vim.notify("Autoformat toggled: " .. tostring(vim.b.autoformat), vim.log.levels.INFO, {})
           end,
           desc = "Toggle auto format",
         },
@@ -35,14 +32,13 @@ return {
           "<cmd>lua R('fl.functions').open_in_browser()<CR>",
           desc = "Open in browser",
         },
-        { "<leader>p",         "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
+        { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
         --
-        { "<leader><leader>l", "<cmd>LspRestart<CR>",                                    desc = "Restart LSP servers" },
-        { "<leader><leader>e", "<cmd>Trouble diagnostics toggle<CR>",                    desc = "Toggle Trouble" },
-        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>",  desc = "Runner" },
-        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>",                   desc = "Reload snippets" },
-      })
-    end,
+        { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
+        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", desc = "Runner" },
+        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>", desc = "Reload snippets" },
+      },
+    },
   },
 
   -- snippets
@@ -201,28 +197,6 @@ return {
     end,
   },
 
-  -- comments
-  {
-    "numToStr/Comment.nvim",
-    keys = {
-      {
-        "<space>x",
-        mode = { "n" },
-        "<plug>(comment_toggle_linewise_current)",
-        desc = "Comment",
-      },
-      {
-        "<space>x",
-        mode = { "x" },
-        "<plug>(comment_toggle_linewise_visual)",
-        desc = "Comment",
-      },
-    },
-    config = function()
-      require("Comment").setup()
-    end,
-  },
-
   -- linediff
   {
     "AndrewRadev/linediff.vim",
@@ -231,57 +205,97 @@ return {
 
   -- file explorer
   {
-    "echasnovski/mini.files",
+    "stevearc/oil.nvim",
+    dependencies = { { "echasnovski/mini.icons", opts = {} } },
+    event = "VeryLazy",
     keys = {
       {
         "<C-n>",
         function()
-          if not MiniFiles.close() then
-            MiniFiles.open(vim.api.nvim_buf_get_name(0))
-          end
+          require("oil").open_float(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
         end,
-        desc = "Mini Files (cwd)",
+        desc = "Oil Files (cwd)",
       },
     },
-    config = function()
-      require("mini.files").setup({
-        mappings = {
-          go_in_plus = "<CR>",
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {
+      keymaps = {
+        -- See :help oil-actions for a list of all available actions
+        ["l"] = { "actions.select", mode = "n" },
+        ["h"] = { "actions.parent", mode = "n" },
+        ["L"] = {
+          function()
+            local dirname = require("oil").get_current_dir()
+            require("oil").close()
+            require("fzf-lua").live_grep_native({
+              cwd = dirname,
+            })
+          end,
+          mode = "n",
         },
-      })
-      -- Yank in register full path of entry under cursor
-      local yank_path = function()
-        local path = (MiniFiles.get_fs_entry() or {}).path
-        if path == nil then
-          return vim.notify("Cursor is not on valid entry")
-        end
-        vim.fn.setreg(vim.v.register, path)
-        MiniFiles.close()
-      end
-
-      -- Live grep in directory
-      local live_grep = function()
-        local path = (MiniFiles.get_fs_entry() or {}).path
-        if path == nil then
-          return vim.notify("Cursor is not on valid entry")
-        end
-        MiniFiles.close()
-        local dirname = vim.fs.dirname(path)
-        require("fzf-lua").live_grep_native({
-          cwd = dirname,
-        })
-      end
-
-      vim.api.nvim_create_autocmd("User", {
-        callback = function(args)
-          local b = args.data.buf_id
-          vim.keymap.set("n", "<c-l>", live_grep, { buffer = b, desc = "Live Grep current path" })
-          vim.keymap.set("n", "gy", yank_path, { buffer = b, desc = "Yank path" })
-        end,
-        pattern = "MiniFilesBufferCreate",
-      })
-    end,
+        ["q"] = { "actions.close", mode = "n" },
+        ["<C-n>"] = { "actions.close", mode = "n" },
+      },
+      float = {
+        max_width = 0.5,
+        max_height = 0.6,
+      },
+    },
   },
+
+  -- {
+  --   "echasnovski/mini.files",
+  --   keys = {
+  --     {
+  --       "<C-n>",
+  --       function()
+  --         if not MiniFiles.close() then
+  --           MiniFiles.open(vim.api.nvim_buf_get_name(0))
+  --         end
+  --       end,
+  --       desc = "Mini Files (cwd)",
+  --     },
+  --   },
+  --   config = function()
+  --     require("mini.files").setup({
+  --       mappings = {
+  --         go_in_plus = "<CR>",
+  --       },
+  --     })
+  --     -- Yank in register full path of entry under cursor
+  --     local yank_path = function()
+  --       local path = (MiniFiles.get_fs_entry() or {}).path
+  --       if path == nil then
+  --         return vim.notify("Cursor is not on valid entry")
+  --       end
+  --       vim.fn.setreg(vim.v.register, path)
+  --       MiniFiles.close()
+  --     end
+  --
+  --     -- Live grep in directory
+  --     local live_grep = function()
+  --       local path = (MiniFiles.get_fs_entry() or {}).path
+  --       if path == nil then
+  --         return vim.notify("Cursor is not on valid entry")
+  --       end
+  --       MiniFiles.close()
+  --       local dirname = vim.fs.dirname(path)
+  --       require("fzf-lua").live_grep_native({
+  --         cwd = dirname,
+  --       })
+  --     end
+  --
+  --     vim.api.nvim_create_autocmd("User", {
+  --       callback = function(args)
+  --         local b = args.data.buf_id
+  --         vim.keymap.set("n", "<c-l>", live_grep, { buffer = b, desc = "Live Grep current path" })
+  --         vim.keymap.set("n", "gy", yank_path, { buffer = b, desc = "Yank path" })
+  --       end,
+  --       pattern = "MiniFilesBufferCreate",
+  --     })
+  --   end,
+  -- },
 
   {
     "mhinz/vim-signify",
@@ -305,6 +319,6 @@ return {
     event = "VeryLazy",
     config = function()
       require("timber").setup({})
-    end
-  }
+    end,
+  },
 }
