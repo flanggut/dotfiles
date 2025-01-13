@@ -29,6 +29,7 @@ local function get_tmux_socket()
 end
 
 local tmux_execute = function(arg)
+  vim.notify("tmux: " .. arg, vim.log.levels.INFO)
   local t_cmd = string.format("tmux -S %s %s", get_tmux_socket(), arg)
   local handle = assert(io.popen(t_cmd), string.format("Tmux: Unable to execute > [%s]", t_cmd))
   local result = handle:read()
@@ -129,78 +130,6 @@ M.generate_compile_commands = function(all_files)
   }):start()
 end
 
--- M.myfiles = function(opts)
---   local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
---   if not string.find(cwd, "fbsource") then
---     if string.find(cwd, "dotfiles") then
---       require("telescope.builtin").find_files({ hidden = true })
---     else
---       require("telescope.builtin").find_files()
---     end
---   else
---     opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.fn.getcwd()
---
---     local myles_search = require("telescope.finders").new_job(function(prompt)
---       if not prompt or prompt == "" or string.len(prompt) < 7 then
---         return vim.iter({ "find", ".", "-not", "-path", "*/.*", "-type", "f", "-maxdepth", "1" }):flatten():totable()
---       end
---       return vim.iter({ "arc", "myles", "--list", "-n", "25", prompt }):flatten():totable()
---     end, opts.entry_maker or require("telescope.make_entry").gen_from_file(opts), 25, opts.cwd)
---     require("telescope.pickers")
---       .new(opts, {
---         prompt_title = "Myles",
---         finder = myles_search,
---         previewer = false,
---         sorter = false,
---       })
---       :find()
---   end
--- end
-
--- M.mygrep = function(opts)
---   local make_entry = require("telescope.make_entry")
---   local pickers = require("telescope.pickers")
---   local finders = require("telescope.finders")
---   local conf = require("telescope.config").values
---   local escape_chars = function(string)
---     return string.gsub(string, "[%(|%)|\\|%[|%]|%-|%{%}|%?|%+|%*|%^|%$]", {
---       ["\\"] = "\\\\",
---       ["-"] = "\\-",
---       ["("] = "\\(",
---       [")"] = "\\)",
---       ["["] = "\\[",
---       ["]"] = "\\]",
---       ["{"] = "\\{",
---       ["}"] = "\\}",
---       ["?"] = "\\?",
---       ["+"] = "\\+",
---       ["*"] = "\\*",
---       ["^"] = "\\^",
---       ["$"] = "\\$",
---     })
---   end
---
---   if string.find(vim.fn.expand(vim.fn.getcwd()), "fbsource") then
---     local word = escape_chars(vim.fn.expand("<cword>"))
---     local args = { "xbgs", "-is", word }
---     local sorter = conf.generic_sorter(opts)
---     opts.entry_maker = make_entry.gen_from_vimgrep(opts)
---     if opts.list_files_only then
---       opts.entry_maker = make_entry.gen_from_file(opts)
---       args = { "xbgs", "-isl", word }
---       sorter = conf.file_sorter(opts)
---     end
---     pickers
---       .new(opts, {
---         prompt_title = "Find Word (" .. word .. ")",
---         finder = finders.new_oneshot_job(args, opts),
---         previewer = false,
---         sorter = sorter,
---       })
---       :find()
---   end
--- end
-
 M.open_in_browser = function()
   local filename = vim.fn.expand("%:p")
   local tail = filename:gsub("^.*fbsource", "")
@@ -208,13 +137,7 @@ M.open_in_browser = function()
   local url = "https://www.internalfb.com/code/fbsource/[master]" .. tail .. "?lines=" .. tostring(line)
   vim.notify("Opening in browser: " .. tail, vim.log.levels.INFO)
   vim.notify(url, vim.log.levels.INFO)
-  require("plenary.job")
-    :new({
-      command = "open",
-      args = { url },
-      cwd = "~/fbsource",
-    })
-    :start()
+  assert(io.popen("open " .. url), string.format("Cannot execute open_in_browser."))
 end
 
 M.tmux_prev2 = function()
@@ -222,7 +145,6 @@ M.tmux_prev2 = function()
     local command = "send -t -1 C-c"
     tmux_execute(command)
     command = "send -t -1 C-p C-p Enter"
-    vim.notify("tmux " .. command, vim.log.levels.INFO)
     tmux_execute(command)
     return
   end
@@ -234,7 +156,6 @@ M.file_runner = function()
     local command = "send -t -1 C-c"
     tmux_execute(command)
     command = "send -t -1 C-p Enter"
-    vim.notify("tmux " .. command, vim.log.levels.INFO)
     tmux_execute(command)
     return
   end

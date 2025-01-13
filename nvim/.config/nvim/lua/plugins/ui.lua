@@ -22,7 +22,7 @@ return {
             { icon = "󰒲 ", key = "y", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "x", desc = "Lazy Extras", action = ":LazyExtras" },
             { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
-            { icon = "󰌑 ", key = "<c-s>", desc = "Hide Dashboard", action = ":e" },
+            { icon = "󰌑 ", key = "<c-s>", desc = "Hide Dashboard", action = "" },
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
         },
