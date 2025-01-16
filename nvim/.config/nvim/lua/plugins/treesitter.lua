@@ -5,29 +5,25 @@ return {
     dependencies = {
       "nvim-treesitter/nvim-treesitter-refactor",
     },
-    config = function()
-      local treesitter_config = require("nvim-treesitter.configs")
-      ---@diagnostic disable-next-line: missing-fields
-      treesitter_config.setup({
-        auto_install = true,
-        highlight = { enable = true },
-        incremental_selection = {
+    opts = {
+      auto_install = true,
+      highlight = { enable = true },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = ",",
+          node_incremental = ",",
+        },
+      },
+      refactor = {
+        smart_rename = {
           enable = true,
           keymaps = {
-            init_selection = ",",
-            node_incremental = ",",
+            smart_rename = "<leader>rt",
           },
         },
-        refactor = {
-          smart_rename = {
-            enable = true,
-            keymaps = {
-              smart_rename = "<leader>rt",
-            },
-          },
-        },
-      })
-    end,
+      },
+    },
   },
   -- Show context for large scopes
   {

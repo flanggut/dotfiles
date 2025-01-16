@@ -54,6 +54,13 @@ return {
     end,
   },
 
+  -- highlight on yank
+  {
+    "rachartier/tiny-glimmer.nvim",
+    event = "TextYankPost",
+    opts = {},
+  },
+
   -- bufferline
   {
     "akinsho/bufferline.nvim",
