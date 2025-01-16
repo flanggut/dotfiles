@@ -33,11 +33,4 @@ return {
       require("treesitter-context").setup({})
     end,
   },
-  -- Detect more filetypes correctly
-  {
-    "nvim-lua/plenary.nvim",
-    config = function()
-      require("plenary.filetype").add_file("fl")
-    end,
-  },
 }
