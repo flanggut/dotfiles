@@ -1,5 +1,7 @@
 local M = {}
 
+local lazy_util = require("lazy.core.util")
+
 local format_line_ending = {
   ["unix"] = "\n",
   ["dos"] = "\r\n",
@@ -19,7 +21,7 @@ local function buf_get_full_text(bufnr)
   return text
 end
 
-local is_tmux = function()
+local function is_tmux()
   return os.getenv("TMUX") ~= nil
 end
 
@@ -28,7 +30,7 @@ local function get_tmux_socket()
   return vim.split(os.getenv("TMUX") or "", ",")[1]
 end
 
-local tmux_execute = function(arg)
+local function tmux_execute(arg)
   vim.notify("tmux: " .. arg, vim.log.levels.INFO)
   local t_cmd = string.format("tmux -S %s %s", get_tmux_socket(), arg)
   local handle = assert(io.popen(t_cmd), string.format("Tmux: Unable to execute > [%s]", t_cmd))
@@ -37,7 +39,31 @@ local tmux_execute = function(arg)
   return result
 end
 
-M.fzfiles = function()
+--- Runs the command and shows it in a floating window
+---@param cmd string[]
+---@param opts? LazyCmdOptions|{filetype?:string}
+function M.float_cmd(cmd, opts)
+  opts = opts or {}
+  local Process = require("lazy.manage.process")
+  local lines, code = Process.exec(cmd, { args = {}, cwd = opts.cwd })
+  if code ~= 0 then
+    lazy_util.error({
+      "`" .. table.concat(cmd, " ") .. "`",
+      "",
+      "## Error",
+      table.concat(lines, "\n"),
+    })
+  end
+  local float = require("lazy.view.float")(opts)
+  if opts.filetype then
+    vim.bo[float.buf].filetype = opts.filetype
+  end
+  vim.api.nvim_buf_set_lines(float.buf, 0, -1, false, lines)
+  vim.bo[float.buf].modifiable = false
+  return float
+end
+
+function M.fzfiles()
   local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
   if string.find(cwd, "fbsource") then
     vim.notify("FzFiles: fbsource")
@@ -65,7 +91,7 @@ M.fzfiles = function()
   require("fzf-lua").files()
 end
 
-M.restart_all_lsp_servers = function()
+function M.restart_all_lsp_servers()
   for _, client in ipairs(vim.lsp.get_clients()) do
     if client then
       client.stop()
@@ -79,7 +105,7 @@ end
 M.compile_commands_running = {}
 
 ---@param all_files boolean
-M.generate_compile_commands = function(all_files)
+function M.generate_compile_commands(all_files)
   local Job = require("plenary.job")
   local filename = vim.api.nvim_buf_get_name(0)
   local tail = "all files"
@@ -130,7 +156,7 @@ M.generate_compile_commands = function(all_files)
   }):start()
 end
 
-M.open_in_browser = function()
+function M.open_in_browser()
   local filename = vim.fn.expand("%:p")
   local tail = filename:gsub("^.*fbsource", "")
   local line = vim.api.nvim_win_get_cursor(0)[1]
@@ -140,7 +166,7 @@ M.open_in_browser = function()
   assert(io.popen("open " .. url), string.format("Cannot execute open_in_browser."))
 end
 
-M.tmux_prev2 = function()
+function M.tmux_prev2()
   if is_tmux() then
     local command = "send -t -1 C-c"
     tmux_execute(command)
@@ -150,7 +176,7 @@ M.tmux_prev2 = function()
   end
 end
 
-M.file_runner = function()
+function M.file_runner()
   -- Default tmux handler.
   if is_tmux() then
     local command = "send -t -1 C-c"
@@ -162,7 +188,17 @@ M.file_runner = function()
 
   if vim.bo.filetype == "python" then
     local file = vim.api.nvim_buf_get_name(0)
-    require("lazy.util").float_cmd({ "python3", file })
+    local command = { "python3", file }
+    local is_running = true
+    vim.notify("Running " .. table.concat(command), vim.log.levels.INFO, {
+      keep = function()
+        return is_running
+      end,
+    })
+    local float = M.float_cmd(command)
+    is_running = false
+    local lines = vim.api.nvim_buf_get_lines(float.buf, 0, -1, true)
+    vim.fn.writefile(lines, "/tmp/nvim_logger.log")
   else
     vim.notify("No runner available.", vim.log.levels.WARN)
   end

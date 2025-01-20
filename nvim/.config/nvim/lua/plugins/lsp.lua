@@ -24,6 +24,18 @@ return {
             "--offset-encoding=utf-16",
           },
         },
+        pylsp = {
+          plugins = {
+            pyflakes = { enabled = false },
+            pycodestyle = { enabled = false },
+            autopep8 = { enabled = false },
+            yapf = { enabled = false },
+            mccabe = { enabled = false },
+            pylsp_mypy = { enabled = false },
+            pylsp_black = { enabled = false },
+            pylsp_isort = { enabled = false },
+          },
+        },
       },
     },
   },
@@ -52,6 +64,7 @@ return {
       keys[#keys + 1] = { "<leader>sa", vim.lsp.buf.code_action, has = "codeAction" }
       keys[#keys + 1] = { "<leader>sr", require("fzf-lua").lsp_references }
       keys[#keys + 1] = { "<leader>rn", vim.lsp.buf.rename, has = "rename" }
+      keys[#keys + 1] = { "<leader>cc", "<cmd>cclose<cr>", has = "rename" }
     end,
   },
 }

@@ -5,7 +5,7 @@ return {
     keys = {
       { "<c-s>", mode = { "n" }, "<cmd>lua Snacks.dashboard()<cr>", desc = "Dashboard" },
       { "<leader>q", mode = { "n" }, "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
-      { "<leader>sN", mode = { "n" }, "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
+      { "<leader><leader>n", mode = { "n" }, "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
     },
     opts = {
       dashboard = {

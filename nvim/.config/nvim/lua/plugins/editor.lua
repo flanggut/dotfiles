@@ -41,7 +41,6 @@ return {
     },
   },
 
-  -- snippets
   {
     "L3MON4D3/LuaSnip",
     dependencies = { "rafamadriz/friendly-snippets" },
@@ -65,15 +64,6 @@ return {
 
   {
     "folke/flash.nvim",
-    event = "VeryLazy",
-    ---@type Flash.Config
-    opts = {
-      modes = {
-        search = {
-          enabled = false,
-        },
-      },
-    },
     keys = {
       {
         "s",
@@ -82,38 +72,6 @@ return {
           require("flash").jump({ mode = "fuzzy" })
         end,
         desc = "Flash",
-      },
-      {
-        "S",
-        mode = { "n", "o", "x" },
-        function()
-          require("flash").treesitter()
-        end,
-        desc = "Flash Treesitter",
-      },
-      {
-        "r",
-        mode = "o",
-        function()
-          require("flash").remote()
-        end,
-        desc = "Remote Flash",
-      },
-      {
-        "R",
-        mode = { "o", "x" },
-        function()
-          require("flash").treesitter_search()
-        end,
-        desc = "Flash Treesitter Search",
-      },
-      {
-        "<c-s>",
-        mode = { "c" },
-        function()
-          require("flash").toggle()
-        end,
-        desc = "Toggle Flash Search",
       },
     },
   },
@@ -153,15 +111,6 @@ return {
           enable_default_keybindings = false,
         },
       })
-    end,
-  },
-
-  -- persistence
-  {
-    "folke/persistence.nvim",
-    event = "BufRead", -- this will only start session saving when an actual file was opened
-    config = function()
-      require("persistence").setup()
     end,
   },
 
@@ -310,6 +259,63 @@ return {
     ft = { "csv" },
     config = function()
       require("csvview").setup()
+    end,
+  },
+
+  {
+    "benlubas/molten-nvim",
+    version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+    build = ":UpdateRemotePlugins",
+    keys = {
+      { "<leader>MI", "<cmd>MoltenInit<CR>", desc = "Molten Init" },
+    },
+    init = function()
+      -- set opts
+      vim.g.molten_output_win_max_height = 30
+      -- Remove highlight for cell
+      -- vim.api.nvim_set_hl(0, "MoltenCell", {})
+      -- Add keybinds when molten is initialized.
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "MoltenInitPost",
+        callback = function()
+          vim.keymap.set(
+            "v",
+            "<space>l",
+            ":<C-u>MoltenEvaluateVisual<CR>gv<esc>",
+            { desc = "Molten execute visual selection", buffer = true, silent = true }
+          )
+          vim.keymap.set(
+            "n",
+            "<space>L",
+            ":MoltenEvaluateLine<CR>",
+            { desc = "Molten evalute line", buffer = true, silent = true }
+          )
+          vim.keymap.set(
+            "n",
+            "<space>mr",
+            ":MoltenReevaluateCell<CR>",
+            { desc = "Molten re-evalute cell", buffer = true, silent = true }
+          )
+          vim.keymap.set(
+            "n",
+            "<space>md",
+            ":MoltenDelete<CR>",
+            { desc = "Molten delete active cell", buffer = true, silent = true }
+          )
+          vim.keymap.set(
+            "n",
+            "<space>mD",
+            ":MoltenDeinit<CR>",
+            { desc = "Molten de-init", buffer = true, silent = true }
+          )
+          vim.keymap.set(
+            "n",
+            "<space>mi",
+            ":MoltenInterrupt<CR>",
+            { desc = "Molten keyboard interrupt", buffer = true, silent = true }
+          )
+        end,
+      })
     end,
   },
 
