@@ -161,7 +161,7 @@ return {
       {
         "<C-n>",
         function()
-          require("oil").open_float(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
+          require("oil").open_float()
         end,
         desc = "Oil Files (cwd)",
       },
