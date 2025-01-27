@@ -8,7 +8,6 @@ vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = t
 vim.keymap.set("n", "<esc><esc>", "<cmd>nohlsearch<CR>")
 
 -- toggle two most recent files
-vim.keymap.set("n", "<leader>.", "<c-6>")
 vim.keymap.set("n", "<leader>l", "<c-6>")
 
 -- goto line start/end

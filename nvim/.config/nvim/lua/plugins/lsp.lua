@@ -46,7 +46,7 @@ return {
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       keys[#keys + 1] = { "<C-j>", "<cmd>lua vim.lsp.buf.definition()<CR>" }
       keys[#keys + 1] =
-        { "<c-k>", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help", has = "signatureHelp" }
+        { "<c-o>", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help", has = "signatureHelp" }
       keys[#keys + 1] = { "K", vim.lsp.buf.hover, desc = "hover" }
       keys[#keys + 1] = {
         "<leader>e",
