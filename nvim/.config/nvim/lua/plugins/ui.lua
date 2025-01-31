@@ -131,7 +131,8 @@ return {
       end
 
       local lint_progress = function()
-        local linters = require("lint").get_running()
+        local linters = require("lint")._resolve_linter_by_ft(vim.bo.filetype)
+        -- local linters = require("lint").get_running()
         if #linters == 0 then
           return "󰦕"
         end

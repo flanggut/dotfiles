@@ -84,7 +84,7 @@ function M.fzfiles()
       if not query or query == "" or string.len(query) < 7 then
         return "find . -not -path '*/.*' -type f -maxdepth 1"
       end
-      return "arc myles --list -n 25 " .. query
+      return 'arc myles --list -n 25 "' .. query .. '"'
     end, opts)
     return
   end
