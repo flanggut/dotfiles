@@ -183,6 +183,15 @@ return {
           end,
           mode = "n",
         },
+        ["y"] = {
+          function()
+            local dirname = require("oil").get_current_dir()
+            local fname = require("oil").get_cursor_entry().name
+            vim.fn.setreg(vim.v.register, dirname .. fname)
+            require("oil").close()
+          end,
+          mode = "n",
+        },
         ["q"] = { "actions.close", mode = "n" },
         ["<C-n>"] = { "actions.close", mode = "n" },
       },
@@ -320,11 +329,23 @@ return {
   },
 
   {
-    "Goose97/timber.nvim",
-    version = "*", -- Use for stability; omit to use `main` branch for the latest features
-    event = "VeryLazy",
-    config = function()
-      require("timber").setup({})
-    end,
+    "andrewferrier/debugprint.nvim",
+    dependencies = {
+      "echasnovski/mini.nvim", -- Needed for :ToggleCommentDebugPrints(NeoVim 0.9 only)
+      -- and line highlighting (optional)
+    },
+    lazy = false, -- Required to make line highlighting work before debugprint is first used
+    version = "*", -- Remove if you DON'T want to use the stable version
+    opts = {
+      keymaps = {
+        normal = {
+          variable_below = "glj",
+          variable_above = "glk",
+        },
+      },
+      highlight_lines = false,
+      print_tag = "FLGG",
+      display_counter = false,
+    },
   },
 }
