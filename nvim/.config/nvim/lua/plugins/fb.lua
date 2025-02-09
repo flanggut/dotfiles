@@ -6,7 +6,7 @@ if string.find(vim.fn.expand(vim.fn.getcwd() or ""), "fbsource", 0) then
       dependencies = { "jose-elias-alvarez/null-ls.nvim" },
       event = "VeryLazy",
       config = function()
-        require("meta")
+        local meta = require("meta")
         require("meta.lsp")
         require("meta.metamate").init({
           -- change the languages to target. defaults to php, python, rust
@@ -31,8 +31,7 @@ if string.find(vim.fn.expand(vim.fn.getcwd() or ""), "fbsource", 0) then
         -- List of custom language server configurations in Neovim@Meta.
         local meta_ls_names = {
           "fb-pyright-ls",
-          "pyre",
-          "thriftlsp",
+          "pyre", -- sudo microdnf install fb-pyre on MacOS
         }
 
         for _, ls_name_no_suffix in ipairs(meta_ls_names) do

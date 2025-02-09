@@ -1,13 +1,20 @@
 local fbflake8_pattern = "[^:]+:(%d+):(%d+): (%w)(%d+)(.+)"
 local fbflake8_groups = { "lnum", "col", "severity", "code", "message" }
 
+local function isFb(filename)
+  if string.find(filename, "fbsource", 0) then
+    return true
+  else
+    return false
+  end
+end
+
 return {
   {
     "stevearc/conform.nvim",
     opts = {
       formatters_by_ft = {
         json = { "prettier" },
-        python = { "black" },
       },
     },
   },
@@ -30,8 +37,7 @@ return {
       linters = {
         fbflake8 = {
           condition = function(ctx)
-            local find = vim.fs.find({ ".arcrc" }, { path = ctx.filename, upward = true })
-            local valid = not next(find) == nil
+            local valid = isFb(ctx.filename)
             if valid then
               vim.notify_once("Using linter: fblake8")
             end
@@ -53,8 +59,7 @@ return {
         },
         ruff = {
           condition = function(ctx)
-            local find = vim.fs.find({ ".arcrc" }, { path = ctx.filename, upward = true })
-            local valid = next(find) == nil
+            local valid = not isFb(ctx.filename)
             if valid then
               vim.notify_once("Using linter: ruff")
             end

@@ -8,9 +8,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     version = false,
-    dependencies = {
-      { "zeioth/garbage-day.nvim", event = "BufRead", opts = {} },
-    },
     ---@class PluginLspOpts
     opts = {
       inlay_hints = { enabled = false },
@@ -36,6 +33,14 @@ return {
             pylsp_isort = { enabled = false },
           },
         },
+      },
+      setup = {
+        pylsp = function()
+          if string.find(vim.fn.expand(vim.fn.getcwd() or ""), "fbsource", 0) then
+            return true
+          end
+          return false
+        end,
       },
     },
   },

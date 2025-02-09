@@ -173,7 +173,7 @@ return {
         -- See :help oil-actions for a list of all available actions
         ["l"] = { "actions.select", mode = "n" },
         ["h"] = { "actions.parent", mode = "n" },
-        ["L"] = {
+        ["f"] = {
           function()
             local dirname = require("oil").get_current_dir()
             require("oil").close()
