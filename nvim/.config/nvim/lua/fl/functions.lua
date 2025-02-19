@@ -147,7 +147,7 @@ function M.generate_compile_commands(all_files)
               })
             end
           end
-        end, 5000)
+        end, 2000)
       else
         vim.notify("Compile commands error. \n" .. table.concat(j:stderr_result(), "\n"), vim.log.levels.ERROR)
       end

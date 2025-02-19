@@ -1,23 +1,17 @@
 if string.find(vim.fn.expand(vim.fn.getcwd() or ""), "fbsource", 0) then
   return {
     {
-      dir = "~/fbsource/fbcode/editor_support/nvim/",
+      dir = "/usr/local/share/fb-editor-support/nvim", -- sudo microdnf install fb-editor-support-nvim-macos
       name = "meta.nvim",
       dependencies = { "jose-elias-alvarez/null-ls.nvim" },
       event = "VeryLazy",
       config = function()
-        local meta = require("meta")
+        require("meta.cmds")
         require("meta.lsp")
         require("meta.metamate").init({
           -- change the languages to target. defaults to php, python, rust
           filetypes = { "cpp", "python" },
           completionKeymap = "<C-f>",
-        })
-        vim.api.nvim_create_autocmd({ "BufRead" }, {
-          pattern = { "*.cpp", "*.h" },
-          callback = function()
-            require("fl.functions").generate_compile_commands(false)
-          end,
         })
       end,
     },
