@@ -194,6 +194,7 @@ return {
         },
         ["q"] = { "actions.close", mode = "n" },
         ["<C-n>"] = { "actions.close", mode = "n" },
+        ["<esc><esc>"] = { "actions.close", mode = "n" },
       },
       float = {
         max_width = 0.5,

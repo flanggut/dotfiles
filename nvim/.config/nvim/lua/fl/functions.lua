@@ -2,6 +2,17 @@ local M = {}
 
 local lazy_util = require("lazy.core.util")
 
+local function is_tmux()
+  return os.getenv("TMUX") ~= nil
+end
+
+function M.is_fb()
+  if vim.fn.isdirectory(os.getenv("HOME") .. "/fbsource") ~= 0 then
+    return true
+  end
+  return false
+end
+
 local format_line_ending = {
   ["unix"] = "\n",
   ["dos"] = "\r\n",
@@ -19,10 +30,6 @@ local function buf_get_full_text(bufnr)
     text = text .. line_ending
   end
   return text
-end
-
-local function is_tmux()
-  return os.getenv("TMUX") ~= nil
 end
 
 local function get_tmux_socket()

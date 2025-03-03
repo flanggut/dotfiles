@@ -1,15 +1,30 @@
+local ff = require("fl.functions")
+
+local provider = "ollama"
+if ff.is_fb() then
+  provider = "mate"
+end
+
 return {
   {
     "yetone/avante.nvim",
     build = "make",
     event = "VeryLazy",
     opts = {
-      provider = "ollama",
-      -- auto_suggestions_provider = "ollama",
+      provider = provider,
+      cursor_applying_provider = "mate",
       behaviour = {
-        auto_suggestions = false, -- Experimental stage
+        auto_suggestions = false,
+        enable_cursor_planning_mode = ff.is_fb(), -- enable cursor planning mode!
       },
       vendors = {
+        --@type AvanteProvider
+        mate = {
+          __inherited_from = "openai",
+          model = "llama3.3-70b-instruct",
+          endpoint = "https://" .. os.getenv("DEVSERVER") .. ":8087/v1",
+          api_key_name = "",
+        },
         --@type AvanteProvider
         ollama = {
           ["local"] = true,
@@ -30,12 +45,9 @@ return {
               },
             }
           end,
-          parse_response_data = function(data_stream, event_state, opts)
-            require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-          end,
         },
       },
-    }
+    },
   },
   {
     -- Make sure to set this up properly if you have lazy=true

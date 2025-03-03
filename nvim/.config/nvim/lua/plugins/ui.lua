@@ -35,6 +35,13 @@ return {
     },
   },
 
+  {
+    "folke/edgy.nvim",
+    opts = {
+      exit_when_last = true,
+    },
+  },
+
   -- noice
   {
     "folke/noice.nvim",
@@ -64,7 +71,7 @@ return {
   -- bufferline
   {
     "akinsho/bufferline.nvim",
-    event = "VimEnter",
+    event = "LazyFile",
     config = function()
       require("bufferline").setup({
         ---@diagnostic disable-next-line: missing-fields
@@ -99,15 +106,7 @@ return {
   -- statusline
   {
     "nvim-lualine/lualine.nvim",
-    event = "VeryLazy",
-    config = function()
-      local lualine = require("lualine")
-      -- local configuration = vim.fn["gruvbox_material#get_configuration"]()
-      -- local palette = vim.fn["gruvbox_material#get_palette"](
-      -- configuration.background,
-      -- configuration.foreground,
-      -- configuration.colors_override
-      -- )
+    opts = function()
       local palette = require("rose-pine.palette")
 
       local function os_indicator()
@@ -173,10 +172,10 @@ return {
         return ""
       end
 
-      lualine.setup({
+      local opts = {
         options = {
-          globalstatus = true,
-          disabled_filetypes = { statusline = { "lazy", "dashboard" } },
+          globalstatus = vim.o.laststatus == 3,
+          disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter", "snacks_dashboard" } },
           section_separators = { left = "", right = "" },
         },
         sections = {
@@ -200,7 +199,8 @@ return {
             "fileformat",
           },
         },
-      })
+      }
+      return opts
     end,
   },
 }

@@ -1,4 +1,6 @@
-if string.find(vim.fn.expand(vim.fn.getcwd() or ""), "fbsource", 0) then
+local ff = require("fl.functions")
+
+if ff.is_fb() then
   return {
     {
       dir = "/usr/local/share/fb-editor-support/nvim", -- sudo microdnf install fb-editor-support-nvim-macos
