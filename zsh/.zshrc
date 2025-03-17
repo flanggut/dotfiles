@@ -18,17 +18,33 @@ export PATH
 
 fpath=( ~/.zsh_func "${fpath[@]}" )
 
-######     Alias      ######
-# helpers
+######     Helpers / Completion      ######
 is_git() {
     git rev-parse --is-inside-work-tree >/dev/null 2>&1
 }
 
+just-fzf-and-run() {
+    a=$(just --list --unsorted --list-heading '' | fzf | awk '{print $1}')
+    if [[ ! -z $a ]]; then just $a; fi
+}
+
+_just_completion() {
+    local options
+    options="$(just --summary)"
+    if [ $? -eq 0 ]; then
+        reply=(${(s: :)options})  # turn into array and write to return variable
+    fi
+}
+
+compctl -K _just_completion just
+
+######     Alias      ######
 alias ad="~/.antidote/antidote"
 alias ..="cd .."
 alias ...="cd ../.."
 alias j="z"
 alias ji="zi"
+alias js=just-fzf-and-run
 alias vim=nvim
 alias ls="ls --color"
 alias la="ls --color -la"

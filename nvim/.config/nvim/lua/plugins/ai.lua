@@ -4,6 +4,7 @@ local provider = "ollama"
 if ff.is_fb() then
   provider = "mate"
 end
+local devserver = os.getenv("DEVSERVER") or "127.0.0.1"
 
 return {
   {
@@ -22,7 +23,7 @@ return {
         mate = {
           __inherited_from = "openai",
           model = "llama3.3-70b-instruct",
-          endpoint = "https://" .. os.getenv("DEVSERVER") .. ":8087/v1",
+          endpoint = "https://" .. devserver .. ":8087/v1",
           api_key_name = "",
         },
         --@type AvanteProvider
