@@ -110,6 +110,9 @@ return {
           -- enables default keybindings (A-hjkl) for normal mode
           enable_default_keybindings = false,
         },
+        copy_sync = {
+          sync_registers_keymap_put = false,
+        },
       })
     end,
   },

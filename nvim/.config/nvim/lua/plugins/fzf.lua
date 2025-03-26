@@ -46,7 +46,6 @@ return {
         end,
         desc = "Buffers",
       },
-      { "<C-p>", "<cmd>lua R('fl.functions').fzfiles()<cr>", desc = "Files" },
     },
   },
 
