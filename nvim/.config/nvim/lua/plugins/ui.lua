@@ -7,6 +7,7 @@ return {
       { "<leader>q", mode = { "n" }, "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
       { "<leader><leader>n", mode = { "n" }, "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
     },
+    ---@type snacks.Config
     opts = {
       dashboard = {
         preset = {
@@ -26,6 +27,9 @@ return {
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
         },
+      },
+      notifier = {
+        width = { min = 40, max = 0.8 },
       },
       scroll = {
         animate = {

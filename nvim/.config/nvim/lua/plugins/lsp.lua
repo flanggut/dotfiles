@@ -1,7 +1,11 @@
 local clangd_binary = "clangd"
-if vim.fn.isdirectory("/Users/flanggut/homebrew/opt/llvm") ~= 0 then
-  clangd_binary = "/Users/flanggut/homebrew/opt/llvm/bin/clangd"
-end
+-- if vim.fn.isdirectory("/Users/flanggut/homebrew/opt/llvm") ~= 0 then
+--   clangd_binary = "/Users/flanggut/homebrew/opt/llvm/bin/clangd"
+-- end
+-- if vim.fn.isdirectory("/Users/flanggut/homebrew/opt/llvm@19") ~= 0 then
+--   clangd_binary = "/Users/flanggut/homebrew/opt/llvm@19/bin/clangd"
+--   vim.notify("clangd: " .. clangd_binary)
+-- end
 
 return {
   -- lspconfig
