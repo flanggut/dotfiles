@@ -18,6 +18,8 @@ export PATH
 
 fpath=( ~/.zsh_func "${fpath[@]}" )
 
+export EDITOR=NVIM
+
 ######     Helpers / Completion      ######
 is_git() {
     git rev-parse --is-inside-work-tree >/dev/null 2>&1
