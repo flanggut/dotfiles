@@ -1,9 +1,19 @@
 local ff = require("fl.functions")
 
 if ff.is_fb() then
+  local editor_support_dir = "/usr/local/share/fb-editor-support/nvim" -- sudo microdnf install fb-editor-support-nvim-macos
+  if not vim.fn.isdirectory(editor_support_dir) then
+    local env_dir = os.getenv("EDITOR_SUPPORT")
+    if env_dir ~= 0 then
+      editor_support_dir = env_dir
+    else
+      vim.notify("No editor support found." .. arg, vim.log.levels.WARN)
+      return {}
+    end
+  end
   return {
     {
-      dir = "/usr/local/share/fb-editor-support/nvim", -- sudo microdnf install fb-editor-support-nvim-macos
+      dir = editor_support_dir,
       name = "meta.nvim",
       dependencies = { "jose-elias-alvarez/null-ls.nvim" },
       event = "VeryLazy",
