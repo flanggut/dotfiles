@@ -14,11 +14,11 @@ return {
           -- stylua: ignore
           ---@type snacks.dashboard.Item[]
           keys = {
-            { icon = " ", key = "f", desc = "Find File", action = ":lua require('fl.functions').fzfiles()" },
+            { icon = " ", key = "f", desc = "Find File", action = ":lua R('fl.functions').fzfiles()" },
             { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
             { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
-            { icon = " ", key = "l", desc = "Local Files", action = ":FzfLua oldfiles cwd_only=true formatter=path.filename_first" },
-            { icon = " ", key = "m", desc = "Recent Files", action = ":FzfLua oldfiles formatter=path.filename_first" },
+            { icon = " ", key = "l", desc = "Local Files", action = ":lua Snacks.picker.recent({ filter = { cwd = true } })" },
+            { icon = " ", key = "m", desc = "Recent Files", action = ":lua Snacks.picker.recent()" },
             { icon = " ", key = "s", desc = "Restore Session", section = "session" },
             { icon = "󰒲 ", key = "y", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "x", desc = "Lazy Extras", action = ":LazyExtras" },
@@ -30,6 +30,17 @@ return {
       },
       notifier = {
         width = { min = 40, max = 0.8 },
+      },
+      picker = {
+        formatters = {
+          file = {
+            filename_first = true,
+            truncate = 60,
+          },
+        },
+        layout = {
+          cycle = false,
+        },
       },
       scroll = {
         animate = {
@@ -67,9 +78,14 @@ return {
 
   -- highlight on yank
   {
-    "rachartier/tiny-glimmer.nvim",
-    event = "TextYankPost",
-    opts = {},
+    "y3owk1n/undo-glow.nvim",
+    event = "LazyFile",
+    version = "*",
+    opts = {
+      animation = {
+        enabled = true,
+      },
+    },
   },
 
   -- bufferline

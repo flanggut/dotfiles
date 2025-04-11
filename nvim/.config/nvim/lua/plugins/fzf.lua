@@ -1,53 +1,155 @@
 return {
   {
-    "ibhagwan/fzf-lua",
-    opts = {
-      files = {
-        formatter = "path.filename_first",
-        previewer = false,
-      },
-      oldfiles = {
-        formatter = "path.filename_first",
-        previewer = false,
-      },
-      lsp = {
-        path_shorten = 1,
-      },
-    },
+    "folke/snacks.nvim",
     keys = {
-      { "<leader>sf", "<cmd>FzfLua blines<cr>", desc = "Buffer Lines" },
-      { "<leader>si", "<cmd>FzfLua treesitter<cr>", desc = "Treesitter" },
-      { "<leader>sl", "<cmd>FzfLua oldfiles cwd_only=true<cr>", desc = "Local Files" },
+      {
+        "<leader>sd",
+        function()
+          Snacks.picker.diagnostics_buffer()
+        end,
+        desc = "Buffer Diagnostics",
+      },
+      {
+        "<leader>sf",
+        function()
+          Snacks.picker.lines({ layout = { preset = "select" } })
+        end,
+        desc = "Buffer Lines",
+      },
+      {
+        "<leader>si",
+        function()
+          Snacks.picker.treesitter()
+        end,
+        desc = "Treesitter",
+      },
+      {
+        "<leader>sl",
+        function()
+          Snacks.picker.recent({ filter = { cwd = true } })
+        end,
+        desc = "Local Files",
+      },
       {
         "<leader>sP",
         function()
-          require("fzf-lua").files({
-            ---@diagnostic disable-next-line: param-type-mismatch
-            cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy"),
-          })
+          Snacks.picker.files({ dirs = { vim.fs.joinpath(vim.fn.stdpath("data"), "lazy") }, title = "Lazy Plugins" })
         end,
         desc = "Vim Plugins",
       },
-      { "<C-k>", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Goto Symbol" },
+      {
+        "<C-k>",
+        function()
+          Snacks.picker.lsp_symbols()
+        end,
+        desc = "Goto Symbol",
+      },
       {
         "<C-l>",
         function()
-          require("fzf-lua").buffers({
-            formatter = "path.filename_first",
-            previewer = false,
-            winopts = {
-              relative = "cursor",
-              row = 1.01,
-              col = 0,
-              height = 0.2,
-              width = 0.5,
-            },
-          })
+          Snacks.picker.buffers({ layout = { preset = "select" } })
         end,
         desc = "Buffers",
       },
     },
   },
+  -- {
+  --   "ibhagwan/fzf-lua",
+  --   opts = {
+  --     files = {
+  --       formatter = "path.filename_first",
+  --       previewer = false,
+  --     },
+  --     oldfiles = {
+  --       formatter = "path.filename_first",
+  --       previewer = false,
+  --     },
+  --     lsp = {
+  --       path_shorten = 1,
+  --     },
+  --   },
+  --   keys = {
+  --     {
+  --       "<leader>sd",
+  --       function()
+  --         Snacks.picker.diagnostics_buffer()
+  --       end,
+  --       desc = "Buffer Diagnostics",
+  --     },
+  --     {
+  --       "<leader>sf",
+  --       function()
+  --         Snacks.picker.lines({ layout = { preset = "select" } })
+  --       end,
+  --       desc = "Buffer Lines",
+  --     },
+  --     {
+  --       "<leader>si",
+  --       function()
+  --         Snacks.picker.treesitter()
+  --       end,
+  --       desc = "Treesitter",
+  --     },
+  --     {
+  --       "<leader>sl",
+  --       function()
+  --         Snacks.picker({
+  --           multi = { "buffers", "recent" },
+  --           format = "file", -- use `file` format for all sources
+  --           matcher = {
+  --             cwd_bonus = true, -- boost cwd matches
+  --             frecency = true, -- use frecency boosting
+  --             sort_empty = true, -- sort even when the filter is empty
+  --           },
+  --           transform = "unique_file",
+  --         })
+  --       end,
+  --       desc = "Local Files",
+  --     },
+  --     {
+  --       "<leader>sP",
+  --       function()
+  --         Snacks.picker.files({ dirs = { vim.fs.joinpath(vim.fn.stdpath("data"), "lazy") }, title = "Lazy Plugins" })
+  --         -- require("fzf-lua").files({
+  --         --   ---@diagnostic disable-next-line: param-type-mismatch
+  --         --   cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy"),
+  --         -- })
+  --       end,
+  --       desc = "Vim Plugins",
+  --     },
+  --     {
+  --       "<C-k>",
+  --       function()
+  --         Snacks.picker.lsp_symbols()
+  --       end,
+  --       desc = "Goto Symbol",
+  --     },
+  -- {
+  --   "<C-l>",
+  --   function()
+  --     require("fzf-lua").buffers({
+  --       formatter = "path.filename_first",
+  --       previewer = false,
+  --       winopts = {
+  --         relative = "cursor",
+  --         row = 1.01,
+  --         col = 0,
+  --         height = 0.2,
+  --         width = 0.5,
+  --       },
+  --     })
+  --   end,
+  --   desc = "Buffers",
+  -- },
+  --     {
+  --       "<C-l>",
+  --       function()
+  --         Snacks.picker.buffers({ layout = { preset = "select" } })
+  --       end,
+  --       desc = "Buffers",
+  --     },
+  --   },
+  -- },
 
   -- Telescope
   -- {

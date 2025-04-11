@@ -73,29 +73,30 @@ end
 function M.fzfiles()
   local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
   if string.find(cwd, "fbsource") then
-    vim.notify("FzFiles: fbsource")
-    local fzf_lua = require("fzf-lua")
-    local opts = {}
-    opts.file_icons = true
-    opts.color_icons = true
-    opts.formatter = "path.filename_first"
-    opts.actions = fzf_lua.defaults.actions.files
-    opts.previewer = false
-    opts.fn_transform = function(x)
-      return fzf_lua.make_entry.file(x, opts)
-    end
-    opts.exec_empty_query = true
-    opts = require("fzf-lua.config").normalize_opts(opts, "files") or {}
-
-    require("fzf-lua").fzf_live(function(query)
-      if not query or query == "" or string.len(query) < 7 then
-        return "find . -not -path '*/.*' -type f -maxdepth 1"
+    local function get_cmd(query)
+      if not query or query == "" or string.len(query) < 1 then
+        return { cmd = "find", args = { ".", "-type", "f", "-maxdepth", "1", "!", "-name", ".*" } }
       end
-      return 'arc myles --list -n 25 "' .. query .. '"'
-    end, opts)
-    return
+      return { cmd = "arc", args = { "myles", "--list", "-n", "5", query } }
+    end
+    local function finder(opts, ctx)
+      return require("snacks.picker.source.proc").proc({
+        opts,
+        get_cmd(ctx.filter.search),
+      }, ctx)
+    end
+    Snacks.picker.pick({
+      format = "file",
+      finder = finder,
+      title = "FzFiles: fbsource",
+      live = true,
+      ---@param item snacks.picker.finder.Item
+      transform = function(item)
+        item.file = item.text
+      end,
+    })
   end
-  require("fzf-lua").files()
+  Snacks.picker.files()
 end
 
 function M.restart_all_lsp_servers()

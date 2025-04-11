@@ -63,15 +63,20 @@ return {
           -- Goto error if exists, else warning
           local errors = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
           if #errors > 0 then
-            vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+            vim.diagnostic.jump({ severity = vim.diagnostic.severity.ERROR })
           else
-            vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+            vim.diagnostic.jump({ severity = vim.diagnostic.severity.WARN })
           end
         end,
       }
       keys[#keys + 1] = { "<leader>E", vim.diagnostic.open_float }
       keys[#keys + 1] = { "<leader>sa", vim.lsp.buf.code_action, has = "codeAction" }
-      keys[#keys + 1] = { "<leader>sr", require("fzf-lua").lsp_references }
+      keys[#keys + 1] = {
+        "<leader>sr",
+        function()
+          Snacks.picker.lsp_references()
+        end,
+      }
       keys[#keys + 1] = { "<leader>rn", vim.lsp.buf.rename, has = "rename" }
       keys[#keys + 1] = { "<leader>cc", "<cmd>cclose<cr>", has = "rename" }
     end,

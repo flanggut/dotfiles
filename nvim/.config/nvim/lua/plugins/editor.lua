@@ -180,9 +180,7 @@ return {
           function()
             local dirname = require("oil").get_current_dir()
             require("oil").close()
-            require("fzf-lua").live_grep_native({
-              cwd = dirname,
-            })
+            Snacks.picker.grep({ dirs = { dirname } })
           end,
           mode = "n",
         },
