@@ -95,8 +95,9 @@ function M.fzfiles()
         item.file = item.text
       end,
     })
+  else
+    Snacks.picker.files()
   end
-  Snacks.picker.files()
 end
 
 function M.restart_all_lsp_servers()
