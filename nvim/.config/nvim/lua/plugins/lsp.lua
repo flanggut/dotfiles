@@ -1,11 +1,4 @@
 local clangd_binary = "clangd"
--- if vim.fn.isdirectory("/Users/flanggut/homebrew/opt/llvm") ~= 0 then
---   clangd_binary = "/Users/flanggut/homebrew/opt/llvm/bin/clangd"
--- end
--- if vim.fn.isdirectory("/Users/flanggut/homebrew/opt/llvm@19") ~= 0 then
---   clangd_binary = "/Users/flanggut/homebrew/opt/llvm@19/bin/clangd"
---   vim.notify("clangd: " .. clangd_binary)
--- end
 
 return {
   -- lspconfig
@@ -60,12 +53,21 @@ return {
       keys[#keys + 1] = {
         "<leader>e",
         function()
-          -- Goto error if exists, else warning
+          -- Goto error if exists, else warning, else hint
           local errors = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
           if #errors > 0 then
-            vim.diagnostic.jump({ severity = vim.diagnostic.severity.ERROR })
-          else
-            vim.diagnostic.jump({ severity = vim.diagnostic.severity.WARN })
+            vim.diagnostic.jump({ severity = vim.diagnostic.severity.ERROR, count = 1 })
+            return
+          end
+          local warnings = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+          if #warnings > 0 then
+            vim.diagnostic.jump({ severity = vim.diagnostic.severity.WARN, count = 1 })
+            return
+          end
+          local hints = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
+          if #hints > 0 then
+            vim.diagnostic.jump({ severity = vim.diagnostic.severity.HINT, count = 1 })
+            return
           end
         end,
       }
