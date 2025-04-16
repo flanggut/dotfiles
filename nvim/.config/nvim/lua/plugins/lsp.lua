@@ -1,4 +1,9 @@
 local clangd_binary = "clangd"
+local llvm_local_dir = os.getenv("HOME") .. "/homebrew/opt/llvm@18"
+if vim.fn.isdirectory(llvm_local_dir) ~= 0 then
+  clangd_binary = llvm_local_dir .. "/bin/clangd"
+  vim.notify(clangd_binary)
+end
 
 return {
   -- lspconfig
