@@ -306,14 +306,14 @@ return {
         function()
           require("loginspect").filter_lines()
         end,
-        desc = "",
+        desc = "Filter lines in current file.",
       },
       {
         "<leader>of",
         function()
           require("loginspect").filter_from_history()
         end,
-        desc = "",
+        desc = "Select line filter from history.",
       },
     },
     opts = {},
