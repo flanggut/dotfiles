@@ -1,27 +1,5 @@
 ---@diagnostic disable: inject-field
 return {
-  -- local development
-  {
-    dir = "~/github/loginspect.nvim/",
-    keys = {
-      {
-        "<leader>os",
-        function()
-          require("loginspect").filter_lines()
-        end,
-        desc = "",
-      },
-      {
-        "<leader>of",
-        function()
-          require("loginspect").filter_from_history()
-        end,
-        desc = "",
-      },
-    },
-    opts = {},
-  },
-
   -- which-key
   {
     "folke/which-key.nvim",
@@ -318,5 +296,26 @@ return {
       print_tag = "FLGG",
       display_counter = false,
     },
+  },
+
+  {
+    "flanggut/loginspect.nvim",
+    keys = {
+      {
+        "<leader>os",
+        function()
+          require("loginspect").filter_lines()
+        end,
+        desc = "",
+      },
+      {
+        "<leader>of",
+        function()
+          require("loginspect").filter_from_history()
+        end,
+        desc = "",
+      },
+    },
+    opts = {},
   },
 }
