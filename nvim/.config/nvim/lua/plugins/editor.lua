@@ -302,14 +302,14 @@ return {
     "flanggut/loginspect.nvim",
     keys = {
       {
-        "<leader>os",
+        "<leader>is",
         function()
           require("loginspect").filter_lines()
         end,
         desc = "Filter lines in current file.",
       },
       {
-        "<leader>of",
+        "<leader>if",
         function()
           require("loginspect").filter_from_history()
         end,
