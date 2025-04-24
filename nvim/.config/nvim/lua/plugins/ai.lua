@@ -10,6 +10,7 @@ local model = os.getenv("LLMODEL") or "llama3.3-70b-instruct"
 return {
   {
     "yetone/avante.nvim",
+    version = false,
     build = "make",
     keys = {
       { "<C-p>", "<cmd>AvanteToggle<cr>", mode = { "n", "i" }, desc = "Avante Toggle" },
@@ -29,6 +30,9 @@ return {
           endpoint = "https://" .. devserver .. ":8087/v1",
           api_key_name = "",
         },
+      },
+      ollama = {
+        model = "qwq:32b",
       },
       windows = {
         width = 50,
