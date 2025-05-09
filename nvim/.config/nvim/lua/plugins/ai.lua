@@ -17,10 +17,10 @@ return {
     },
     opts = {
       provider = provider,
-      cursor_applying_provider = provider,
+      -- cursor_applying_provider = provider,
       behaviour = {
         auto_suggestions = false,
-        enable_cursor_planning_mode = true,
+        -- enable_cursor_planning_mode = true,
       },
       vendors = {
         --@type AvanteProvider
@@ -29,6 +29,7 @@ return {
           model = model,
           endpoint = "https://" .. devserver .. ":8087/v1",
           api_key_name = "",
+          disable_tools = true,
         },
       },
       ollama = {

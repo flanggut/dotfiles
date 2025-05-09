@@ -65,6 +65,35 @@ return {
       { "<c-f>", false },
       { "<c-b>", false },
     },
+    opts = {
+      views = {
+        cmdline_popup = {
+          relative = "cursor",
+          position = {
+            row = 2,
+            col = 5,
+          },
+          size = {
+            width = 60,
+            height = "auto",
+          },
+        },
+        popupmenu = {
+          relative = "cursor",
+          position = {
+            row = 5,
+            col = 5,
+          },
+          size = {
+            width = 60,
+            height = 10,
+          },
+        },
+      },
+      presets = {
+        bottom_search = false,
+      },
+    },
   },
 
   -- better highlights based on vim modes
