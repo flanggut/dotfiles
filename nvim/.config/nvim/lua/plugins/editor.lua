@@ -206,9 +206,7 @@ return {
 
   {
     "mhinz/vim-signify",
-    keys = {
-      { "<leader>is", "<cmd>SignifyEnable<CR>", desc = "Enable Signify" },
-    },
+    cmd = { "SignifyEnable" },
   },
 
   -- CSV file support
@@ -279,18 +277,19 @@ return {
 
   {
     "flanggut/loginspect.nvim",
+    cmd = { "LineFilter", "LineFilterHistory", "LineFilterClearHistory" },
     keys = {
       {
-        "<leader>is",
+        "<leader>if",
         function()
-          require("loginspect").filter_lines()
+          R("loginspect").filter_lines()
         end,
         desc = "Filter lines in current file.",
       },
       {
-        "<leader>if",
+        "<leader>is",
         function()
-          require("loginspect").filter_from_history()
+          R("loginspect").filter_from_history()
         end,
         desc = "Select line filter from history.",
       },
