@@ -70,28 +70,38 @@ return {
         cmdline_popup = {
           relative = "cursor",
           position = {
-            row = 2,
-            col = 5,
+            row = 3,
+            col = 3,
+          },
+          size = {
+            min_width = 60,
+            width = "auto",
+            height = "auto",
+          },
+        },
+        cmdline_popupmenu = {
+          relative = "cursor",
+          position = {
+            row = 6,
+            col = 2,
           },
           size = {
             width = 60,
             height = "auto",
+            max_height = 15,
           },
-        },
-        popupmenu = {
-          relative = "cursor",
-          position = {
-            row = 5,
-            col = 5,
+          border = {
+            style = "rounded",
+            padding = { 0, 1 },
           },
-          size = {
-            width = 60,
-            height = 10,
+          win_options = {
+            winhighlight = { Normal = "Normal", FloatBorder = "NoiceCmdlinePopupBorder" },
           },
         },
       },
       presets = {
         bottom_search = false,
+        command_pallete = false,
       },
     },
   },
