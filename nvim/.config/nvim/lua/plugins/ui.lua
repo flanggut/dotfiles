@@ -68,10 +68,9 @@ return {
     opts = {
       views = {
         cmdline_popup = {
-          relative = "cursor",
           position = {
-            row = 3,
-            col = 3,
+            row = 30,
+            col = "50%",
           },
           size = {
             min_width = 60,
@@ -80,22 +79,14 @@ return {
           },
         },
         cmdline_popupmenu = {
-          relative = "cursor",
           position = {
-            row = 6,
-            col = 2,
+            row = 33,
+            col = "50%",
           },
           size = {
             width = 60,
             height = "auto",
             max_height = 15,
-          },
-          border = {
-            style = "rounded",
-            padding = { 0, 1 },
-          },
-          win_options = {
-            winhighlight = { Normal = "Normal", FloatBorder = "NoiceCmdlinePopupBorder" },
           },
         },
       },
