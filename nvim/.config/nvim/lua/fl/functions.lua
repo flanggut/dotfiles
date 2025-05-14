@@ -95,6 +95,8 @@ function M.fzfiles()
         item.file = item.text
       end,
     })
+  elseif string.find(cwd, "dotfiles") then
+    Snacks.picker.files({ hidden = true })
   else
     Snacks.picker.files()
   end

@@ -2,8 +2,7 @@ local ff = require("fl.functions")
 
 if ff.is_fb() then
   local editor_support_dir = os.getenv("EDITOR_SUPPORT")
-  if editor_support_dir == 0 then
-    vim.notify("No fb extenstions." .. arg, vim.log.levels.INFO)
+  if editor_support_dir == nil or editor_support_dir == "" then
     return {}
   end
   return {
