@@ -32,14 +32,14 @@ return {
     opts = {
       strategies = {
         chat = {
-          adapter = "ollama",
+          adapter = "localllm",
         },
         inline = {
-          adapter = "ollama",
+          adapter = "localllm",
         },
       },
       adapters = {
-        ollama = function()
+        localllm = function()
           if ff.is_fb() then
             return require("codecompanion.adapters").extend("openai_compatible", {
               name = "llama",
@@ -57,6 +57,7 @@ return {
           return require("codecompanion.adapters").extend("ollama", {
             schema = {
               model = {
+                -- default = "llama3.1:latest",
                 default = "qwen3:8b",
               },
               num_ctx = {
@@ -86,6 +87,9 @@ return {
       display = {
         action_palette = {
           provider = "snacks",
+        },
+        diff = {
+          provider = "mini.diff",
         },
       },
     },
