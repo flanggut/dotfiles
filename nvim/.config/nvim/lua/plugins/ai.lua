@@ -19,7 +19,16 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
-      { "echasnovski/mini.diff", version = "*", config = true },
+      {
+        "echasnovski/mini.diff",
+        version = "*",
+        opts = {
+          mappings = {
+            apply = "",
+            textobject = "",
+          },
+        },
+      },
     },
     event = "VeryLazy",
     keys = {

@@ -1,5 +1,14 @@
 local M = {}
 
+function M.reload_and_require(name)
+  if pcall(require, "plenary") then
+    require("plenary.reload").reload_module(name)
+    return require(name)
+  else
+    return nil
+  end
+end
+
 local lazy_util = require("lazy.core.util")
 
 local function is_tmux()

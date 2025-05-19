@@ -14,6 +14,22 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+--- Define some global helper functions
+function P(v)
+  vim.notify(vim.inspect(v))
+  return v
+end
+
+function R(name)
+  if pcall(require, "plenary") then
+    require("plenary.reload").reload_module(name)
+    return require(name)
+  else
+    return nil
+  end
+end
+
+--- Setup lazy
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
