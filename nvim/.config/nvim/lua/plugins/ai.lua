@@ -32,8 +32,9 @@ return {
     },
     event = "VeryLazy",
     keys = {
-      { "<C-p>", "<cmd>CodeCompanionChat Toggle<cr>", mode = { "n", "v", "i" }, desc = "AI Chat Toggle" },
+      { "<C-p>", "<cmd>CodeCompanionChat Toggle<cr>", mode = { "n" }, desc = "AI Chat Toggle" },
       { "ga", "<cmd>CodeCompanionChat Add<cr>", mode = { "v" }, desc = "AI Chat Add" },
+      { "gi", ":CodeCompanion ", mode = { "v" }, desc = "AI Inline" },
     },
     init = function()
       require("plugins.codecompanion.fidget-spinner"):init()
