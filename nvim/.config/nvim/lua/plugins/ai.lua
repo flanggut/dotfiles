@@ -9,9 +9,9 @@ vim.cmd([[cab cc CodeCompanion]])
 return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
-    ft = { "markdown", "codecompanion" },
+    ft = { "markdown", "codecompanion", "Avante" },
     opts = {
-      file_types = { "markdown", "codecompanion" },
+      file_types = { "markdown", "codecompanion", "Avante" },
     },
   },
   {
@@ -37,7 +37,7 @@ return {
       { "gi", ":CodeCompanion ", mode = { "v" }, desc = "AI Inline" },
     },
     init = function()
-      require("plugins.codecompanion.fidget-spinner"):init()
+      require("plugins.codecompanion.fidget-spinner")
     end,
     opts = {
       strategies = {
@@ -67,8 +67,7 @@ return {
           return require("codecompanion.adapters").extend("ollama", {
             schema = {
               model = {
-                -- default = "llama3.1:latest",
-                default = "qwen3:8b",
+                default = "qwen3:14b",
               },
               num_ctx = {
                 default = 20000,
@@ -76,45 +75,26 @@ return {
             },
           })
         end,
-        -- openai = function()
-        --   return require("codecompanion.adapters").extend("openai", {
-        --     opts = {
-        --       stream = true,
-        --     },
-        --     env = {
-        --       api_key = "cmd:op read op://personal/openai_api/credential --no-newline",
-        --     },
-        --     schema = {
-        --       model = {
-        --         default = function()
-        --           return "gpt-4.1"
-        --         end,
-        --       },
-        --     },
-        --   })
-        -- end,
       },
       display = {
         action_palette = {
           provider = "snacks",
         },
         diff = {
-          provider = "mini.diff",
+          provider = "mini_diff",
         },
       },
     },
   },
-
-  -- {
-  --   "yetone/avante.nvim",
+  -- { "yetone/avante.nvim",
   --   version = false,
   --   build = "make",
   --   keys = {
   --     { "<C-p>", "<cmd>AvanteToggle<cr>", mode = { "n", "i" }, desc = "Avante Toggle" },
   --   },
   --   opts = {
-  --     provider = "mate",
-  --     cursor_applying_provider = "mate",
+  --     provider = "ollama",
+  --     cursor_applying_provider = "ollama",
   --     behaviour = {
   --       auto_suggestions = false,
   --       enable_cursor_planning_mode = true,
@@ -130,19 +110,11 @@ return {
   --       },
   --     },
   --     ollama = {
-  --       model = "qwq:32b",
+  --       model = "qwen3:14b",
   --     },
   --     windows = {
   --       width = 50,
   --     },
-  --   },
-  -- },
-  -- {
-  --   -- Make sure to set this up properly if you have lazy=true
-  --   "MeanderingProgrammer/render-markdown.nvim",
-  --   ft = { "markdown", "Avante" },
-  --   opts = {
-  --     file_types = { "markdown", "Avante" },
   --   },
   -- },
 }
