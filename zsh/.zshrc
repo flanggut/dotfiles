@@ -50,6 +50,7 @@ alias jl=just-fzf-and-run
 alias vim=nvim
 alias ls="ls --color"
 alias la="ls --color -la"
+alias lr="ls --color -lat | head -n10"
 
 #     Git + HG commands    #
 alias shows="hg show --stat"
@@ -65,6 +66,15 @@ alias jfs3="jf s -r .^^..."
 alias jfs4="jf s -r .^^^..."
 alias jfs5="jf s -r .^^^^..."
 alias qd="adb devices && maui q d"
+
+# yazi
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
 
 sml() {
    if is_git; then git sl; else hg fsl; fi

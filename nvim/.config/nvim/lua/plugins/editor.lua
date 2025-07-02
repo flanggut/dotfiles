@@ -87,6 +87,14 @@ return {
         end,
         desc = "Replace in files (grug-far)",
       },
+      {
+        "gl",
+        mode = { "v" },
+        function()
+          require("grug-far").with_visual_selection({ prefills = { paths = vim.fn.expand("%") } })
+        end,
+        desc = "Replace in files (grug-far)",
+      },
     },
   },
 
@@ -172,6 +180,12 @@ return {
     ---@module 'oil'
     ---@type oil.SetupOpts
     opts = {
+      columns = {
+        "icon",
+        -- "permissions",
+        "size",
+        -- "mtime",
+      },
       keymaps = {
         -- See :help oil-actions for a list of all available actions
         ["l"] = { "actions.select", mode = "n" },
