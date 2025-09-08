@@ -5,6 +5,7 @@ return {
     dependencies = {
       "nvim-treesitter/nvim-treesitter-refactor",
     },
+    opts_extend = {},
     opts = {
       ensure_installed = {
         "bash",
