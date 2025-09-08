@@ -1,5 +1,5 @@
 local clangd_binary = "clangd"
-local llvm_local_dir = os.getenv("HOME") .. "/homebrew/opt/llvm@20"
+local llvm_local_dir = os.getenv("HOME") .. "/homebrew/opt/llvm@19"
 if vim.fn.isdirectory(llvm_local_dir) ~= 0 then
   clangd_binary = llvm_local_dir .. "/bin/clangd"
   vim.notify(clangd_binary)
@@ -12,7 +12,6 @@ return {
     version = false,
     ---@class PluginLspOpts
     opts = {
-      inlay_hints = { enabled = false },
       servers = {
         clangd = {
           cmd = {
@@ -44,6 +43,7 @@ return {
           return false
         end,
       },
+      inlay_hints = { enabled = false },
     },
   },
   -- Keymap configurations.

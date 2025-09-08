@@ -52,6 +52,11 @@ return {
         desc = "Buffers",
       },
     },
+    opts = {
+      bigfile = {
+        line_length = 100000, -- average line length (useful for minified files)
+      },
+    },
   },
 }
 -- History of old pickers

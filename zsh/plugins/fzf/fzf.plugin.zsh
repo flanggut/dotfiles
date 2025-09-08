@@ -17,6 +17,23 @@ function __fzf_reverse_history_search() {
   zle reset-prompt
 }
 
+# fzf-history()
+# {
+#   local load delete
+#
+#   load='tac "${HOME}/.zsh_history"'
+#   delete='read delete_string; sed -i "/^${delete_string}$/d" "${HOME}/.zsh_history"'
+#
+#   export load delete
+#
+#   local -a fzf_opts=(
+#     "--bind" 'start:reload(sh -c "$load")'
+#     "--bind" 'del:execute(echo {} | sh -c "$delete")+reload(sh -c "$load")'
+#   )
+#
+#   selection=$(fzf "${fzf_opts[@]}")
+# }
+
 function __fzf_hg() {
 
     # Extract hg commit hashes and run fzf to select commit. Selecting a commit prints hash on commandline.
