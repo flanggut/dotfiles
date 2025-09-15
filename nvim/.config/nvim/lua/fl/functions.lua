@@ -111,6 +111,50 @@ function M.fzfiles()
   end
 end
 
+--- @param path? string
+function M.grep_in_directory(path)
+  local cwd = vim.fn.expand(vim.fn.getcwd()) or "~"
+  path = path or cwd
+  if string.find(path, "fbsource") then
+    if path:find(cwd .. "/", 1, true) == 1 and #path > #cwd then
+      path = path:sub(#cwd + 2)
+    end
+    local function finder(opts, ctx)
+      return require("snacks.picker.source.proc").proc({
+        opts,
+        {
+          cmd = "xbgs",
+          args = { "-i", ctx.filter.search, "-f", ".*" .. path .. ".*" },
+          ---@param item snacks.picker.finder.Item
+          transform = function(item)
+            item.cwd = os.getenv("HOME") or "~/"
+            local file, line, col, text = item.text:match("^(.+):(%d+):(%d+):(.*)$")
+            if not file then
+              if not item.text:match("WARNING") then
+                Snacks.notify.error("invalid grep output:\n" .. item.text)
+              end
+              return false
+            else
+              item.line = text
+              item.file = file
+              item.pos = { tonumber(line), tonumber(col) - 1 }
+            end
+          end,
+        },
+      }, ctx)
+    end
+    Snacks.picker.pick({
+      format = "file",
+      finder = finder,
+      title = "Biggrep: fbsource",
+      live = true,
+      supports_live = true,
+    })
+  else
+    Snacks.picker.grep({ dirs = { path } })
+  end
+end
+
 function M.restart_all_lsp_servers()
   for _, client in ipairs(vim.lsp.get_clients()) do
     if client then

@@ -201,7 +201,7 @@ return {
           function()
             local dirname = require("oil").get_current_dir()
             require("oil").close()
-            Snacks.picker.grep({ dirs = { dirname } })
+            require("fl.functions").grep_in_directory(dirname)
           end,
           mode = "n",
         },
