@@ -68,6 +68,7 @@ alias jfs3="jf s -r .^^..."
 alias jfs4="jf s -r .^^^..."
 alias jfs5="jf s -r .^^^^..."
 alias qd="adb devices && maui q d"
+alias sll="sl pull"
 
 # yazi
 function y() {
