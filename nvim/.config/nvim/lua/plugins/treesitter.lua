@@ -2,9 +2,6 @@ return {
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-refactor",
-    },
     opts_extend = {},
     opts = {
       ensure_installed = {
@@ -22,7 +19,6 @@ return {
         "markdown_inline",
         "printf",
         "python",
-        "query",
         "regex",
         "toml",
         "tsx",

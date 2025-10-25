@@ -134,7 +134,7 @@ return {
 
   -- mini
   {
-    "echasnovski/mini.nvim",
+    "nvim-mini/mini.nvim",
     version = false,
     event = "BufRead",
     config = function()
@@ -173,7 +173,7 @@ return {
   -- file explorer
   {
     "stevearc/oil.nvim",
-    dependencies = { { "echasnovski/mini.icons", opts = {} } },
+    dependencies = { { "nvim-mini/mini.icons", opts = {} } },
     event = "VeryLazy",
     keys = {
       {
@@ -219,6 +219,7 @@ return {
         ["<esc><esc>"] = { "actions.close", mode = "n" },
       },
       float = {
+        border = "rounded",
         max_width = 0.5,
         max_height = 0.6,
       },

@@ -52,9 +52,32 @@ return {
 
   {
     "folke/edgy.nvim",
-    opts = {
-      exit_when_last = true,
-    },
+    event = "VeryLazy",
+    init = function()
+      vim.opt.laststatus = 3
+      vim.opt.splitkeep = "screen"
+    end,
+    ---@module 'edgy'
+    ---@param opts Edgy.Config
+    opts = function(_, opts)
+      opts.options = {
+        right = { size = 0.5 },
+      }
+      for _, pos in ipairs({ "top", "bottom", "left", "right" }) do
+        opts[pos] = opts[pos] or {}
+        table.insert(opts[pos], {
+          ft = "snacks_terminal",
+          size = { height = 0.4, width = 0.4 },
+          title = "%{b:snacks_terminal.id}: %{b:term_title}",
+          filter = function(_, win) -- buf, win
+            return vim.w[win].snacks_win
+              and vim.w[win].snacks_win.position == pos
+              and vim.w[win].snacks_win.relative == "editor"
+              and not vim.w[win].trouble_preview
+          end,
+        })
+      end
+    end,
   },
 
   -- noice
@@ -149,7 +172,6 @@ return {
       vim.keymap.set("n", "gh", ":BufferLineCyclePrev<CR>", { noremap = true, silent = true })
       vim.keymap.set("n", "gl", ":BufferLineCycleNext<CR>", { noremap = true, silent = true })
       vim.keymap.set("n", "gq", ":BufferLinePickClose<CR>", { noremap = true, silent = true })
-      vim.keymap.set("n", "gp", ":BufferLinePick<CR>", { noremap = true, silent = true })
     end,
   },
 
