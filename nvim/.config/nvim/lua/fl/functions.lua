@@ -264,8 +264,6 @@ function M.file_runner()
     })
     local float = M.float_cmd(command)
     is_running = false
-    local lines = vim.api.nvim_buf_get_lines(float.buf, 0, -1, true)
-    vim.fn.writefile(lines, "/tmp/nvim_logger.log")
   else
     vim.notify("No runner available.", vim.log.levels.WARN)
   end
