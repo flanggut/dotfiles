@@ -158,7 +158,8 @@ end
 function M.restart_all_lsp_servers()
   for _, client in ipairs(vim.lsp.get_clients()) do
     if client then
-      client.stop()
+      ---@diagnostic disable-next-line: param-type-mismatch
+      client.stop(true)
       vim.defer_fn(function()
         require("lspconfig")[client.name].launch()
       end, 500)
@@ -200,7 +201,9 @@ function M.generate_compile_commands(all_files)
           local bufnr = vim.uri_to_bufnr(uri)
           for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
             if client and client.name == "clangd" then
-              client.notify("textDocument/didChange", {
+              local notify = "textDocument/didChange"
+              ---@diagnostic disable-next-line: param-type-mismatch
+              client.notify(notify, {
                 textDocument = {
                   uri = uri,
                   version = vim.lsp.util.buf_versions[bufnr] + 1,
