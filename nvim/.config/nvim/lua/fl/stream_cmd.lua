@@ -1,5 +1,8 @@
 local M = {}
 
+-- Define highlight group for marked lines
+vim.api.nvim_set_hl(0, "StreamCmdMark", { bg = "#F2E9E1" })
+
 -- History storage module
 local History = {}
 local HISTORY_FILE = vim.fn.stdpath("data") .. "/stream_cmd_filter_history.json"
@@ -105,6 +108,10 @@ function StreamState:new(opts)
     filter_bufnr = nil,
     filter_winnr = nil,
     job_id = nil,
+    marked_lines = {}, -- Set of marked line contents
+    marks_bufnr = nil,
+    marks_winnr = nil,
+    marks_ns = vim.api.nvim_create_namespace("stream_cmd_marks"),
   }
   setmetatable(state, StreamState)
   return state
@@ -168,6 +175,112 @@ function StreamState:open_filter_window()
   vim.api.nvim_win_set_buf(0, self.filter_bufnr)
   self.filter_winnr = vim.api.nvim_get_current_win()
   vim.cmd("startinsert")
+end
+
+-- Marks window management functions
+
+function StreamState:create_marks_window()
+  -- Create marks buffer
+  self.marks_bufnr = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_name(self.marks_bufnr, "[Marked Lines]")
+  vim.bo[self.marks_bufnr].buftype = "nofile"
+  vim.bo[self.marks_bufnr].swapfile = false
+  vim.bo[self.marks_bufnr].bufhidden = "hide"
+
+  if self.opts.filetype ~= "" then
+    vim.bo[self.marks_bufnr].filetype = self.opts.filetype
+  end
+
+  -- Focus the output window first
+  if vim.api.nvim_win_is_valid(self.winnr) then
+    vim.api.nvim_set_current_win(self.winnr)
+  end
+
+  -- Create horizontal split below only the output window (not botright)
+  vim.cmd("belowright 8split")
+  vim.api.nvim_win_set_buf(0, self.marks_bufnr)
+  self.marks_winnr = vim.api.nvim_get_current_win()
+
+  -- Return focus to filter window if enabled, otherwise output window
+  if self.opts.enable_filter and self.filter_winnr and vim.api.nvim_win_is_valid(self.filter_winnr) then
+    vim.api.nvim_set_current_win(self.filter_winnr)
+    vim.cmd("startinsert")
+  elseif vim.api.nvim_win_is_valid(self.winnr) then
+    vim.api.nvim_set_current_win(self.winnr)
+  end
+end
+
+function StreamState:update_marks_window()
+  if not self.marks_bufnr or not vim.api.nvim_buf_is_valid(self.marks_bufnr) then
+    return
+  end
+
+  vim.schedule(function()
+    if not vim.api.nvim_buf_is_valid(self.bufnr) or not vim.api.nvim_buf_is_valid(self.marks_bufnr) then
+      return
+    end
+
+    -- Get all displayed lines from output buffer
+    local displayed_lines = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, false)
+    local marked_display = {}
+
+    -- Collect marked lines in display order
+    for _, line in ipairs(displayed_lines) do
+      if self.marked_lines[line] then
+        table.insert(marked_display, line)
+      end
+    end
+
+    -- Update marks buffer
+    vim.bo[self.marks_bufnr].modifiable = true
+    vim.api.nvim_buf_set_lines(self.marks_bufnr, 0, -1, false, marked_display)
+    vim.bo[self.marks_bufnr].modifiable = false
+  end)
+end
+
+function StreamState:update_marks_highlights()
+  if not vim.api.nvim_buf_is_valid(self.bufnr) then
+    return
+  end
+
+  vim.schedule(function()
+    if not vim.api.nvim_buf_is_valid(self.bufnr) then
+      return
+    end
+
+    -- Clear existing highlights
+    vim.api.nvim_buf_clear_namespace(self.bufnr, self.marks_ns, 0, -1)
+
+    -- Get all displayed lines
+    local displayed_lines = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, false)
+
+    -- Apply highlights to marked lines
+    for line_num, line_content in ipairs(displayed_lines) do
+      if self.marked_lines[line_content] then
+        vim.api.nvim_buf_add_highlight(self.bufnr, self.marks_ns, "StreamCmdMark", line_num - 1, 0, -1)
+      end
+    end
+  end)
+end
+
+function StreamState:toggle_mark()
+  local line_num = vim.api.nvim_win_get_cursor(self.winnr)[1]
+  local line_content = vim.api.nvim_buf_get_lines(self.bufnr, line_num - 1, line_num, false)[1]
+
+  if not line_content then
+    return
+  end
+
+  -- Toggle mark
+  if self.marked_lines[line_content] then
+    self.marked_lines[line_content] = nil
+  else
+    self.marked_lines[line_content] = true
+  end
+
+  -- Update highlights and marks window
+  self:update_marks_highlights()
+  self:update_marks_window()
 end
 
 -- Filter application functions
@@ -283,6 +396,8 @@ function StreamState:apply_filters()
     vim.bo[self.bufnr].modifiable = false
 
     self:auto_scroll()
+    self:update_marks_highlights()
+    self:update_marks_window()
   end)
 end
 
@@ -325,6 +440,8 @@ function StreamState:append_to_output_buffer(lines)
 
   vim.bo[self.bufnr].modifiable = false
   self:auto_scroll()
+  self:update_marks_highlights()
+  self:update_marks_window()
 end
 
 function StreamState:handle_output(data)
@@ -430,6 +547,17 @@ function StreamState:setup_cleanup_keybinding()
   if self.opts.enable_filter and self.filter_bufnr then
     vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.filter_bufnr, nowait = true })
   end
+
+  if self.marks_bufnr then
+    vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.marks_bufnr, nowait = true })
+  end
+end
+
+function StreamState:setup_marks_keybinding()
+  -- Add 'm' key to toggle marks in output buffer
+  vim.keymap.set("n", "m", function()
+    self:toggle_mark()
+  end, { buffer = self.bufnr, nowait = true, desc = "Toggle line mark" })
 end
 
 function StreamState:cleanup()
@@ -450,11 +578,17 @@ function StreamState:cleanup()
   end
 
   if self.bufnr and vim.api.nvim_buf_is_valid(self.bufnr) then
+    -- Clear marks namespace before deleting buffer
+    vim.api.nvim_buf_clear_namespace(self.bufnr, self.marks_ns, 0, -1)
     vim.api.nvim_buf_delete(self.bufnr, { force = true })
   end
 
   if self.opts.enable_filter and self.filter_bufnr and vim.api.nvim_buf_is_valid(self.filter_bufnr) then
     vim.api.nvim_buf_delete(self.filter_bufnr, { force = true })
+  end
+
+  if self.marks_bufnr and vim.api.nvim_buf_is_valid(self.marks_bufnr) then
+    vim.api.nvim_buf_delete(self.marks_bufnr, { force = true })
   end
 end
 
@@ -567,10 +701,12 @@ function M.run(cmd, opts)
   -- Setup windows
   state:open_output_window()
   state:open_filter_window()
+  state:create_marks_window()
 
   -- Setup keybindings
   state:setup_window_navigation()
   state:setup_cleanup_keybinding()
+  state:setup_marks_keybinding()
 
   -- Setup filter autocmds
   state:setup_filter_autocmds()
