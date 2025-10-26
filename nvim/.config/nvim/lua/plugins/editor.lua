@@ -33,6 +33,11 @@ return {
           desc = "Open in browser",
         },
         { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
+        {
+          "<leader>if",
+          "<cmd>lua R('fl.functions').stream_cmd('ls -la')<CR>",
+          desc = "Stream ls output",
+        },
         --
         { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
         { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", desc = "Runner" },

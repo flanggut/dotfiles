@@ -262,11 +262,19 @@ function M.file_runner()
         return is_running
       end,
     })
-    local float = M.float_cmd(command)
+    M.float_cmd(command)
     is_running = false
   else
     vim.notify("No runner available.", vim.log.levels.WARN)
   end
+end
+
+--- Runs a shell command in the background and streams output to a new buffer
+---@param cmd string|string[] Command to run (string for shell command, table for direct execution)
+---@param opts? {split?: "horizontal"|"vertical"|"tab"|"fullscreen", size?: number, filetype?: string, bufname?: string, enable_filter?: boolean}
+---@return number bufnr, number job_id
+function M.stream_cmd(cmd, opts)
+  return R("fl.stream_cmd").run(cmd, opts)
 end
 
 return M
