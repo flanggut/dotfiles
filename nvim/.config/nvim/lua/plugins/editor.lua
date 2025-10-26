@@ -301,35 +301,4 @@ return {
       })
     end,
   },
-
-  {
-    "flanggut/loginspect.nvim",
-    cmd = { "LineFilter", "LineFilterHistory", "LineFilterClearHistory", "LineFilterRun" },
-    keys = {
-      {
-        "<leader>if",
-        function()
-          R("loginspect").filter_lines()
-        end,
-        desc = "Filter lines in current file.",
-      },
-      {
-        "<leader>is",
-        function()
-          R("loginspect").filter_from_history()
-        end,
-        desc = "Select line filter from history.",
-      },
-      {
-        "<leader>il",
-        function()
-          Snacks.picker.select({ "adb logcat" }, { prompt = "Select command" }, function(command)
-            R("loginspect").run_async_command(vim.split(command, "%s+"))
-          end)
-        end,
-        desc = "Select line filter from history.",
-      },
-    },
-    opts = {},
-  },
 }

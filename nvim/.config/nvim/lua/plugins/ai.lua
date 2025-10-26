@@ -37,7 +37,7 @@ return {
               function(self)
                 self:hide()
               end,
-              mode = "n",
+              mode = "t",
               desc = "Hide",
             },
           },

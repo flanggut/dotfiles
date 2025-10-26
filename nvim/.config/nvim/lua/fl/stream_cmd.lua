@@ -201,6 +201,9 @@ function StreamState:create_marks_window()
   vim.api.nvim_win_set_buf(0, self.marks_bufnr)
   self.marks_winnr = vim.api.nvim_get_current_win()
 
+  -- Setup auto-resize for marks window
+  self:setup_marks_autoresize()
+
   -- Return focus to filter window if enabled, otherwise output window
   if self.opts.enable_filter and self.filter_winnr and vim.api.nvim_win_is_valid(self.filter_winnr) then
     vim.api.nvim_set_current_win(self.filter_winnr)
@@ -208,6 +211,35 @@ function StreamState:create_marks_window()
   elseif vim.api.nvim_win_is_valid(self.winnr) then
     vim.api.nvim_set_current_win(self.winnr)
   end
+end
+
+function StreamState:setup_marks_autoresize()
+  if not self.marks_winnr or not vim.api.nvim_win_is_valid(self.marks_winnr) then
+    return
+  end
+
+  local original_height = 8
+  local expanded_height = 42
+
+  -- Autocmd to expand when entering marks window
+  vim.api.nvim_create_autocmd("WinEnter", {
+    buffer = self.marks_bufnr,
+    callback = function()
+      if vim.api.nvim_win_is_valid(self.marks_winnr) then
+        vim.api.nvim_win_set_height(self.marks_winnr, expanded_height)
+      end
+    end,
+  })
+
+  -- Autocmd to shrink when leaving marks window
+  vim.api.nvim_create_autocmd("WinLeave", {
+    buffer = self.marks_bufnr,
+    callback = function()
+      if vim.api.nvim_win_is_valid(self.marks_winnr) then
+        vim.api.nvim_win_set_height(self.marks_winnr, original_height)
+      end
+    end,
+  })
 end
 
 function StreamState:update_marks_window()
@@ -543,13 +575,16 @@ function StreamState:setup_cleanup_keybinding()
   end
 
   vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.bufnr, nowait = true })
+  vim.keymap.set("n", "q", cleanup, { buffer = self.bufnr, nowait = true })
 
   if self.opts.enable_filter and self.filter_bufnr then
     vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.filter_bufnr, nowait = true })
+    vim.keymap.set("n", "q", cleanup, { buffer = self.filter_bufnr, nowait = true })
   end
 
   if self.marks_bufnr then
     vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.marks_bufnr, nowait = true })
+    vim.keymap.set("n", "q", cleanup, { buffer = self.marks_bufnr, nowait = true })
   end
 end
 
@@ -573,10 +608,33 @@ function StreamState:cleanup()
     History.add(filters)
   end
 
+  -- Stop the running job
   if self.job_id then
     vim.fn.jobstop(self.job_id)
   end
 
+  -- Close all windows explicitly before deleting buffers
+  if self.marks_winnr and vim.api.nvim_win_is_valid(self.marks_winnr) then
+    vim.api.nvim_win_close(self.marks_winnr, true)
+  end
+
+  if self.filter_winnr and vim.api.nvim_win_is_valid(self.filter_winnr) then
+    vim.api.nvim_win_close(self.filter_winnr, true)
+  end
+
+  if self.winnr and vim.api.nvim_win_is_valid(self.winnr) then
+    -- This is the last window - don't close it, just switch to alternate buffer
+    -- This prevents accidentally closing Neovim
+    vim.api.nvim_set_current_win(self.winnr)
+    -- Try to switch to previous buffer, or create a new empty one
+    vim.cmd("silent! buffer #")
+    if vim.api.nvim_win_get_buf(self.winnr) == self.bufnr then
+      -- If we're still in the stream buffer, create a new empty buffer
+      vim.cmd("enew")
+    end
+  end
+
+  -- Delete buffers after windows are closed
   if self.bufnr and vim.api.nvim_buf_is_valid(self.bufnr) then
     -- Clear marks namespace before deleting buffer
     vim.api.nvim_buf_clear_namespace(self.bufnr, self.marks_ns, 0, -1)
@@ -589,6 +647,10 @@ function StreamState:cleanup()
 
   if self.marks_bufnr and vim.api.nvim_buf_is_valid(self.marks_bufnr) then
     vim.api.nvim_buf_delete(self.marks_bufnr, { force = true })
+  end
+
+  if vim.api.nvim_get_mode().mode == "i" then
+    vim.cmd("stopinsert")
   end
 end
 
