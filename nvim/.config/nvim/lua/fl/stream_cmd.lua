@@ -528,7 +528,8 @@ function StreamState:show_history_picker()
     ---@diagnostic disable-next-line: assign-type-mismatch
     layout = { preview = false },
     ---@param item {text: string, filters: string[]}
-    confirm = function(item)
+    confirm = function(picker, item)
+      picker:close()
       if item and item.filters then
         -- Populate filter buffer with selected filters
         vim.api.nvim_buf_set_lines(self.filter_bufnr, 0, -1, false, item.filters)

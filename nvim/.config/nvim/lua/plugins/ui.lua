@@ -3,8 +3,8 @@ return {
   {
     "folke/snacks.nvim",
     keys = {
-      { "<c-s>", mode = { "n" }, "<cmd>lua Snacks.dashboard()<cr>", desc = "Dashboard" },
-      { "<leader>q", mode = { "n" }, "<cmd>lua Snacks.bufdelete()<CR>", desc = "Delete buffer" },
+      { "<c-s>",             mode = { "n" }, "<cmd>lua Snacks.dashboard()<cr>",             desc = "Dashboard" },
+      { "<leader>q",         mode = { "n" }, "<cmd>lua Snacks.bufdelete()<CR>",             desc = "Delete buffer" },
       { "<leader><leader>n", mode = { "n" }, "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
     },
     ---@type snacks.Config
@@ -23,6 +23,7 @@ return {
             { icon = "󰒲 ", key = "y", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "x", desc = "Lazy Extras", action = ":LazyExtras" },
             { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+            { icon = " ", key = "o", desc = "adb logcat", action = ":lua R('fl.functions').stream_cmd('adb logcat')" },
             { icon = "󰌑 ", key = "<c-s>", desc = "Hide Dashboard", action = "" },
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
@@ -71,9 +72,9 @@ return {
           title = "%{b:snacks_terminal.id}: %{b:term_title}",
           filter = function(_, win) -- buf, win
             return vim.w[win].snacks_win
-              and vim.w[win].snacks_win.position == pos
-              and vim.w[win].snacks_win.relative == "editor"
-              and not vim.w[win].trouble_preview
+                and vim.w[win].snacks_win.position == pos
+                and vim.w[win].snacks_win.relative == "editor"
+                and not vim.w[win].trouble_preview
           end,
         })
       end
@@ -263,8 +264,8 @@ return {
             { "filename", padding = { left = 1, right = 1 } },
           },
           lualine_x = {
-            { added, color = { fg = palette.pine }, separator = {} },
-            { removed, color = { fg = palette.love }, separator = {} },
+            { added,    color = { fg = palette.pine }, separator = {} },
+            { removed,  color = { fg = palette.love }, separator = {} },
             { modified, color = { fg = palette.foam } },
             -- { "diff", symbols = {added = " " , removed = " ", modified = "柳"} },
             "filetype",
