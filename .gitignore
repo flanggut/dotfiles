@@ -8,4 +8,4 @@ fish/.config/fish/functions/*
 nvim/.config/nvim/lazy-lock.json
 nvim/.config/nvim/sessions/*
 kitty/.config/kitty/kitty.conf.bak
-
+karabiner/.config/karabiner/automatic_backups/*
