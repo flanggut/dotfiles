@@ -168,8 +168,8 @@ export LS_COLORS
 
 ### History
 HISTSIZE=100000000
-HISTFILE=~/.zsh_history
 SAVEHIST=$HISTSIZE
+HISTFILE=~/.zsh_history_fl
 HISTDUP=erase
 # To save every command before it is executed
 setopt inc_append_history
