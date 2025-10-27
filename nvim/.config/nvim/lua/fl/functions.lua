@@ -182,7 +182,7 @@ function M.generate_compile_commands(all_files)
   filename = filename or "all"
   ---@diagnostic disable-next-line: missing-fields
   Job:new({
-    command = "commands_for_file.py",
+    command = "compile_commands_for_file.py",
     args = args,
     cwd = "~/fbsource",
     on_start = function()
