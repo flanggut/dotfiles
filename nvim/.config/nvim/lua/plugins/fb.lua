@@ -3,13 +3,14 @@ local ff = require("fl.functions")
 if ff.is_fb() then
   local editor_support_dir = os.getenv("EDITOR_SUPPORT")
   if editor_support_dir == nil or editor_support_dir == "" then
+    vim.notify("EDITOR_SUPPORT not defined", vim.log.levels.WARN)
     return {}
   end
   return {
     {
       dir = editor_support_dir,
       name = "meta.nvim",
-      dependencies = { "jose-elias-alvarez/null-ls.nvim" },
+      -- dependencies = { "jose-elias-alvarez/null-ls.nvim" },
       event = "VeryLazy",
       config = function()
         require("meta.cmds")
