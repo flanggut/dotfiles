@@ -120,11 +120,13 @@ function M.grep_in_directory(path)
       path = path:sub(#cwd + 2)
     end
     local function finder(opts, ctx)
+      local cmd = "xbgs"
+      local args = { "-i", ctx.filter.search, "-f", "^fbsource/" .. path }
       return require("snacks.picker.source.proc").proc({
         opts,
         {
-          cmd = "xbgs",
-          args = { "-i", ctx.filter.search, "-f", ".*" .. path .. ".*" },
+          cmd = cmd,
+          args = args,
           ---@param item snacks.picker.finder.Item
           transform = function(item)
             item.cwd = os.getenv("HOME") or "~/"
@@ -146,9 +148,8 @@ function M.grep_in_directory(path)
     Snacks.picker.pick({
       format = "file",
       finder = finder,
-      title = "Biggrep: fbsource",
+      title = "Biggrep: " .. path,
       live = true,
-      supports_live = true,
     })
   else
     Snacks.picker.grep({ dirs = { path } })
