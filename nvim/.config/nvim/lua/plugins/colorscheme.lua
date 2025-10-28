@@ -1,14 +1,4 @@
 return {
-  -- gruvbox-material
-  {
-    -- "sainnhe/gruvbox-material",
-    -- name = "gruvbox-material",
-    -- lazy = false,
-    -- priority = 1000,
-    -- config = function()
-    --   vim.cmd("colorscheme gruvbox-material")
-    -- end,
-  },
   {
     "rose-pine/neovim",
     name = "rose-pine",
