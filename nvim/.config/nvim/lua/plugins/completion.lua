@@ -6,9 +6,6 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
-      enabled = function()
-        return not vim.tbl_contains({ "AvanteInput" }, vim.bo.filetype)
-      end,
       completion = {
         trigger = {
           -- List of trigger characters (on top of `show_on_blocked_trigger_characters`) that won't trigger

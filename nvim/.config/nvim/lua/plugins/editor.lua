@@ -6,9 +6,9 @@ return {
     opts = {
       plugins = { spelling = true },
       spec = {
-        { "<leader>x", "gcc", mode = "n", noremap = false, nowait = true },
-        { "<leader>x", "gc", mode = "v", noremap = false, nowait = true },
-        { "<leader>f", "<cmd>LazyFormat<CR>", desc = "Format" },
+        { "<leader>x",  "gcc",                                                        mode = "n",               noremap = false, nowait = true },
+        { "<leader>x",  "gc",                                                         mode = "v",               noremap = false, nowait = true },
+        { "<leader>f",  "<cmd>LazyFormat<CR>",                                        desc = "Format" },
         { "<leader>cd", "<cmd>lua R('fl.functions').generate_compile_commands()<CR>", desc = "Compile commands" },
         {
           "<leader>cD",
@@ -32,16 +32,28 @@ return {
           "<cmd>lua R('fl.functions').open_in_browser()<CR>",
           desc = "Open in browser",
         },
-        { "<leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
+        { "<leader>p",         "<cmd>w<CR><cmd>lua R('fl.functions').file_runner()<CR>", desc = "Runner" },
         {
           "<leader>if",
-          "<cmd>lua R('fl.functions').stream_cmd('ls -la')<CR>",
+          "<cmd>lua R('fl.functions').stream_cmd()<CR>",
           desc = "Stream ls output",
         },
-        --
-        { "<leader><leader>l", "<cmd>LspRestart<CR>", desc = "Restart LSP servers" },
-        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>", desc = "Runner" },
-        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>", desc = "Reload snippets" },
+        {
+          "<leader>dm",
+          function()
+            Snacks.terminal.toggle("dmt", {
+              win = {
+                position = "right",
+                width = 0.8,
+                height = 1.0,
+              }
+            })
+          end,
+          desc = "Restart LSP servers"
+        },
+        { "<leader><leader>l", "<cmd>LspRestart<CR>",                                    desc = "Restart LSP servers" },
+        { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>",  desc = "Runner" },
+        { "<leader><leader>s", "<cmd>lua R('fl.snippets').load()<CR>",                   desc = "Reload snippets" },
       },
     },
   },
@@ -115,10 +127,11 @@ return {
     "aserowy/tmux.nvim",
     -- stylua: ignore
     keys = {
-      { "<M-h>", function() require("tmux").move_left() end,   desc = "Tmux Left" },
-      { "<M-j>", function() require("tmux").move_bottom() end, desc = "Tmux Down" },
-      { "<M-k>", function() require("tmux").move_top() end,    desc = "Tmux Up" },
-      { "<M-l>", function() require("tmux").move_right() end,  desc = "Tmux Right" },
+      { "<M-h>", function() require("tmux").move_left() end,   mode = "t", desc = "Tmux Left" },
+      { "<M-h>", function() require("tmux").move_left() end,   mode = "n", desc = "Tmux Left" },
+      { "<M-j>", function() require("tmux").move_bottom() end, mode = "n", desc = "Tmux Down" },
+      { "<M-k>", function() require("tmux").move_top() end,    mode = "n", desc = "Tmux Up" },
+      { "<M-l>", function() require("tmux").move_right() end,  mode = "n", desc = "Tmux Right" },
     },
     config = function()
       return require("tmux").setup({
@@ -143,7 +156,6 @@ return {
     version = false,
     event = "BufRead",
     config = function()
-      require("mini.ai").setup({})
       require("mini.cursorword").setup({
         delay = 150,
       })
@@ -158,16 +170,16 @@ return {
   },
 
   -- auto pairs
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = function()
-      require("nvim-autopairs").setup()
-      local Rule = require("nvim-autopairs.rule")
-      local npairs = require("nvim-autopairs")
-      npairs.add_rule(Rule("```", "```", { "markdown", "vimwiki", "rmarkdown", "rmd", "pandoc", "hgcommit" }))
-    end,
-  },
+  -- {
+  --   "windwp/nvim-autopairs",
+  --   event = "InsertEnter",
+  --   config = function()
+  --     require("nvim-autopairs").setup()
+  --     local Rule = require("nvim-autopairs.rule")
+  --     local npairs = require("nvim-autopairs")
+  --     npairs.add_rule(Rule("```", "```", { "markdown", "vimwiki", "rmarkdown", "rmd", "pandoc", "hgcommit" }))
+  --   end,
+  -- },
 
   -- linediff
   {
@@ -242,63 +254,6 @@ return {
     ft = { "csv" },
     config = function()
       require("csvview").setup()
-    end,
-  },
-
-  {
-    "benlubas/molten-nvim",
-    version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
-    build = ":UpdateRemotePlugins",
-    keys = {
-      { "<leader>MI", "<cmd>MoltenInit<CR>", desc = "Molten Init" },
-    },
-    init = function()
-      -- set opts
-      vim.g.molten_output_win_max_height = 30
-      -- Remove highlight for cell
-      -- vim.api.nvim_set_hl(0, "MoltenCell", {})
-      -- Add keybinds when molten is initialized.
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "MoltenInitPost",
-        callback = function()
-          vim.keymap.set(
-            "v",
-            "<space>l",
-            ":<C-u>MoltenEvaluateVisual<CR>gv<esc>",
-            { desc = "Molten execute visual selection", buffer = true, silent = true }
-          )
-          vim.keymap.set(
-            "n",
-            "<space>L",
-            ":MoltenEvaluateLine<CR>",
-            { desc = "Molten evalute line", buffer = true, silent = true }
-          )
-          vim.keymap.set(
-            "n",
-            "<space>mr",
-            ":MoltenReevaluateCell<CR>",
-            { desc = "Molten re-evalute cell", buffer = true, silent = true }
-          )
-          vim.keymap.set(
-            "n",
-            "<space>md",
-            ":MoltenDelete<CR>",
-            { desc = "Molten delete active cell", buffer = true, silent = true }
-          )
-          vim.keymap.set(
-            "n",
-            "<space>mD",
-            ":MoltenDeinit<CR>",
-            { desc = "Molten de-init", buffer = true, silent = true }
-          )
-          vim.keymap.set(
-            "n",
-            "<space>mi",
-            ":MoltenInterrupt<CR>",
-            { desc = "Molten keyboard interrupt", buffer = true, silent = true }
-          )
-        end,
-      })
     end,
   },
 }

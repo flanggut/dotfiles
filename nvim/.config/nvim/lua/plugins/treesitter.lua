@@ -2,7 +2,6 @@ return {
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
-    opts_extend = {},
     opts = {
       ensure_installed = {
         "bash",
@@ -52,7 +51,7 @@ return {
     "nvim-treesitter/nvim-treesitter-context",
     event = "BufReadPost",
     config = function()
-      require("treesitter-context").setup({})
+      require("treesitter-context").setup()
     end,
   },
 }

@@ -121,7 +121,7 @@ function M.grep_in_directory(path)
     end
     local function finder(opts, ctx)
       local cmd = "xbgs"
-      local args = { "-i", ctx.filter.search, "-f", "^fbsource/" .. path }
+      local args = { "-i", ctx.filter.search, "-f", "fbsource/" .. path }
       return require("snacks.picker.source.proc").proc({
         opts,
         {
