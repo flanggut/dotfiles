@@ -86,13 +86,11 @@ function M.fzfiles()
       if not query or query == "" or string.len(query) < 1 then
         return { cmd = "find", args = { ".", "-type", "f", "-maxdepth", "1", "!", "-name", ".*" } }
       end
-      return { cmd = "arc", args = { "myles", "--list", "-n", "5", query } }
+      return { cmd = "arc", args = { "myles", "--list", "-n", "9", query } }
     end
-    local function finder(opts, ctx)
-      return require("snacks.picker.source.proc").proc({
-        opts,
-        get_cmd(ctx.filter.search),
-      }, ctx)
+    local function finder(_, ctx)
+      return require("snacks.picker.source.proc").proc(
+        ctx:opts(get_cmd(ctx.filter.search)), ctx)
     end
     Snacks.picker.pick({
       format = "file",
@@ -119,12 +117,11 @@ function M.grep_in_directory(path)
     if path:find(cwd .. "/", 1, true) == 1 and #path > #cwd then
       path = path:sub(#cwd + 2)
     end
-    local function finder(opts, ctx)
+    local function finder(_, ctx)
       local cmd = "xbgs"
       local args = { "-i", ctx.filter.search, "-f", "fbsource/" .. path }
-      return require("snacks.picker.source.proc").proc({
-        opts,
-        {
+      return require("snacks.picker.source.proc").proc(
+        ctx:opts({
           cmd = cmd,
           args = args,
           ---@param item snacks.picker.finder.Item
@@ -142,8 +139,8 @@ function M.grep_in_directory(path)
               item.pos = { tonumber(line), tonumber(col) - 1 }
             end
           end,
-        },
-      }, ctx)
+        }),
+        ctx)
     end
     Snacks.picker.pick({
       format = "file",
