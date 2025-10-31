@@ -23,7 +23,7 @@ return {
             { icon = "󰒲 ", key = "y", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "x", desc = "Lazy Extras", action = ":LazyExtras" },
             { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
-            { icon = " ", key = "o", desc = "adb logcat", action = ":lua R('fl.functions').stream_cmd('adb logcat')" },
+            { icon = " ", key = "d", desc = "adb logcat", action = ":lua R('fl.functions').stream_cmd('adb logcat')" },
             { icon = "󰌑 ", key = "<c-s>", desc = "Hide Dashboard", action = "" },
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },

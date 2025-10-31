@@ -661,6 +661,19 @@ function StreamState:cleanup()
     vim.fn.jobstop(self.job_id)
   end
 
+  -- Check if there are any other buffers besides stream_cmd buffers
+  local other_buffers_exist = false
+  local all_buffers = vim.api.nvim_list_bufs()
+  for _, buf in ipairs(all_buffers) do
+    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted then
+      -- Check if this buffer is not one of our stream_cmd buffers
+      if buf ~= self.bufnr and buf ~= self.filter_bufnr and buf ~= self.marks_bufnr then
+        other_buffers_exist = true
+        break
+      end
+    end
+  end
+
   -- Close all windows explicitly before deleting buffers
   if self.marks_winnr and vim.api.nvim_win_is_valid(self.marks_winnr) then
     vim.api.nvim_win_close(self.marks_winnr, true)
@@ -671,18 +684,22 @@ function StreamState:cleanup()
   end
 
   if self.winnr and vim.api.nvim_win_is_valid(self.winnr) then
-    -- This is the last window - don't close it, just switch to alternate buffer
-    -- This prevents accidentally closing Neovim
     vim.api.nvim_set_current_win(self.winnr)
-    -- Try to switch to previous buffer, or create a new empty one
-    vim.cmd("silent! buffer #")
-    if vim.api.nvim_win_get_buf(self.winnr) == self.bufnr then
-      -- If we're still in the stream buffer, create a new empty buffer
-      vim.cmd("enew")
+
+    if other_buffers_exist then
+      -- Try to switch to previous buffer, or create a new empty one
+      vim.cmd("silent! buffer #")
+      if vim.api.nvim_win_get_buf(self.winnr) == self.bufnr then
+        -- If we're still in the stream buffer, quit
+        vim.cmd("qa!")
+      end
+    else
+      -- No other buffers exist, quit vim without prompting to save
+      vim.cmd("qa!")
     end
   end
 
-  -- Delete buffers after windows are closed
+  -- Delete buffers after windows are closed (only if we didn't quit)
   if self.bufnr and vim.api.nvim_buf_is_valid(self.bufnr) then
     -- Clear marks namespace before deleting buffer
     vim.api.nvim_buf_clear_namespace(self.bufnr, self.marks_ns, 0, -1)
