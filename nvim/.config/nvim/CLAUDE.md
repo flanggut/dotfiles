@@ -149,6 +149,7 @@ R('fl.functions').stream_cmd('tail -f log.txt', {
 |-----|--------|
 | `<C-j>` | Toggle between filter and output windows |
 | `<C-k>` | Open filter history picker (in filter window) |
+| `<C-c>` | Kill running job (keeps windows open with current output) |
 | `<C-d>` | Close all stream_cmd windows and stop job |
 | `m` | Toggle mark on current line (in output window) |
 

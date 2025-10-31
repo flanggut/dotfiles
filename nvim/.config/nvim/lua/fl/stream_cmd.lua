@@ -112,6 +112,8 @@ function StreamState:new(opts)
     marks_bufnr = nil,
     marks_winnr = nil,
     marks_ns = vim.api.nvim_create_namespace("stream_cmd_marks"),
+    filter_running = false, -- Lock to prevent parallel filter execution
+    filter_pending = false, -- Flag to track if a filter run is needed
   }
   setmetatable(state, StreamState)
   return state
@@ -344,8 +346,19 @@ function StreamState:apply_filters()
     return
   end
 
+  -- If filter is already running, mark that we need to run again after it completes
+  if self.filter_running then
+    self.filter_pending = true
+    return
+  end
+
+  -- Set lock
+  self.filter_running = true
+  self.filter_pending = false
+
   vim.schedule(function()
     if not vim.api.nvim_buf_is_valid(self.bufnr) then
+      self.filter_running = false
       return
     end
 
@@ -430,6 +443,14 @@ function StreamState:apply_filters()
     self:auto_scroll()
     self:update_marks_highlights()
     self:update_marks_window()
+
+    -- Release lock
+    self.filter_running = false
+
+    -- If another filter was requested while we were running, run it now
+    if self.filter_pending then
+      self:apply_filters()
+    end
   end)
 end
 
@@ -575,17 +596,24 @@ function StreamState:setup_cleanup_keybinding()
     self:cleanup()
   end
 
+  local kill_job = function()
+    self:kill_job()
+  end
+
   vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.bufnr, nowait = true })
   vim.keymap.set("n", "q", cleanup, { buffer = self.bufnr, nowait = true })
+  vim.keymap.set({ "n", "i" }, "<C-c>", kill_job, { buffer = self.bufnr, nowait = true, desc = "Kill job" })
 
   if self.opts.enable_filter and self.filter_bufnr then
     vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.filter_bufnr, nowait = true })
     vim.keymap.set("n", "q", cleanup, { buffer = self.filter_bufnr, nowait = true })
+    vim.keymap.set({ "n", "i" }, "<C-c>", kill_job, { buffer = self.filter_bufnr, nowait = true, desc = "Kill job" })
   end
 
   if self.marks_bufnr then
     vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.marks_bufnr, nowait = true })
     vim.keymap.set("n", "q", cleanup, { buffer = self.marks_bufnr, nowait = true })
+    vim.keymap.set({ "n", "i" }, "<C-c>", kill_job, { buffer = self.marks_bufnr, nowait = true, desc = "Kill job" })
   end
 end
 
@@ -594,6 +622,25 @@ function StreamState:setup_marks_keybinding()
   vim.keymap.set("n", "m", function()
     self:toggle_mark()
   end, { buffer = self.bufnr, nowait = true, desc = "Toggle line mark" })
+end
+
+function StreamState:kill_job()
+  if self.job_id and self.job_running then
+    vim.fn.jobstop(self.job_id)
+    self.job_running = false
+    vim.notify("Job killed", vim.log.levels.WARN)
+
+    -- Append kill message to output buffer
+    vim.schedule(function()
+      if vim.api.nvim_buf_is_valid(self.bufnr) then
+        vim.bo[self.bufnr].modifiable = true
+        vim.api.nvim_buf_set_lines(self.bufnr, -1, -1, false, { "", "--- Job killed by user ---" })
+        vim.bo[self.bufnr].modifiable = false
+      end
+    end)
+  else
+    vim.notify("No running job to kill", vim.log.levels.INFO)
+  end
 end
 
 function StreamState:cleanup()
