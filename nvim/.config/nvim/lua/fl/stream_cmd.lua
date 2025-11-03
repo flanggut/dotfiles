@@ -291,7 +291,12 @@ function StreamState:update_marks_highlights()
     -- Apply highlights to marked lines
     for line_num, line_content in ipairs(displayed_lines) do
       if self.marked_lines[line_content] then
-        vim.api.nvim_buf_add_highlight(self.bufnr, self.marks_ns, "StreamCmdMark", line_num - 1, 0, -1)
+        vim.api.nvim_buf_set_extmark(self.bufnr, self.marks_ns, line_num - 1, 0, {
+          end_line = line_num - 1,
+          end_col = 0,
+          hl_group = "StreamCmdMark",
+          line_hl_group = "StreamCmdMark",
+        })
       end
     end
   end)
