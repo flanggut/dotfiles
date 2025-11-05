@@ -254,7 +254,7 @@ return {
           section_separators = { left = "", right = "" },
         },
         sections = {
-          lualine_a = { os_indicator, "mode" },
+          lualine_a = { { os_indicator, separator = { left = "" } }, { "mode" } },
           lualine_b = {
             { lsp_names },
             { lint_progress },
@@ -273,6 +273,9 @@ return {
             "filesize",
             "fileformat",
           },
+          lualine_z = {
+            { 'location', separator = { right = '' } },
+          }
         },
       }
       return opts
