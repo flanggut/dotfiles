@@ -184,7 +184,7 @@ return {
 
       local function os_indicator()
         if vim.fn.has("macunix") == 1 then
-          return " "
+          return " "
         else
           return " "
         end

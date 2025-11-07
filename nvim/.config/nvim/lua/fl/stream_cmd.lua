@@ -173,7 +173,7 @@ function StreamState:open_filter_window()
     return
   end
 
-  vim.cmd("topleft 40vsplit")
+  vim.cmd("topleft 20vsplit")
   vim.api.nvim_win_set_buf(0, self.filter_bufnr)
   self.filter_winnr = vim.api.nvim_get_current_win()
   vim.cmd("startinsert")
