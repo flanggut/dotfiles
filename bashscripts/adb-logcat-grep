@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Filter adb logcat output by multiple search strings
+# Usage: adb-logcat-grep <pattern1> [pattern2] [pattern3] ...
+# Example: adb-logcat-grep "Error" "Warning" "Exception"
+
+if [ $# -eq 0 ]; then
+	echo "Usage: $(basename "$0") <pattern1> [pattern2] [pattern3] ..."
+	echo "Pipes adb logcat through grep to search for the given patterns"
+	exit 1
+fi
+
+# Build grep command with multiple -e flags for OR matching
+grep_args=()
+for pattern in "$@"; do
+	grep_args+=(-e "$pattern")
+done
+
+# Find next available logcat file number
+log_dir="$HOME/tmp"
+mkdir -p "$log_dir"
+next_num=1
+while [ -f "$log_dir/logcat_$next_num.log" ]; do
+	((next_num++))
+done
+log_file="$log_dir/logcat_$next_num.log"
+
+echo "Logging to: $log_file"
+
+# Run adb logcat, save to log file, and pipe through grep
+adb logcat | tee "$log_file" | grep --color=auto "${grep_args[@]}"
