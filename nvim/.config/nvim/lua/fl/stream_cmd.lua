@@ -3,6 +3,9 @@ local M = {}
 -- Define highlight group for marked lines
 vim.api.nvim_set_hl(0, "StreamCmdMark", { bg = "#F2E9E1" })
 
+-- Constants
+local MAX_LINES = 300000 -- Maximum number of lines to keep in buffer
+
 -- History storage module
 local History = {}
 local HISTORY_FILE = vim.fn.stdpath("data") .. "/stream_cmd_filter_history.json"
@@ -114,6 +117,8 @@ function StreamState:new(opts)
     marks_ns = vim.api.nvim_create_namespace("stream_cmd_marks"),
     filter_running = false, -- Lock to prevent parallel filter execution
     filter_pending = false, -- Flag to track if a filter run is needed
+    output_buffer = "",     -- Buffer to accumulate output data
+    flush_timer = nil,      -- Timer for flushing buffered output
   }
   setmetatable(state, StreamState)
   return state
@@ -173,9 +178,16 @@ function StreamState:open_filter_window()
     return
   end
 
-  vim.cmd("topleft 20vsplit")
+  vim.cmd("topleft 30vsplit")
   vim.api.nvim_win_set_buf(0, self.filter_bufnr)
   self.filter_winnr = vim.api.nvim_get_current_win()
+
+  -- Disable line numbers and set minimal gutter (2 columns)
+  vim.wo[self.filter_winnr].number = false
+  vim.wo[self.filter_winnr].relativenumber = false
+  vim.wo[self.filter_winnr].signcolumn = "yes:2"
+  vim.wo[self.filter_winnr].foldcolumn = "0"
+
   vim.cmd("startinsert")
 end
 
@@ -480,6 +492,17 @@ function StreamState:append_to_all_lines(lines)
       end
     end
   end
+
+  -- Cap the number of lines at MAX_LINES
+  if #self.all_lines > MAX_LINES then
+    local excess = #self.all_lines - MAX_LINES
+    -- Remove old lines from the beginning (more efficient for large excess)
+    local new_lines = {}
+    for i = excess + 1, #self.all_lines do
+      table.insert(new_lines, self.all_lines[i])
+    end
+    self.all_lines = new_lines
+  end
 end
 
 function StreamState:append_to_output_buffer(lines)
@@ -502,25 +525,46 @@ function StreamState:append_to_output_buffer(lines)
   self:update_marks_window()
 end
 
+function StreamState:flush_output_buffer()
+  if self.output_buffer == "" then
+    return
+  end
+
+  local data = self.output_buffer
+  self.output_buffer = ""
+
+  if not vim.api.nvim_buf_is_valid(self.bufnr) then
+    return
+  end
+
+  local lines = vim.split(data, "\n", { plain = true })
+  self:append_to_all_lines(lines)
+
+  if self.opts.enable_filter then
+    self:apply_filters()
+  else
+    self:append_to_output_buffer(lines)
+  end
+end
+
 function StreamState:handle_output(data)
   if not data then
     return
   end
 
-  vim.schedule(function()
-    if not vim.api.nvim_buf_is_valid(self.bufnr) then
-      return
-    end
+  -- Accumulate data in buffer
+  self.output_buffer = self.output_buffer .. data
 
-    local lines = vim.split(data, "\n", { plain = true })
-    self:append_to_all_lines(lines)
-
-    if self.opts.enable_filter then
-      self:apply_filters()
-    else
-      self:append_to_output_buffer(lines)
-    end
-  end)
+  -- Schedule flushing
+  if not self.flush_timer then
+    -- Create new timer to flush after 1 second
+    self.flush_timer = vim.defer_fn(function()
+      vim.schedule(function()
+        self:flush_output_buffer()
+        self.flush_timer = nil
+      end)
+    end, 1000) -- 1000ms = 1 second
+  end
 end
 
 -- Keybinding setup functions
@@ -789,6 +833,14 @@ function StreamState:start_job(cmd)
     end,
     on_exit = function(_, exit_code, _)
       self.job_running = false
+
+      -- Flush any remaining buffered output
+      if self.flush_timer then
+        self.flush_timer:stop()
+        self.flush_timer = nil
+      end
+      self:flush_output_buffer()
+
       vim.schedule(function()
         local status_msg = exit_code == 0 and "completed successfully" or "failed with code " .. exit_code
         vim.notify("Command " .. status_msg, exit_code == 0 and vim.log.levels.INFO or vim.log.levels.ERROR)
