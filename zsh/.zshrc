@@ -115,6 +115,8 @@ autoload -U compinit && compinit
 
 # fzf
 source <(fzf --zsh)
+export FZF_DEFAULT_COMMAND="find . -maxdepth 1"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 ################     Plugins      ##############
 # Antidote
