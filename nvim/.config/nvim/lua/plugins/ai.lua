@@ -41,7 +41,8 @@ return {
         desc = "Send This",
       },
       {
-        "<leader>df",
+        "<leader>ds",
+        mode = { "n" },
         function() require("sidekick.cli").send({ msg = "{file}" }) end,
         desc = "Send File",
       },

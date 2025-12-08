@@ -59,34 +59,6 @@ return {
   },
 
   {
-    "numToStr/Comment.nvim",
-    opts = {
-      -- add any options here
-    },
-  },
-
-  {
-    "L3MON4D3/LuaSnip",
-    dependencies = { "rafamadriz/friendly-snippets" },
-    config = function()
-      require("luasnip").config.set_config({
-        history = true,
-        updateevents = "TextChanged,TextChangedI",
-      })
-      require("fl.snippets").load()
-      local snippets_group = vim.api.nvim_create_augroup("ReloadSnippetsOnWrite", { clear = true })
-      vim.api.nvim_create_autocmd("BufWritePost", {
-        pattern = "snippets.lua",
-        callback = function()
-          R("fl.snippets").load()
-          require("cmp_luasnip").clear_cache()
-        end,
-        group = snippets_group,
-      })
-    end,
-  },
-
-  {
     "folke/flash.nvim",
     keys = {
       {
@@ -96,28 +68,6 @@ return {
           require("flash").jump({ mode = "fuzzy" })
         end,
         desc = "Flash",
-      },
-    },
-  },
-
-  -- search/replace in multiple files
-  {
-    "MagicDuck/grug-far.nvim",
-    keys = {
-      {
-        "<leader>gu",
-        function()
-          require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
-        end,
-        desc = "Replace in files (grug-far)",
-      },
-      {
-        "gl",
-        mode = { "v" },
-        function()
-          require("grug-far").with_visual_selection({ prefills = { paths = vim.fn.expand("%") } })
-        end,
-        desc = "Replace in files (grug-far)",
       },
     },
   },
@@ -167,12 +117,6 @@ return {
         },
       })
     end,
-  },
-
-  -- linediff
-  {
-    "AndrewRadev/linediff.vim",
-    cmd = "Linediff",
   },
 
   -- file explorer
@@ -229,11 +173,6 @@ return {
         max_height = 0.6,
       },
     },
-  },
-
-  {
-    "mhinz/vim-signify",
-    cmd = { "SignifyEnable" },
   },
 
   -- CSV file support
