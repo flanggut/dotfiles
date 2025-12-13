@@ -12,49 +12,63 @@ return {
         win = {
           split = {
             width = 0.45,
-          }
+          },
         },
       },
     },
     keys = {
       {
         "<c-.>",
-        function() require("sidekick.cli").focus({ name = "claude", focus = true }) end,
+        function()
+          require("sidekick.cli").focus({ name = "claude", focus = true })
+        end,
         desc = "Sidekick Toggle Claude",
         mode = { "n", "t", "i", "x" },
       },
       {
         "<c-p>",
-        function() require("sidekick.cli").prompt() end,
+        function()
+          require("sidekick.cli").prompt()
+        end,
         desc = "Sidekick Promp",
         mode = { "n", "t", "i", "x" },
       },
       {
-        "<leader>dd",
-        function() require("sidekick.cli").close() end,
+        "<leader>ad",
+        function()
+          require("sidekick.cli").close()
+        end,
         desc = "Detach a CLI Session",
       },
       {
-        "<leader>dl",
-        function() require("sidekick.cli").send({ msg = "{this}" }) end,
+        "<leader>al",
+        function()
+          require("sidekick.cli").send({ msg = "{this}" })
+        end,
         mode = { "x", "n" },
         desc = "Send This",
       },
       {
-        "<leader>ds",
+        "<leader>as",
         mode = { "n" },
-        function() require("sidekick.cli").send({ msg = "{file}" }) end,
+        function()
+          require("sidekick.cli").send({ msg = "{file}" })
+        end,
         desc = "Send File",
       },
       {
-        "<leader>ds",
-        function() require("sidekick.cli").send({ msg = "{selection}" }) end,
+        "<leader>as",
+        function()
+          require("sidekick.cli").send({ msg = "{selection}" })
+        end,
         mode = { "x" },
         desc = "Send Visual Selection",
       },
       {
-        "<leader>dp",
-        function() require("sidekick.cli").prompt() end,
+        "<leader>ap",
+        function()
+          require("sidekick.cli").prompt()
+        end,
         mode = { "n", "x" },
         desc = "Sidekick Select Prompt",
       },

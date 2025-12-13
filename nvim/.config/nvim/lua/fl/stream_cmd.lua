@@ -117,8 +117,8 @@ function StreamState:new(opts)
     marks_ns = vim.api.nvim_create_namespace("stream_cmd_marks"),
     filter_running = false, -- Lock to prevent parallel filter execution
     filter_pending = false, -- Flag to track if a filter run is needed
-    output_buffer = "",     -- Buffer to accumulate output data
-    flush_timer = nil,      -- Timer for flushing buffered output
+    output_buffer = "", -- Buffer to accumulate output data
+    flush_timer = nil, -- Timer for flushing buffered output
   }
   setmetatable(state, StreamState)
   return state
@@ -875,6 +875,9 @@ function M.run(cmd, opts)
   opts.bufname = opts.bufname or "[Stream Command]"
   opts.enable_filter = opts.enable_filter ~= false
 
+  -- Capture original buffer before we create any windows
+  local original_bufnr = vim.api.nvim_get_current_buf()
+
   -- Create state object
   local state = StreamState:new(opts)
 
@@ -897,7 +900,7 @@ function M.run(cmd, opts)
 
   -- If command is empty, populate with current buffer content instead of running a job
   if not cmd or cmd == "" or (type(cmd) == "table" and #cmd == 0) then
-    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local lines = vim.api.nvim_buf_get_lines(original_bufnr, 0, -1, false)
     state.all_lines = lines
     state.job_running = false
 
@@ -906,9 +909,17 @@ function M.run(cmd, opts)
         return
       end
 
-      vim.bo[state.bufnr].modifiable = true
-      vim.api.nvim_buf_set_lines(state.bufnr, 0, -1, false, lines)
-      vim.bo[state.bufnr].modifiable = false
+      if opts.enable_filter then
+        -- Apply filters to show content (will also update marks)
+        state:apply_filters()
+      else
+        -- No filters, set content directly and update marks
+        vim.bo[state.bufnr].modifiable = true
+        vim.api.nvim_buf_set_lines(state.bufnr, 0, -1, false, lines)
+        vim.bo[state.bufnr].modifiable = false
+        state:update_marks_highlights()
+        state:update_marks_window()
+      end
 
       vim.notify("Buffer content loaded into stream window", vim.log.levels.INFO)
     end)
