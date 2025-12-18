@@ -117,8 +117,8 @@ function StreamState:new(opts)
     marks_ns = vim.api.nvim_create_namespace("stream_cmd_marks"),
     filter_running = false, -- Lock to prevent parallel filter execution
     filter_pending = false, -- Flag to track if a filter run is needed
-    output_buffer = "", -- Buffer to accumulate output data
-    flush_timer = nil, -- Timer for flushing buffered output
+    output_buffer = "",     -- Buffer to accumulate output data
+    flush_timer = nil,      -- Timer for flushing buffered output
   }
   setmetatable(state, StreamState)
   return state
@@ -649,7 +649,6 @@ function StreamState:setup_cleanup_keybinding()
     self:kill_job()
   end
 
-  vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.bufnr, nowait = true })
   vim.keymap.set("n", "q", cleanup, { buffer = self.bufnr, nowait = true })
   vim.keymap.set({ "n", "i" }, "<C-c>", kill_job, { buffer = self.bufnr, nowait = true, desc = "Kill job" })
 
@@ -660,7 +659,6 @@ function StreamState:setup_cleanup_keybinding()
   end
 
   if self.marks_bufnr then
-    vim.keymap.set({ "n", "i" }, "<C-d>", cleanup, { buffer = self.marks_bufnr, nowait = true })
     vim.keymap.set("n", "q", cleanup, { buffer = self.marks_bufnr, nowait = true })
     vim.keymap.set({ "n", "i" }, "<C-c>", kill_job, { buffer = self.marks_bufnr, nowait = true, desc = "Kill job" })
   end
