@@ -33,6 +33,8 @@ vim.wo.signcolumn = "yes:3"
 
 
 vim.opt.shada = { "!", "'100", "<50", "s10", "h" }
+vim.opt.swapfile = false
+vim.opt.undofile = false
 
 vim.cmd("set diffopt+=vertical")
 
