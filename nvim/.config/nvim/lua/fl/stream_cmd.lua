@@ -457,15 +457,16 @@ function StreamState:apply_filters()
     vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, filtered_lines)
     vim.bo[self.bufnr].modifiable = false
 
-    -- Scroll so the last filtered line appears at the bottom of the window
-    if vim.api.nvim_win_is_valid(self.winnr) then
-      local line_count = #filtered_lines
-      if line_count > 0 then
-        local win_height = vim.api.nvim_win_get_height(self.winnr)
-        local target_line = math.max(1, line_count - (win_height / 2) + 1)
-        vim.api.nvim_win_set_cursor(self.winnr, { target_line, 0 })
-      end
-    end
+    self:auto_scroll()
+    -- -- Scroll so the last filtered line appears at the bottom of the window
+    -- if vim.api.nvim_win_is_valid(self.winnr) then
+    --   local line_count = #filtered_lines
+    --   if line_count > 0 then
+    --     local win_height = vim.api.nvim_win_get_height(self.winnr)
+    --     local target_line = math.max(1, line_count - (win_height / 2) + 1)
+    --     vim.api.nvim_win_set_cursor(self.winnr, { target_line, 0 })
+    --   end
+    -- end
 
     self:update_marks_highlights()
     self:update_marks_window()

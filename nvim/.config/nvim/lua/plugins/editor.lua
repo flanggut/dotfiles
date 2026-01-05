@@ -36,20 +36,14 @@ return {
         {
           "<leader>if",
           "<cmd>lua R('fl.functions').stream_cmd()<CR>",
-          desc = "Stream ls output",
+          desc = "Stream CMD",
         },
         {
-          "<leader>dm",
+          "<leader>hi",
           function()
-            Snacks.terminal.toggle("dmt", {
-              win = {
-                position = "right",
-                width = 0.8,
-                height = 1.0,
-              }
-            })
+            R('fl.functions').float_cmd({ '__fzf_hg' })
           end,
-          desc = "Restart LSP servers"
+          desc = "Stream CMD",
         },
         { "<leader><leader>l", "<cmd>LspRestart<CR>",                                    desc = "Restart LSP servers" },
         { "<leader><leader>p", "<cmd>w<CR><cmd>lua R('fl.functions').tmux_prev2()<CR>",  desc = "Runner" },
@@ -77,11 +71,10 @@ return {
     "aserowy/tmux.nvim",
     -- stylua: ignore
     keys = {
-      { "<M-h>", function() require("tmux").move_left() end,   mode = "t", desc = "Tmux Left" },
-      { "<M-h>", function() require("tmux").move_left() end,   mode = "n", desc = "Tmux Left" },
-      { "<M-j>", function() require("tmux").move_bottom() end, mode = "n", desc = "Tmux Down" },
-      { "<M-k>", function() require("tmux").move_top() end,    mode = "n", desc = "Tmux Up" },
-      { "<M-l>", function() require("tmux").move_right() end,  mode = "n", desc = "Tmux Right" },
+      { "<M-h>", function() require("tmux").move_left() end,   mode = { "n", "t" }, desc = "Tmux Left" },
+      { "<M-j>", function() require("tmux").move_bottom() end, mode = { "n", "t" }, desc = "Tmux Down" },
+      { "<M-k>", function() require("tmux").move_top() end,    mode = { "n", "t" }, desc = "Tmux Up" },
+      { "<M-l>", function() require("tmux").move_right() end,  mode = { "n", "t" }, desc = "Tmux Right" },
     },
     config = function()
       return require("tmux").setup({

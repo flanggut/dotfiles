@@ -10,6 +10,14 @@ return {
           backend = "tmux",
         },
         win = {
+          keys = {
+            back_to_main = {
+              "<c-j>",
+              function(_)
+                vim.cmd.wincmd("h")
+              end,
+            },
+          },
           split = {
             width = 0.45,
           },
@@ -31,7 +39,7 @@ return {
           require("sidekick.cli").prompt()
         end,
         desc = "Sidekick Promp",
-        mode = { "n", "t", "i", "x" },
+        mode = { "n", "i", "x" },
       },
       {
         "<leader>ad",

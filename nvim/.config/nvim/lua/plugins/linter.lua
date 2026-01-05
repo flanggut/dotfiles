@@ -16,6 +16,11 @@ return {
       formatters_by_ft = {
         json = { "prettier" },
       },
+      formatters = {
+        shfmt = {
+          append_args = { "-i", "2" },
+        },
+      },
     },
   },
   -- {

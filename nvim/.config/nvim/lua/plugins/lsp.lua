@@ -14,18 +14,21 @@ return {
       servers = {
         ['*'] = {
           keys = {
-            { "<C-j>",      vim.lsp.buf.definition,     has = "definition" },
-            { "K",          vim.lsp.buf.hover,          has = "hover" },
-            { "<leader>sa", vim.lsp.buf.code_action,    has = "codeAction" },
-            { "<leader>rn", vim.lsp.buf.rename,         has = "rename" },
-            { "<leader>E",  vim.diagnostic.open_float },
+            { "<C-j>",      vim.lsp.buf.definition,     has = "definition",    mode = "n" },
+            { "K",          vim.lsp.buf.hover,          has = "hover",         mode = "n" },
+            { "<leader>sa", vim.lsp.buf.code_action,    has = "codeAction",    mode = "n" },
+            { "<leader>rn", vim.lsp.buf.rename,         has = "rename",        mode = "n" },
+            { "<leader>E",  vim.diagnostic.open_float,  mode = "n" },
             { "<c-o>",      vim.lsp.buf.signature_help, has = "signatureHelp", mode = "i" },
-            { "<leader>sr",
+            {
+              "<leader>sr",
               function()
                 Snacks.picker.lsp_references()
-              end
+              end,
+              mode = "n"
             },
-            { "<leader>e",
+            {
+              "<leader>e",
               function()
                 -- Goto error if exists, else warning, else hint
                 local errors = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
@@ -43,9 +46,11 @@ return {
                   vim.diagnostic.jump({ severity = vim.diagnostic.severity.HINT, count = 1 })
                   return
                 end
-              end, }
+              end,
+              mode = "n"
+            }
           },
-          { "<leader>cc", "<cmd>cclose<cr>", has = "rename" }
+          { "<leader>cc", "<cmd>cclose<cr>", has = "rename", mode = "n" }
         },
         clangd = {
           cmd = {

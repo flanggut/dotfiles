@@ -1,3 +1,12 @@
+local function term_nav(dir)
+  ---@param self snacks.terminal
+  return function(self)
+    return self:is_floating() and "<c-" .. dir .. ">" or vim.schedule(function()
+      vim.cmd.wincmd(dir)
+    end)
+  end
+end
+
 return {
   -- snacks
   {
@@ -7,9 +16,9 @@ return {
       { "<leader>q",         mode = { "n" }, "<cmd>lua Snacks.bufdelete()<CR>",             desc = "Delete buffer" },
       { "<leader><leader>n", mode = { "n" }, "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "Notifier History" },
     },
-    ---@type snacks.Config
-    opts = {
-      dashboard = {
+    ---@param opts snacks.Config
+    opts = function(_, opts)
+      opts.dashboard = {
         preset = {
           -- stylua: ignore
           ---@type snacks.dashboard.Item[]
@@ -28,11 +37,11 @@ return {
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
         },
-      },
-      notifier = {
+      }
+      opts.notifier = {
         width = { min = 40, max = 0.8 },
-      },
-      picker = {
+      }
+      opts.picker = {
         formatters = {
           file = {
             filename_first = true,
@@ -42,13 +51,23 @@ return {
         layout = {
           cycle = false,
         },
-      },
-      scroll = {
+      }
+      opts.scroll = {
         animate = {
           easing = "outCirc",
         },
-      },
-    },
+      }
+      opts.terminal = {
+        win = {
+          keys = {
+            nav_h = { "<M-h>", term_nav("h"), desc = "Go to Left Window", expr = true, mode = "t" },
+            nav_j = { "<M-j>", term_nav("j"), desc = "Go to Lower Window", expr = true, mode = "t" },
+            nav_k = { "<M-k>", term_nav("k"), desc = "Go to Upper Window", expr = true, mode = "t" },
+            nav_l = { "<M-l>", term_nav("l"), desc = "Go to Right Window", expr = true, mode = "t" },
+          },
+        },
+      }
+    end
   },
 
   {
