@@ -21,7 +21,6 @@ return {
         "python",
         "regex",
         "starlark",
-        "swift",
         "thrift",
         "toml",
         "tsx",
