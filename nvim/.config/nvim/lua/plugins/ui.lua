@@ -310,13 +310,6 @@ return {
             { "diagnostics", symbols = LazyVim.config.icons.diagnostics },
           },
           lualine_c = {
-            { "filename", padding = { left = 1, right = 1 } },
-          },
-          lualine_x = {
-            { added,    color = { fg = palette.pine }, separator = {} },
-            { removed,  color = { fg = palette.love }, separator = {} },
-            { modified, color = { fg = palette.foam } },
-            -- { "diff", symbols = {added = " " , removed = " ", modified = "柳"} },
             -- Sidekick config
             {
               function()
@@ -330,6 +323,13 @@ return {
                 return "Special"
               end
             },
+            { "filename", padding = { left = 1, right = 1 } },
+          },
+          lualine_x = {
+            { added,    color = { fg = palette.pine }, separator = {} },
+            { removed,  color = { fg = palette.love }, separator = {} },
+            { modified, color = { fg = palette.foam } },
+            -- { "diff", symbols = {added = " " , removed = " ", modified = "柳"} },
             "filetype",
             "encoding",
             "filesize",
