@@ -86,8 +86,8 @@ if [ "$usage" != "null" ]; then
   output_k=$(awk "BEGIN {printf \"%.1f\", $output_tokens/1000}")
   token_count="${input_k}K ↓ / ${output_k}K ↑"
 else
-  context_display="░░░░░░░░░░    "
-  token_count="     ↓ /      ↑"
+  context_display="░░░░░░░░░░ 0%"
+  token_count="0.0K ↓ / 0.0K ↑"
 fi
 
 # Output the status line
