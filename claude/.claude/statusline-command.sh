@@ -84,10 +84,10 @@ if [ "$usage" != "null" ]; then
   output_tokens=$(echo "$usage" | jq '.output_tokens')
   input_k=$(awk "BEGIN {printf \"%.1f\", $input_tokens/1000}")
   output_k=$(awk "BEGIN {printf \"%.1f\", $output_tokens/1000}")
-  token_count="${input_k}K ↓ / ${output_k}K ↑"
+  token_count="${input_k}k ↓ / ${output_k}k ↑"
 else
   context_display="░░░░░░░░░░ 0%"
-  token_count="0.0K ↓ / 0.0K ↑"
+  token_count="0.0k ↓ / 0.0k ↑"
 fi
 
 # Output the status line
