@@ -12,14 +12,14 @@ return {
         win = {
           keys = {
             back_to_main = {
-              "<c-j>",
+              "<c-h>",
               function(_)
                 vim.cmd.wincmd("h")
               end,
             },
           },
           split = {
-            width = 0.45,
+            width = 0.55,
           },
         },
       },

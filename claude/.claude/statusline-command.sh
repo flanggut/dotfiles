@@ -59,14 +59,11 @@ shorten_path() {
 # Shorten the path if needed
 current_dir=$(shorten_path "$current_dir")
 
-# Calculate context usage
+# Calculate context usage (use pre-calculated percentage from JSON)
 usage=$(echo "$input" | jq '.context_window.current_usage')
+context_pct=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
 
 if [ "$usage" != "null" ]; then
-  current=$(echo "$usage" | jq '.input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens')
-  size=$(echo "$input" | jq '.context_window.context_window_size')
-  context_pct=$((current * 100 / size))
-
   # Create progress bar
   bar_width=10
   filled=$((context_pct * bar_width / 100))
@@ -90,5 +87,24 @@ else
   token_count="0.0k ↓ / 0.0k ↑"
 fi
 
+# Get cost tracking
+cost_usd=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
+cost_display=$(awk "BEGIN {printf \"$%.2f\", $cost_usd}")
+
+# Get code change metrics
+lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
+lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
+changes_display="+${lines_added}/-${lines_removed}"
+
+# Extract state for neovim lualine indicator
+# Try to get explicit state field, otherwise infer from context
+state=$(echo "$input" | jq -r '.state // empty')
+if [ -z "$state" ]; then
+  # No explicit state field - check if there are pending tokens (might indicate activity)
+  # For now, write "unknown" and we'll refine based on observed JSON
+  state="unknown"
+fi
+echo "$state" >~/.claude/claude-state
+
 # Output the status line
-printf "%s | %s | %s | %s | %s" "$os_icon" "$model_name" "$context_display" "$token_count" "$current_dir"
+printf "%s | %s | %s | %s | %s | %s  %s" "$os_icon" "$model_name" "$context_display" "$token_count" "$cost_display" "$changes_display" "$current_dir"

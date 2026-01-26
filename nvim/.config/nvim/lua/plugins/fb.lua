@@ -31,6 +31,7 @@ if ff.is_fb() then
       opts = function(_, opts)
         -- List of custom language server configurations in Neovim@Meta.
         local meta_ls_names = {
+          "buckls",
           "fb-pyright-ls",
           "pyre", -- sudo microdnf install fb-pyre on MacOS
         }
