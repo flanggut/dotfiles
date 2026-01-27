@@ -34,7 +34,7 @@ return {
         mode = { "n", "t", "i", "x" },
       },
       {
-        "<c-p>",
+        "<leader>ap",
         function()
           require("sidekick.cli").prompt()
         end,
