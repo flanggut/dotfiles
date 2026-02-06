@@ -3,6 +3,8 @@
 # Read JSON input
 input=$(cat)
 
+echo "$input" >/tmp/claude_status.json
+
 # Get OS icon
 os_icon=$(if [[ "$(uname)" == "Darwin" ]]; then printf ' '; else printf ' '; fi)
 
@@ -107,4 +109,4 @@ fi
 echo "$state" >~/.claude/claude-state
 
 # Output the status line
-printf "%s | %s | %s | %s | %s | %s  %s" "$os_icon" "$model_name" "$context_display" "$token_count" "$cost_display" "$changes_display" "$current_dir"
+printf "%s | %s | %s | %s | %s | %s" "$os_icon" "$model_name" "$context_display" "$cost_display" "$changes_display" "$current_dir"
