@@ -14,41 +14,33 @@ if ff.is_fb() then
       event = "VeryLazy",
       config = function()
         require("meta.cmds")
-        require("meta.lsp")
         require("meta.metamate").init({
           -- change the languages to target. defaults to php, python, rust
           filetypes = { "cpp", "python" },
           completionKeymap = "<C-f>",
         })
-      end,
-    },
-    {
-      "neovim/nvim-lspconfig",
-      dependencies = {
-        -- Ensure lspconfig runs after we configure meta.nvim.
-        "meta.nvim",
-      },
-      opts = function(_, opts)
-        -- List of custom language server configurations in Neovim@Meta.
-        local meta_ls_names = {
-          "buckls",
-          "fb-pyright-ls",
-          "pyre", -- sudo microdnf install fb-pyre on MacOS
-        }
-
-        for _, ls_name_no_suffix in ipairs(meta_ls_names) do
-          local ls_name = ls_name_no_suffix .. "@meta"
-          opts.setup[ls_name] = function()
-            -- `true` in `setup` means "don't set this up" to LazyVim
-            -- https://github.com/LazyVim/LazyVim/blob/0b020dc37b30fd93a199f1124a95028cb544eac7/lua/lazyvim/plugins/lsp/init.lua#L76-L78
-            return false
-          end
-
-          opts.servers[ls_name] = {
-            -- We manage the language server installation ourselves.
-            mason = false,
-          }
-        end
+        require("meta.lsp")
+        vim.lsp.enable({
+          "rust-analyzer@meta", -- for Rust - Run `:RustAnalyzerReload` on TARGETS changes
+          "fb-pyright-ls@meta", -- for Python
+          "pyre@meta",          -- for Python type checking
+          "pyre-codenav@meta",  -- for Python code navigation using Pyre
+          "wasabi@meta",        -- for [Wasabi](<https://www.internalfb.com/intern/wiki/Bento_Team/Language_Services_(LSPs)/Wasabi/>) support, a new, experimental Python LS at Meta
+          "thriftlsp@meta",     -- for Thrift
+          -- "cppls@meta",         -- for C++
+          -- "buckls@meta",        -- for Buck
+          "buck2@meta", -- new LS for Buck/Starlark
+          -- "erlang@meta",        -- for Erlang in Whatsapp repos
+          -- "gopls@meta",         -- for Golang
+          -- "eslint@meta",        -- for JavaScript linting
+          "prettier@meta", -- for JavaScript formatting
+          "flow@meta",     -- for JavaScript type checking
+          -- "hhvm",               -- for Hack
+          -- "linttool@meta",      -- for linting and formatting
+          -- "sourcekit-lsp@meta", -- for Swift (experimental)
+          -- "relay@meta",         -- for GraphQL/relay
+          -- "kotlin@meta",        -- for Kotlin
+        })
       end,
     },
   }
