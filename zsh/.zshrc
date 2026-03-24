@@ -70,6 +70,7 @@ alias jfs5="jf s -r .^^^^..."
 alias qd="adb devices && maui q d"
 alias qb="maui q b | grep level"
 alias sll="sl pull"
+alias sls="sl cloud sync"
 
 # yazi
 function y() {
