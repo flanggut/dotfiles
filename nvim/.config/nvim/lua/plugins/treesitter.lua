@@ -2,6 +2,15 @@ return {
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    build = ":TSUpdate",
+  },
+  {
+    'MeanderingProgrammer/treesitter-modules.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    event = "BufReadPost",
+    ---@module 'treesitter-modules'
+    ---@type ts.mod.UserConfig
     opts = {
       ensure_installed = {
         "bash",
@@ -55,7 +64,9 @@ return {
     "nvim-treesitter/nvim-treesitter-context",
     event = "BufReadPost",
     config = function()
-      require("treesitter-context").setup()
+      require("treesitter-context").setup(
+        { enable = true }
+      )
     end,
   },
 }

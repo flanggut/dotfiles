@@ -1,4 +1,3 @@
-local toggle_key = "<C-.>"
 return {
   {
     "folke/sidekick.nvim",
@@ -20,14 +19,6 @@ return {
       },
     },
     keys = {
-      {
-        toggle_key,
-        function()
-          require("sidekick.cli").focus({ name = "claude", focus = true })
-        end,
-        desc = "Sidekick Toggle Claude",
-        mode = { "n", "t", "i", "x" },
-      },
       {
         "<c-h>",
         function()
