@@ -66,6 +66,14 @@ return {
         end,
         desc = "Flash",
       },
+      {
+        ",",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").treesitter({})
+        end,
+        desc = "Flash Treesitter",
+      },
     },
   },
 
