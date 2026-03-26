@@ -225,7 +225,7 @@ function M.open_in_browser()
   local filename = vim.fn.expand("%:p")
   local tail = filename:gsub("^.*fbsource", "")
   local line = vim.api.nvim_win_get_cursor(0)[1]
-  local url = "https://www.internalfb.com/code/fbsource/[master]" .. tail .. "?lines=" .. tostring(line)
+  local url = "https://www.internalfb.com/code/fbsource" .. tail .. "?lines=" .. tostring(line)
   vim.notify("Opening in browser: " .. tail, vim.log.levels.INFO)
   vim.notify(url, vim.log.levels.INFO)
   assert(io.popen("open " .. url), string.format("Cannot execute open_in_browser."))
