@@ -50,10 +50,6 @@ vim.keymap.set(
   { noremap = false, silent = true }
 )
 
--- move visual selection up or down
-vim.keymap.set("v", "<C-j>", [[:m '>+1<CR>gv=gv]], { noremap = true })
-vim.keymap.set("v", "<C-k>", [[:m '<-2<CR>gv=gv]], { noremap = true })
-
 -- undo breakpoints on several keys in insert mode
 vim.keymap.set("i", ",", ",<c-g>u", { noremap = true })
 vim.keymap.set("i", ".", ".<c-g>u", { noremap = true })
