@@ -2,7 +2,7 @@ return {
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "main",
+    lazy  = false,
     build = ":TSUpdate",
   },
   {
@@ -40,7 +40,6 @@ return {
         "yaml",
         "zig",
       },
-      auto_install = true,
       highlight = { enable = true },
       refactor = {
         smart_rename = {
