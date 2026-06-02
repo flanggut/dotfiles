@@ -12,6 +12,7 @@ is_inside_git_repo() {
 ##############################     Main      #################################
 ######     Path      ######
 path+=("${XDG_CACHE_HOME:-$HOME}/bin")
+path+=("${XDG_CACHE_HOME:-$HOME}/.local/bin")
 path+=("${XDG_CACHE_HOME:-$HOME}/homebrew/bin")
 path+=("${XDG_CACHE_HOME:-$HOME}/Library/Python/3.10/bin")
 export PATH
