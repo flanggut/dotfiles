@@ -1,0 +1,9 @@
+onboarding = false
+[theme]
+name = "rose-pine-dawn"
+
+[keys]
+split_vertical = "alt+."
+new_tab = "alt+,"
+previous_tab = "alt+p"
+next_tab = "alt+n"
