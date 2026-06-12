@@ -52,19 +52,19 @@ function __fzf_hg() {
     eval $FZF_HG
     FZF_DEFAULT_COMMAND="cat /tmp/fzf_sl_list" SELF='source ${ZDOTDIR:-$HOME}/.zsh_plugins.zsh  && __fzf_hg' fzf \
         --ansi --no-sort --reverse --preview-window right:60% \
-        --preview 'rg -N --passthru --color=always --colors match:bg:white "$(echo {} | cut -c -10)" ~/.cache/fzf_hg_smartlog' \
-        --bind 'enter:execute(hg up $(echo {} | cut -c -10) && hg fsl --color always 2>/dev/null)+abort' \
-        --bind 'ctrl-e:execute-silent(hg hide $(echo {} | cut -c -10))+become(eval $SELF)' \
-        --bind 'ctrl-u:execute(hg up $(echo {} | cut -c -10))+become(eval $SELF)' \
-        --bind 'ctrl-g:execute(hg graft $(echo {} | cut -c -10))+become(eval $SELF)' \
-        --bind 'ctrl-h:execute(hg rebase -s $(echo {} | cut -c -10) -d .)+become(eval $SELF)' \
-        --bind 'ctrl-p:execute(hg rebase -s $(echo {} | cut -c -10) -d $(cat ~/.cache/hg_hash))+become(eval $SELF)' \
-        --bind 'ctrl-r:execute(hg rebase -s $(echo {} | cut -c -10) -d stable)+become(eval $SELF)' \
-        --bind 'ctrl-s:execute(hg show --color always $(echo {} | cut -c -10) | less -R)' \
-        --bind 'ctrl-n:execute(jf s -n -r $(echo {} | cut -c -10))+execute(hg show --stat $(echo {} | cut -c -10))+abort' \
-        --bind 'ctrl-t:execute(hg rebase -s $(cat ~/.cache/hg_hash) -d $(echo {} | cut -c -10))+become(eval $SELF)' \
-        --bind 'ctrl-r:execute(hg show --stat $(echo {} | cut -c -10) | grep https | sed "s/.*https/https/" | xargs open)+clear-query' \
-        --bind 'ctrl-y:execute-silent(printf $(echo {} | cut -c -10) | tee ~/.cache/hg_hash)+clear-query'
+        --preview 'rg -N --passthru --color=always --colors match:bg:white "$(echo {} | cut -c -10)" /tmp/fzf_sl_smartlog' \
+        --bind 'enter:execute(sl up $(echo {} | cut -c -10))+abort' \
+        --bind 'ctrl-e:execute-silent(sl hide $(echo {} | cut -c -10))+become(eval $SELF)' \
+        --bind 'ctrl-u:execute(sl up $(echo {} | cut -c -10))+become(eval $SELF)' \
+        --bind 'ctrl-g:execute(sl graft $(echo {} | cut -c -10))+become(eval $SELF)' \
+        --bind 'ctrl-h:execute(sl rebase -s $(echo {} | cut -c -10) -d .)+become(eval $SELF)' \
+        --bind 'ctrl-p:execute(sl rebase -s $(echo {} | cut -c -10) -d $(cat /tmp/sl_hash))+become(eval $SELF)' \
+        --bind 'ctrl-r:execute(sl rebase -s $(echo {} | cut -c -10) -d stable)+become(eval $SELF)' \
+        --bind 'ctrl-s:execute(sl show --color always $(echo {} | cut -c -10) | less -R)' \
+        --bind 'ctrl-n:execute(jf s -n -r $(echo {} | cut -c -10))+execute(sl show --stat $(echo {} | cut -c -10))+abort' \
+        --bind 'ctrl-t:execute(sl rebase -s $(cat /tmp/sl_hash) -d $(echo {} | cut -c -10))+become(eval $SELF)' \
+        --bind 'ctrl-r:execute(sl show --stat $(echo {} | cut -c -10) | grep https | sed "s/.*https/https/" | xargs open)+clear-query' \
+        --bind 'ctrl-y:execute-silent(printf $(echo {} | cut -c -10) | tee /tmp/sl_hash)+clear-query'
 
     # Reprint the command line
     # commandline ""
