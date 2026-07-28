@@ -1,6 +1,6 @@
 onboarding = false
 [theme]
-name = "rose-pine-dawn"
+name = "terminal"
 
 [keys]
 split_vertical = "alt+."
