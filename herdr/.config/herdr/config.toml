@@ -2,6 +2,9 @@ onboarding = false
 [theme]
 name = "rose-pine-dawn"
 
+[ui]
+tab_bar_position = "bottom"
+
 [keys]
 split_vertical = "alt+."
 new_tab = "alt+,"
