@@ -73,6 +73,13 @@ vim.g.python3_host_prog = vim.fn.expand("~/.virtualenvs/neovim/bin/python3")
 
 vim.g.root_lsp_ignore = { "clangd" }
 
+local function paste()
+  return {
+    vim.fn.split(vim.fn.getreg(""), "\n"),
+    vim.fn.getregtype(""),
+  }
+end
+
 vim.g.clipboard = {
   name = 'OSC 52',
   copy = {
@@ -80,8 +87,12 @@ vim.g.clipboard = {
     ['*'] = require('vim.ui.clipboard.osc52').copy '*',
   },
   paste = {
-    ['+'] = require('vim.ui.clipboard.osc52').paste '+',
-    ['*'] = require('vim.ui.clipboard.osc52').paste '*',
+    ["+"] = paste,
+    ["*"] = paste,
   },
+  -- paste = {
+  --   ['+'] = require('vim.ui.clipboard.osc52').paste '+',
+  --   ['*'] = require('vim.ui.clipboard.osc52').paste '*',
+  -- },
 }
 vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
