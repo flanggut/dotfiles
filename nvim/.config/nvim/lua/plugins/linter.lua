@@ -5,6 +5,7 @@ return {
       formatters_by_ft = {
         cpp = { "clang-format" },
         json = { "prettier" },
+        sh = { "shfmt" },
       },
       formatters = {
         shfmt = {
