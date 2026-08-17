@@ -4,6 +4,7 @@ name = "rose-pine-dawn"
 
 [ui]
 tab_bar_position = "bottom"
+agent_panel_sort = "priority"
 
 [keys]
 split_vertical = "alt+."
@@ -13,3 +14,5 @@ next_tab = "alt+n"
 next_workspace = "prefix+ctrl+j"
 previous_workspace = "prefix+ctrl+k"
 goto = "prefix+ctrl+l"
+next_agent = "prefix+n"
+previous_agent = "prefix+p"
