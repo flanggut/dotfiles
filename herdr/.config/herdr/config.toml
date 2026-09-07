@@ -6,6 +6,8 @@ name = "rose-pine-dawn"
 tab_bar_position = "bottom"
 agent_panel_sort = "priority"
 window_title = "::{hostname}:: {workspace}"
+pane_gaps = false
+pane_outer_borders = false
 
 [keys]
 split_vertical = "alt+."
