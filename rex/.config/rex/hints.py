@@ -1,11 +1,14 @@
-"""Shows a copy of a pane's screen with a label on each URL, and opens the URL
-whose label is typed. Run by the link_hints action in link_hints.lua.
+"""Shows a copy of a pane's screen with a label on each link or file path, and
+acts on the one whose label is typed. Run by the actions in hints.lua.
 
-Usage: link_hints.py SCREEN_FILE ROWS COLUMNS
+Usage: hints.py MODE SCREEN_FILE ROWS COLUMNS CWD SESSION BLOCK
+
+MODE is "links", to open the URL, or "paths", to type the path into BLOCK.
 """
 
 import os
 import re
+import shlex
 import shutil
 import signal
 import subprocess
@@ -17,8 +20,11 @@ import unicodedata
 LABEL_CHARS = "asdfghjkl"
 URL = re.compile(r"(?:(?:https?|ftp|file)://|www\.)[^\s<>\"'`|\\^{}]*")
 URL_CHAR = re.compile(r"[^\s<>\"'`|\\^{}]+")
+PATH = re.compile(r"[\w.~/@+%=:-]+")
 TRAILING = ".,;:!?*_~"
 PAIRS = {")": "(", "]": "[", "}": "{", ">": "<"}
+LINE_NUMBER = re.compile(r"(?::\d+)+:?$")
+STRONG_PATH = re.compile(r"^(?:/|~/|\./|\.\./)")
 
 DIM = "\x1b[0;90m"
 LINK = "\x1b[0;36;4m"
@@ -28,13 +34,13 @@ RESET = "\x1b[0m"
 
 
 class Hint:
-    def __init__(self, url, segments):
-        self.url = url
+    def __init__(self, value, segments):
+        self.value = value
         self.segments = segments  # (row, start, end) column ranges, one per line
         self.label = ""
 
 
-def trim(text):
+def trim_url(text):
     """Drops punctuation that ends a sentence rather than the URL."""
     while text:
         last = text[-1]
@@ -47,21 +53,59 @@ def trim(text):
     return text
 
 
-def find_hints(lines, columns):
+def accept_url(text):
+    if text.endswith("://") or text == "www.":
+        return None
+    return "https://" + text if text.startswith("www.") else text
+
+
+def trim_path(text):
+    """Drops a :line:col suffix, as in compiler and grep output."""
+    return LINE_NUMBER.sub("", text).rstrip(".,:")
+
+
+def path_acceptor(cwd):
+    def exists(path):
+        return os.path.exists(os.path.join(cwd, os.path.expanduser(path)))
+
+    def accept(text):
+        if "://" in text or text in ("/", "~", ".", ".."):
+            return None
+        # Paths that can only be paths are kept even when they don't exist
+        # here, such as ones printed on another host.
+        if STRONG_PATH.match(text) and len(text) > 2:
+            return text
+        if "/" not in text and "." not in text.strip("."):
+            return None
+        if exists(text):
+            return text
+        # git diff prints a/ and b/ before each path.
+        if text[:2] in ("a/", "b/") and exists(text[2:]):
+            return text[2:]
+        return None
+
+    return accept
+
+
+def find_hints(lines, columns, start, cont, trim, accept):
     hints = []
+    claimed = set()
     for row, line in enumerate(lines):
-        for m in URL.finditer(line):
+        for m in start.finditer(line):
+            if (row, m.start()) in claimed:
+                continue
             segments = [(row, m.start(), m.end())]
-            # A URL that runs to the right edge probably wraps onto the next line.
+            # A match that runs to the right edge probably wraps onto the next line.
             r, end = row, m.end()
             while end == len(lines[r]) >= columns and r + 1 < len(lines):
-                cont = URL_CHAR.match(lines[r + 1])
-                if not cont:
+                more = cont.match(lines[r + 1])
+                if not more:
                     break
-                r, end = r + 1, cont.end()
+                r, end = r + 1, more.end()
                 segments.append((r, 0, end))
             text = "".join(lines[r][s:e] for r, s, e in segments)
-            cut = len(text) - len(trim(text))
+            trimmed = trim(text)
+            cut = len(text) - len(trimmed)
             while cut:
                 r, s, e = segments[-1]
                 take = min(cut, e - s)
@@ -70,23 +114,12 @@ def find_hints(lines, columns):
                     segments[-1] = (r, s, e - take)
                 else:
                     segments.pop()
-            if not segments:
+            value = accept(trimmed) if segments else None
+            if value is None:
                 continue
-            url = trim(text)
-            if url.endswith("://") or url == "www.":
-                continue
-            if url.startswith("www."):
-                url = "https://" + url
-            hints.append(Hint(url, segments))
-    # Skip continuation lines that were already claimed by a wrapped URL.
-    claimed = set()
-    result = []
-    for h in hints:
-        if h.segments[0][:2] in claimed:
-            continue
-        claimed.update(seg[:2] for seg in h.segments[1:])
-        result.append(h)
-    return result
+            claimed.update(seg[:2] for seg in segments[1:])
+            hints.append(Hint(value, segments))
+    return hints
 
 
 def assign_labels(hints):
@@ -149,8 +182,23 @@ def draw(lines, hints, typed, message=None):
     sys.stdout.flush()
 
 
+def quote_path(path):
+    """Quotes a path for the shell, leaving a leading ~/ to expand."""
+    if path.startswith("~/"):
+        return "~/" + shlex.quote(path[2:]) if path[2:] else "~/"
+    return shlex.quote(path)
+
+
+def rex_command():
+    found = shutil.which("rex")
+    if found:
+        return found
+    return os.path.join(os.environ.get("REX_BIN_DIR", ""), "rex")
+
+
 def main():
-    path, rows, columns = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+    mode, path, rows, columns, cwd, session, block = sys.argv[1:8]
+    rows, columns = int(rows), int(columns)
     with open(path, encoding="utf-8", errors="replace") as f:
         content = f.read()
     os.remove(path)
@@ -159,19 +207,26 @@ def main():
     while lines and lines[-1] == "":
         lines.pop()
     lines = lines[-rows:]
-    hints = find_hints(lines, columns)
+    if mode == "links":
+        hints = find_hints(lines, columns, URL, URL_CHAR, trim_url, accept_url)
+        message = " No links on screen. Press any key. "
+    else:
+        hints = find_hints(lines, columns, PATH, PATH, trim_path, path_acceptor(cwd))
+        message = " No file paths on screen. Press any key. "
     assign_labels(hints)
-    message = None if hints else " No links on screen. Press any key. "
+    if hints:
+        message = None
 
     fd = sys.stdin.fileno()
     saved = termios.tcgetattr(fd)
     sys.stdout.write("\x1b[?1049h\x1b[?25l")
     typed = ""
     signal.signal(signal.SIGWINCH, lambda *_: draw(lines, hints, typed, message))
+    picked = None
     try:
         tty.setraw(fd)
         draw(lines, hints, typed, message)
-        while True:
+        while picked is None:
             key = os.read(fd, 32).decode("utf-8", "replace")
             if not hints or key.startswith("\x1b") or key in ("\x03", "\x07"):
                 return
@@ -181,15 +236,18 @@ def main():
                 attempt = typed + key.lower()
                 if any(h.label.startswith(attempt) for h in hints):
                     typed = attempt
-            for h in hints:
-                if h.label == typed:
-                    subprocess.run(["/usr/bin/open", h.url])
-                    return
+            picked = next((h for h in hints if h.label == typed), None)
             draw(lines, hints, typed, message)
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, saved)
         sys.stdout.write("\x1b[?25h\x1b[?1049l")
         sys.stdout.flush()
+
+    if mode == "links":
+        subprocess.run(["/usr/bin/open", picked.value])
+    else:
+        subprocess.run([rex_command(), "send", "-s", session, "-b", block,
+                        quote_path(picked.value)])
 
 
 if __name__ == "__main__":
