@@ -17,7 +17,7 @@ import termios
 import tty
 import unicodedata
 
-LABEL_CHARS = "asdfghjkl"
+LABEL_CHARS = "asdfghjklqwertyuiopzxcvbnm" + "ASDFGHJKLQWERTYUIOPZXCVBNM"
 URL = re.compile(r"(?:(?:https?|ftp|file)://|www\.)[^\s<>\"'`|\\^{}]*")
 URL_CHAR = re.compile(r"[^\s<>\"'`|\\^{}]+")
 PATH = re.compile(r"[\w.~/@+%=:-]+")
@@ -25,6 +25,8 @@ TRAILING = ".,;:!?*_~"
 PAIRS = {")": "(", "]": "[", "}": "{", ">": "<"}
 LINE_NUMBER = re.compile(r"(?::\d+)+:?$")
 STRONG_PATH = re.compile(r"^(?:/|~/|\./|\.\./)")
+# A relative path with a directory whose file has an extension, like src/foo.py.
+NESTED_FILE = re.compile(r"^[^/].*/[^/]*[^/.]\.[A-Za-z][A-Za-z0-9]{0,9}$")
 
 DIM = "\x1b[0;90m"
 LINK = "\x1b[0;36;4m"
@@ -73,7 +75,7 @@ def path_acceptor(cwd):
             return None
         # Paths that can only be paths are kept even when they don't exist
         # here, such as ones printed on another host.
-        if STRONG_PATH.match(text) and len(text) > 2:
+        if STRONG_PATH.match(text) and len(text) > 2 or NESTED_FILE.match(text):
             return text
         if "/" not in text and "." not in text.strip("."):
             return None
@@ -122,15 +124,29 @@ def find_hints(lines, columns, start, cont, trim, accept):
     return hints
 
 
+def make_labels(n, chars=LABEL_CHARS):
+    """Returns n labels, none a prefix of another, as short as they can be.
+
+    Characters are used in order, so lowercase labels come first. When there
+    are more hints than characters, characters from the end of the list
+    become prefixes for two-character labels, one at a time, so as many
+    hints as possible keep a single character.
+    """
+    size = len(chars)
+    if n <= size:
+        return list(chars[:n])
+    prefixes = min(size, -(-(n - size) // (size - 1)))
+    labels = list(chars[:size - prefixes])
+    left = n - len(labels)
+    for i, prefix in enumerate(chars[size - prefixes:]):
+        share = max(min(left, size), -(-left // (prefixes - i)))
+        labels += [prefix + rest for rest in make_labels(share, chars)]
+        left -= share
+    return labels
+
+
 def assign_labels(hints):
-    length = 1
-    while len(LABEL_CHARS) ** length < len(hints):
-        length += 1
-    for i, h in enumerate(hints):
-        label = ""
-        for _ in range(length):
-            i, d = divmod(i, len(LABEL_CHARS))
-            label = LABEL_CHARS[d] + label
+    for h, label in zip(hints, make_labels(len(hints))):
         h.label = label
 
 
@@ -157,7 +173,7 @@ def draw(lines, hints, typed, message=None):
             if c >= len(chars[r]):
                 chars[r].append(" ")
                 styles[r].append(DIM)
-            chars[r][c] = ch.upper()
+            chars[r][c] = ch
             styles[r][c] = TYPED if i < len(typed) else LABEL
 
     out = ["\x1b[H\x1b[2J"]
@@ -232,8 +248,8 @@ def main():
                 return
             if key == "\x7f":
                 typed = typed[:-1]
-            elif len(key) == 1 and key.lower() in LABEL_CHARS:
-                attempt = typed + key.lower()
+            elif len(key) == 1 and key in LABEL_CHARS:
+                attempt = typed + key
                 if any(h.label.startswith(attempt) for h in hints):
                     typed = attempt
             picked = next((h for h in hints if h.label == typed), None)
