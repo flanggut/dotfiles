@@ -30,8 +30,9 @@ NESTED_FILE = re.compile(r"^[^/].*/[^/]*[^/.]\.[A-Za-z][A-Za-z0-9]{0,9}$")
 
 DIM = "\x1b[0;90m"
 LINK = "\x1b[0;36;4m"
-LABEL = "\x1b[0;1;30;43m"
-TYPED = "\x1b[0;33;43m"
+# Fixed 24-bit colors rather than the theme's palette, which is often muted.
+LABEL = "\x1b[0;1;38;2;0;0;0;48;2;255;215;0m"
+TYPED = "\x1b[0;1;38;2;0;0;0;48;2;176;120;0m"
 RESET = "\x1b[0m"
 
 
